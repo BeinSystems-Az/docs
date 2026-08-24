@@ -23,6 +23,8 @@ spec:
         app.kubernetes.io/part-of: bein-erp
     spec:
       securityContext:
+        fsGroup: 101
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -61,8 +63,12 @@ spec:
               mountPath: /var/cache/nginx
             - name: nginx-run
               mountPath: /var/run
+            - name: nginx-tmp
+              mountPath: /tmp
       volumes:
         - name: nginx-cache
           emptyDir: {}
         - name: nginx-run
+          emptyDir: {}
+        - name: nginx-tmp
           emptyDir: {}
