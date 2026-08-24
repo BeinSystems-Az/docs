@@ -1,3 +1,5 @@
+@import '@fontsource-variable/inter/wght.css';
+
 :root {
   --ifm-color-primary: #0b5e55;
   --ifm-color-primary-dark: #095149;
@@ -6,7 +8,7 @@
   --ifm-color-primary-lighter: #0f7469;
   --ifm-background-color: #f8faf9;
   --ifm-font-color-base: #17231f;
-  --ifm-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --ifm-font-family-base: 'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   --ifm-heading-font-family: var(--ifm-font-family-base);
   --ifm-heading-font-weight: 700;
   --ifm-heading-line-height: 1.25;
