@@ -19,14 +19,14 @@ docker run --rm -p 8080:8080 erp-docs:local
 
 ## Yayım
 
-`master` branch-ına merge GitHub Actions workflow-unu işə salır. Workflow OpenAPI-ni lint edir, Docusaurus saytını və Redoc API referansını build edir, image-i DigitalOcean Container Registry-yə göndərir və `erp-prod` namespace-dəki `docs` Deployment-ini yeniləyir.
+`master` branch-ına merge GitHub Actions workflow-unu işə salır. Workflow OpenAPI-ni lint edir, Docusaurus saytını və Redoc API referansını build edir, image-i DigitalOcean Container Registry-yə göndərir və `erp-dev` namespace-dəki `docs` Deployment-ini yeniləyir.
 
 Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
 
 - `DO_ACCESS_TOKEN`
 - `DO_KUBERNETES_CLUSTER_ID`
 
-İlk deploy-dan əvvəl `docs.beinsystems.az` DNS qeydi ingress controller-in public ünvanına yönəlməli, `ingressClassName` və `cert-manager.io/cluster-issuer` dəyərləri cluster-dakı mövcud adlarla təsdiqlənməlidir.
+`docs.beinsystems.az` Cloudflare üzərindən mövcud ingress controller-ə yönəlir. Cluster-də TLS issuer olmadığı üçün HTTPS Cloudflare edge tərəfindən təmin edilir; Ingress mövcud ERP deployment-ləri kimi HTTP backend istifadə edir.
 
 ## API əhatəsi
 

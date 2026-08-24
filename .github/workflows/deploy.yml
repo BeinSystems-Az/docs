@@ -57,15 +57,15 @@ jobs:
           set -euo pipefail
           : "${DO_KUBERNETES_CLUSTER_ID:?Configure this GitHub environment secret}"
           doctl kubernetes cluster kubeconfig save "$DO_KUBERNETES_CLUSTER_ID"
-          kubectl auth can-i patch deployments -n erp-prod | grep -qx yes
+          kubectl auth can-i patch deployments -n erp-dev | grep -qx yes
       - name: Deploy immutable image
         env:
           IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.image.outputs.digest }}
         run: |
           set -euo pipefail
           kubectl apply -f infra/k8s/
-          kubectl set image deployment/docs docs="$IMAGE" -n erp-prod
-          kubectl rollout status deployment/docs -n erp-prod --timeout=180s
+          kubectl set image deployment/docs docs="$IMAGE" -n erp-dev
+          kubectl rollout status deployment/docs -n erp-dev --timeout=180s
       - name: Smoke test public documentation
         run: |
           set -euo pipefail

@@ -2,15 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: docs
-  namespace: erp-prod
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  namespace: erp-dev
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - docs.beinsystems.az
-      secretName: docs-beinsystems-az-tls
   rules:
     - host: docs.beinsystems.az
       http:

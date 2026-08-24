@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docs
-  namespace: erp-prod
+  namespace: erp-dev
   labels:
     app.kubernetes.io/name: docs
     app.kubernetes.io/part-of: bein-erp
@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/name: docs
         app.kubernetes.io/part-of: bein-erp
     spec:
+      imagePullSecrets:
+        - name: do-registry-secret
       securityContext:
         fsGroup: 101
         fsGroupChangePolicy: OnRootMismatch
