@@ -14,4 +14,10 @@ Alış qəbzi fiziki mal qəbuludur. Qaralama redaktə oluna bilir. `posted` sta
 3. `posted` ilə fiziki qəbul və maliyyə nəticəsini yaradın.
 4. Zəruri revers üçün `cancelled` edin.
 
+## Əlaqəli resurslar
+
+Qəbz [Alış sifarişindən](/docs/api/purchasing/orders) mənşə ala bilər və post ediləndə `StockMove`, `JournalEntry` və jurnal sətirlərinin mənbəyinə çevrilir. Qəbz xərc sətirləri də post və cancel əməliyyatının tərkibində işlənir. Ləğv stok nəticəsini geri çevirir və bağlı jurnal yazılışını revers edir.
+
+Ümumi əlaqə xəritəsi: [Resurslar və əlaqələr](/docs/architecture/resources).
+
 Sol menyuda hər endpoint ayrıca səhifədir.

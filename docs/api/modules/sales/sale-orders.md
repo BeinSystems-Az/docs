@@ -14,4 +14,10 @@ Satış sifarişi müştəriyə qarşı kommersiya öhdəliyidir. Qaralama və g
 3. Rezervasiya üçün state-i `sale_order` edin.
 4. Delivery/satış prosesi bitdikdə faktiki maliyyə və stok nəticəsi Satış qəbzində yaranır.
 
+## Əlaqəli resurslar
+
+Sifariş `Product`, müştəri və `Stock` məlumatlarını birləşdirir. `sale_order` state-i seçildikdə və avtomatik rezervasiya aktiv olduqda stokda izlənən sətirlər üçün `StockReservation` və qaralama çatdırılma `StockDocument`i yaranır. Faktiki satış üçün [Satış qəbzi](/docs/api/sales/receipts) istifadə olunur; post edilmiş bağlı qəbz və ya çatdırılma olduqda sifarişin həmin state-dən çıxarılması məhdudlaşdırılır.
+
+Ümumi əlaqə xəritəsi: [Resurslar və əlaqələr](/docs/architecture/resources).
+
 Sol menyuda list, create, detail, update, delete və state keçidi ayrıca operation səhifələridir.

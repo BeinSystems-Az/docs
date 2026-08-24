@@ -27,6 +27,9 @@ flowchart LR
 | Persistence/model | Tenant kontekstində məlumatın saxlanması və oxunması. |
 | Infrastructure | Database runtime, auth/context, queue, cache və xarici servis inteqrasiyası. |
 
-## Əsas qayda
+## İnteqrator üçün oxu ardıcıllığı
 
-Controller biznes qaydasını daşımamalıdır. Yeni endpoint üçün əvvəl kontrakt, validation, service/action və test hazırlanır; sonra bu portalın uyğun endpoint və biznes-məntiqi səhifələri yenilənir.
+1. [Sorğunun həyat dövrü](./request-lifecycle) ilə credential, tenant və filial kontekstini anlayın.
+2. [Resurslar və əlaqələr](./resources) səhifəsindən istifadə etdiyiniz resursun biznes rolunu müəyyən edin.
+3. Dəqiq request/response kontraktı üçün uyğun API resurs səhifəsini açın.
+4. Stok və maliyyə nəticəsi yaradan sənədlər üçün [Biznes sənədləri](./business-documents) bölməsini nəzərdən keçirin.

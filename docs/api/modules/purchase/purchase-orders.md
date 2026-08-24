@@ -14,4 +14,10 @@ Alış sifarişi təchizatçıya qarşı kommersiya öhdəliyidir. `confirmed` s
 3. Fiziki qəbul üçün mənşə olaraq Alış qəbzini yaradın.
 4. Sifariş icra olunmayacaqsa `cancelled` edin.
 
+## Əlaqəli resurslar
+
+Sifariş `Product`, təchizatçı `Partner`-i və `Stock` təyinatını birləşdirir. `confirmed` keçidində sətir vergiləri dondurulur, amma bu mərhələdə stok hərəkəti və jurnal yazılışı yaranmır. [Alış qəbzi](/docs/api/purchasing/receipts) sifarişdən yaradıla bilər; aktiv törəmə sənədlər olduqda sifarişin ləğvi məhdudlaşdırılır.
+
+Ümumi əlaqə xəritəsi: [Resurslar və əlaqələr](/docs/architecture/resources).
+
 Sol menyuda hər endpoint ayrıca səhifədir.

@@ -116,7 +116,13 @@ module.exports = {
     {
       type: 'category',
       label: 'Arxitektura',
-      items: ['architecture/overview', 'architecture/tenancy', 'architecture/business-documents'],
+      items: [
+        'architecture/overview',
+        'architecture/request-lifecycle',
+        'architecture/tenancy',
+        'architecture/resources',
+        'architecture/business-documents',
+      ],
     },
     'modules/index',
     'contributing',

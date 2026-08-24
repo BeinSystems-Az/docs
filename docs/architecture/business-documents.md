@@ -6,6 +6,8 @@ sidebar_position: 3
 
 ERP-də məhsul, tərəfdaş, hesab, anbar, valyuta və vergi kimi obyektlər **əsas məlumat**dır. Onlar özlüyündə qalıq və ya maliyyə hərəkəti yaratmır. Satış, alış, anbar, ödəniş və istehsal obyektləri isə **biznes sənədi**dir: onların təsdiqlənməsi başqa domenlərə təsir edə bilər.
 
+Resursların bir-biri ilə əlaqəsi və tipik satış/alış ardıcıllığı üçün [Resurslar və əlaqələr](./resources) səhifəsinə baxın. Bu səhifə isə post, ləğv və nəticələrin ümumi mənasını izah edir.
+
 ## Sənədin həyat dövrü
 
 Əksər əməliyyat sənədləri əvvəl `draft` kimi yaradılır. Təsdiq və ya `posted` keçidi yalnız həmin sənədin qaydaları keçdikdən sonra yerinə yetirilir. Post edilmiş sənəd silinmək və səssizcə yenidən yazılmaq üçün nəzərdə tutulmur; ləğv olunanda revers/əks yazılışla audit izi qorunur.
