@@ -1,10 +1,11 @@
 ---
 sidebar_position: 1
+slug: /api/sales
 ---
 
-# Satış modulu
+# Satış
 
 Satış modulu kommersiya sifarişini və faktiki satış qəbzini ayrı saxlayır. Sifariş rezervasiya yarada bilər; qəbzin post edilməsi isə stok, maliyyət və mühasibat nəticəsi yaradır.
 
-- [Sale orders](./sale-orders)
-- [Sale receipts](./sale-receipts)
+- [Satış sifarişləri](/docs/api/sales/orders)
+- [Satış qəbzləri](/docs/api/sales/receipts)

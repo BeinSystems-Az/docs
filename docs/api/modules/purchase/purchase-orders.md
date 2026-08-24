@@ -1,85 +1,135 @@
 ---
 sidebar_position: 2
+slug: /api/purchasing/orders
 ---
 
-# Purchase orders API
+# Alış sifarişləri
 
-Purchase order təchizatçıya verilən kommersiya sifarişidir. Bütün operation-lar Bearer JWT, `X-Branch-Id` və `purchase_orders` permission-u tələb edir. Authentication/permission xətası `401`/`403`, tapılmayan `purchase_order` `404`, validation və state qaydası `422`, provisioning isə `503` qaytarır.
+Alış sifarişi təchizatçıya verilən kommersiya sifarişidir. Bütün endpointlər üçün Bearer JWT, `purchase_orders` icazəsi və `X-Branch-Id` tətbiq olunur. `401`, `403`, `404`, `422`, `503` giriş, icazə, resurs, doğrulama/state və provisioning xətalarıdır.
 
-## Siyahı
+## `GET /api/v1/purchase-orders`
 
-### `GET /api/v1/purchase-orders`
+Sifarişləri səhifələnmiş qaytarır; request body yoxdur.
 
 | Parametr | Yer | Tip | Tələb | İzah |
 | --- | --- | --- | --- | --- |
-| `q` | query | string | Xeyr | Sifariş axtarışı. |
-| `page`, `per_page` | query | integer | Xeyr | Pagination. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Filial oxu konteksti. |
+| `q` | query | string | Xeyr | Sifariş axtarış mətni. |
+| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
+| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu filial konteksti. |
 
-`200` cavabında `data[]`, `links`, `meta` olur. List elementinin sahələri `id`, `name`, user/owner, supplier, stock, branch, currency, cəmlər, global discount, `description`, `state`, `states`, `version`, `date`, audit tarixləri və tenant custom fields-dir.
+**Cavab — `200`** — `data[]`, `links`, `meta`; elementlərdə `id`, `name`, owner/user, supplier, stock, branch, currency, cəmlər, discount, `description`, `state`, `states`, `version`, `date`, audit və custom-field sahələri qaytarılır.
 
-## Yaratmaq və yeniləmək
+## `POST /api/v1/purchase-orders`
 
-### `POST /api/v1/purchase-orders`
+Alış sifarişi yaradır.
 
-### `PUT|PATCH /api/v1/purchase-orders/{purchase_order}`
+### Request body
 
-| Sahə | Tip | Create tələbi | Qayda |
+| Sahə | Tip | Tələb | Qayda |
 | --- | --- | --- | --- |
 | `supplier_id` | UUID | Bəli | Mövcud supplier tərəfdaş. |
 | `stock_id` | UUID | Bəli | Təyinat anbarı. |
-| `items` | array | Xeyr | Hər sətir məhsul və ya mövcud item identifikatoru daşıyır. |
-| `items[].product_id` / `items[].id` | UUID | Şərti | Sətirdə onlardan biri tələb olunur. |
-| `items[].quantity`, `items[].price` | numeric | Sətir varsa bəli | Quantity və price tələb olunur. |
-| `items[].unit_id`, `packaging_id` | UUID/null | Xeyr | Packaging mövcud olmalıdır. |
-| `items[].packaging_quantity` | numeric/null | Xeyr | `> 0`. |
-| `items[].discount` | numeric/null | Xeyr | Numeric. |
-| `items[].taxes[]` | array | Xeyr | Unikal tax UUID-si, opsional `reason_code`. |
-| `name`, `user_id`, `owner_id`, `currency_id`, `date`, `description` | müxtəlif | Xeyr | Metadata; description maksimum 300 simvol. |
-| `state` | string/null | Xeyr | `draft`, `confirmed`, `cancelled`. |
-| `global_discount_type`, `global_discount_value` | string/numeric/null | Xeyr | `percent`/`fixed`, dəyər `>=0`. |
-| `customFields` | object | Xeyr | Tenant custom field konfiqurasiyasına uyğun. |
+| `items` | array | Xeyr | Sifariş sətirləri. |
+| `items[].id` | UUID | Şərti | Mövcud sətiri yeniləmək üçün; `product_id` yoxdursa tələb olunur. |
+| `items[].product_id` | UUID | Şərti | Məhsul; `id` yoxdursa tələb olunur. |
+| `items[].quantity` | numeric | Bəli* | Sətir olduqda tələb olunur. |
+| `items[].price` | numeric | Bəli* | Sətir olduqda tələb olunur. |
+| `items[].unit_id` | UUID / `null` | Xeyr | Ölçü vahidi. |
+| `items[].packaging_id` | UUID / `null` | Xeyr | Qablaşdırma. |
+| `items[].packaging_quantity` | numeric / `null` | Xeyr | `> 0`. |
+| `items[].discount` | numeric / `null` | Xeyr | Numeric dəyər. |
+| `items[].taxes` | array | Xeyr | Vergi tətbiqləri. |
+| `items[].taxes[].id` | UUID | Bəli* | Unikal tax ID-si. |
+| `items[].taxes[].reason_code` | string / `null` | Xeyr | Vergi səbəb kodu. |
+| `name` | string / `null` | Xeyr | Sifariş adı/nömrəsi. |
+| `user_id` | UUID / `null` | Xeyr | Yaradan istifadəçi. |
+| `owner_id` | UUID / `null` | Xeyr | Cavabdeh istifadəçi. |
+| `currency_id` | UUID / `null` | Xeyr | Valyuta. |
+| `date` | date / `null` | Xeyr | Sifariş tarixi. |
+| `description` | string / `null` | Xeyr | Maksimum 300 simvol. |
+| `state` | string / `null` | Xeyr | `draft`, `confirmed`, `cancelled`. |
+| `global_discount_type` | string / `null` | Xeyr | `percent` və ya `fixed`. |
+| `global_discount_value` | numeric / `null` | Xeyr | `>= 0`. |
+| `customFields` | object | Xeyr | Tenant custom fields. |
 
 ```json
-{
-  "supplier_id":"11111111-1111-1111-1111-111111111111",
-  "stock_id":"22222222-2222-2222-2222-222222222222",
-  "currency_id":"33333333-3333-3333-3333-333333333333",
-  "items":[{"product_id":"44444444-4444-4444-4444-444444444444","quantity":10,"price":18}],
-  "global_discount_type":"percent",
-  "global_discount_value":2
-}
+{"supplier_id":"11111111-1111-1111-1111-111111111111","stock_id":"22222222-2222-2222-2222-222222222222","currency_id":"33333333-3333-3333-3333-333333333333","items":[{"product_id":"44444444-4444-4444-4444-444444444444","quantity":10,"price":18}],"global_discount_type":"percent","global_discount_value":2}
 ```
 
-Create və update uğurlu olduqda `200` qaytarılır. `data`-da siyahı sahələrinə əlavə olaraq `items[]`, procurement miqdar/progress sahələri, `tax_totals`, `ledger_items` və `action_availability` var. Item response məhsul/unit əlaqələrini, miqdar, qiymət, discount, vergi tətbiqləri və cəmləri daşıyır.
+**Cavab — `200`** — tam Purchase order obyekti: başlıq, supplier/stock/currency əlaqələri, cəmlər, `items`, procurement progress sahələri, `tax_totals`, `ledger_items`, `action_availability`, audit və custom-field sahələri.
 
-## Oxumaq və silmək
+## `GET /api/v1/purchase-orders/{purchase_order}`
 
-### `GET /api/v1/purchase-orders/{purchase_order}`
+Bir sifarişi qaytarır; request body yoxdur.
 
-Path UUID-dir, request body yoxdur. `200` response yuxarıdakı tam order kontraktıdır; `items` məhsul, unit və category/department əlaqələri ilə yüklənir.
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `purchase_order` | path | UUID | Bəli | Sifariş ID-si. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
 
-### `DELETE /api/v1/purchase-orders/{purchase_order}`
+**Cavab — `200`** — tam Purchase order obyekti; `items` məhsul, unit, kateqoriya və şöbə əlaqələri ilə yüklənir.
 
-Body yoxdur. Uğurlu cavab:
+## `PUT /api/v1/purchase-orders/{purchase_order}`
+
+Sifarişi yeniləyir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `purchase_order` | path | UUID | Bəli | Yenilənəcək sifariş. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+### Request body
+
+`supplier_id`, `stock_id`, `items`, bütün `items[]` sahələri, `name`, `user_id`, `owner_id`, `currency_id`, `date`, `description`, `state`, qlobal discount və `customFields` `POST` body-sindəki tip və qaydalarla qəbul edilir.
+
+**Cavab — `200`** — tam Purchase order obyekti.
+
+## `PATCH /api/v1/purchase-orders/{purchase_order}`
+
+Sifarişi yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `purchase_order` | path | UUID | Bəli | Yenilənəcək sifariş. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+## `DELETE /api/v1/purchase-orders/{purchase_order}`
+
+Sifarişi arxivləyir; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `purchase_order` | path | UUID | Bəli | Silinəcək sifariş. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+**Cavab — `200`**
 
 ```json
 {"status":"success","message":"Purchase order archived successfully.","data":null}
 ```
 
-Bağlı və ya icazəsiz state-də silmə `422`/`409` ilə rədd edilə bilər.
+Bağlı və ya uyğun olmayan state-dəki sənəd `422`/`409` ilə rədd edilə bilər.
 
-## State keçidi
+## `PATCH /api/v1/purchase-orders/{purchaseOrderId}/state`
 
-### `PATCH /api/v1/purchase-orders/{purchaseOrderId}/state`
+Sifarişin biznes state-ni dəyişir.
 
-| Sahə | Yer | Tip | Tələb | Dəyər |
+| Parametr | Yer | Tip | Tələb | İzah |
 | --- | --- | --- | --- | --- |
 | `purchaseOrderId` | path | UUID | Bəli | Hədəf sifariş. |
-| `state` | body | string | Bəli | `draft`, `confirmed`, `cancelled`. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+### Request body
+
+| Sahə | Tip | Tələb | Qayda |
+| --- | --- | --- | --- |
+| `state` | string | Bəli | `draft`, `confirmed`, `cancelled`. |
 
 ```json
 {"state":"confirmed"}
 ```
 
-`confirmed` sifarişi tədarük öhdəliyi kimi təsdiqləyir; fiziki stok, valuation və jurnal entry yaratmır. `cancelled` sifarişi ləğv edir. `draft`-a dönüş üçün backend əvvəl confirmed sifarişi ləğv edir, sonra qaralama edir. Uğurlu `200` cavabı tam purchase order object-dir.
+**Cavab — `200`** — tam Purchase order obyekti.
+
+`confirmed` sifarişi tədarük öhdəliyi kimi təsdiqləyir, fiziki stok, valuation və jurnal entry yaratmır. `cancelled` sifarişi ləğv edir. `draft`-a dönüş əvvəl confirmed sifarişi ləğv edir, sonra qaralamaya qaytarır.

@@ -1,66 +1,139 @@
 ---
 sidebar_position: 3
+slug: /api/sales/receipts
 ---
 
-# Sale receipts API
+# Satış qəbzləri
 
-Sale receipt faktiki satış sənədidir. `sale_receipts` permission-u və JWT/filial konteksti tələb olunur. İcazəsiz sorğu `401`/`403`, tapılmayan `sale_receipt` `404`, validation və state qaydası `422`, hazır olmayan tenant isə `503` qaytarır.
+Satış qəbzi faktiki satış sənədidir. Bütün endpointlər Bearer JWT, `sale_receipts` icazəsi və `X-Branch-Id` filial konteksti tələb edir. `401`, `403`, `404`, `422`, `503` uyğun giriş, icazə, resurs, doğrulama/state və tenant hazırlığı xətalarıdır.
 
-## Endpointlər
+## `GET /api/v1/sale-receipts`
 
-| Metod | URL | Məqsəd |
-| --- | --- | --- |
-| `GET` | `/api/v1/sale-receipts?page=&per_page=` | Pagination ilə siyahı. |
-| `POST` | `/api/v1/sale-receipts` | Qaralama qəbz yaratmaq. |
-| `GET` | `/api/v1/sale-receipts/{sale_receipt}` | Tam qəbz detalı. |
-| `PUT`, `PATCH` | `/api/v1/sale-receipts/{sale_receipt}` | Qaralama qəbzi yeniləmək. |
-| `DELETE` | `/api/v1/sale-receipts/{sale_receipt}` | Silmək. |
-| `PATCH` | `/api/v1/sale-receipts/{sale_receipt}/state` | `draft`, `posted`, `cancelled` keçidi. |
+Qəbzləri səhifələnmiş qaytarır; request body yoxdur.
 
-`GET` body qəbul etmir. `page` və `per_page` query parametridir; `X-Branch-Id` filial header-idir. Siyahı `data[]`, `links`, `meta` qaytarır; list elementində ledger və stok availability genişləndirilməsi yoxdur.
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
+| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
 
-## Yaratmaq və yeniləmək
+**Cavab — `200`** — `data[]`, `links`, `meta`; hər element `id`, `name`, `state`, filial, valyuta, customer, stock, tarix, origin, cəmlər, discount, expenses, taxes, items və audit sahələrini daşıyır.
 
-### `POST /api/v1/sale-receipts`
+## `POST /api/v1/sale-receipts`
 
-### `PUT|PATCH /api/v1/sale-receipts/{sale_receipt}`
+Qaralama satış qəbzi yaradır.
 
-| Sahə | Tip | Create tələbi | Qayda |
+### Request body
+
+| Sahə | Tip | Tələb | Qayda |
 | --- | --- | --- | --- |
-| `customer_id` | UUID | Bəli | Customer tərəfdaş. Update-də `sometimes`. |
-| `stock_id` | UUID | Bəli* | *Mənbə `sale_order`, `purchase_receipt` və ya `sale_invoice` olmadıqda. |
-| `items` | array | Bəli* | Minimum bir sətir; origin istisnası yuxarıdakı kimidir. |
-| `origin_type` | string/null | Xeyr | `sale_order`, `purchase_receipt`, `sale_invoice`. |
-| `origin_id` | UUID/null | Xeyr | Origin varsa UUID. |
-| `currency_id`, `date`, `note` | UUID/date/string/null | Xeyr | `note` maksimum 1000 simvol. |
-| `global_discount_type`, `global_discount_value` | string/numeric/null | Xeyr | `percent`/`fixed`, dəyər `>= 0`. |
-| `items[].product_id`, `items[].quantity`, `items[].price` | UUID/numeric | Bəli | Məhsul, `quantity > 0`, `price >= 0`. |
-| `items[].lot_id`, `unit_id`, `packaging_id`, `packaging_quantity`, `name`, `discount`, `account_id` | müxtəlif | Xeyr | Lot/unit/packaging UUID-ləri; packaging quantity `> 0`; discount `>= 0`. |
-| `items[].taxes[]` | array | Xeyr | Tax UUID-si və opsional `reason_code`. |
-| `expenses[]` | array | Xeyr | Hər sətirdə `reason_id` və `amount > 0`; opsional partner, account, tax, due date, ref. |
+| `customer_id` | UUID | Bəli | Customer tərəfdaş. |
+| `stock_id` | UUID | Bəli* | Origin `sale_order`, `purchase_receipt`, `sale_invoice` olmadıqda. |
+| `items` | array | Bəli* | Origin istisnası yoxdursa minimum bir sətir. |
+| `origin_type` | string / `null` | Xeyr | `sale_order`, `purchase_receipt`, `sale_invoice`. |
+| `origin_id` | UUID / `null` | Xeyr | Origin ID-si. |
+| `currency_id` | UUID / `null` | Xeyr | Valyuta. |
+| `date` | date / `null` | Xeyr | Qəbz tarixi. |
+| `note` | string / `null` | Xeyr | Maksimum 1000 simvol. |
+| `global_discount_type` | string / `null` | Xeyr | `percent` və ya `fixed`. |
+| `global_discount_value` | numeric / `null` | Xeyr | `>= 0`. |
+| `items[].product_id` | UUID | Bəli* | Məhsul. |
+| `items[].quantity` | numeric | Bəli* | `> 0`. |
+| `items[].price` | numeric | Bəli* | `>= 0`. |
+| `items[].lot_id` | UUID / `null` | Xeyr | Lot. |
+| `items[].unit_id` | UUID / `null` | Xeyr | Ölçü vahidi. |
+| `items[].packaging_id` | UUID / `null` | Xeyr | Qablaşdırma. |
+| `items[].packaging_quantity` | numeric / `null` | Xeyr | `> 0`. |
+| `items[].name` | string / `null` | Xeyr | Sətir adı. |
+| `items[].discount` | numeric / `null` | Xeyr | `>= 0`. |
+| `items[].account_id` | UUID / `null` | Xeyr | Hesab əlaqəsi. |
+| `items[].taxes` | array | Xeyr | Vergi tətbiqləri. |
+| `expenses` | array | Xeyr | Qəbz xərcləri. |
+| `expenses[].reason_id` | UUID | Bəli* | Xərc səbəbi. |
+| `expenses[].amount` | numeric | Bəli* | `> 0`. |
+| `expenses[].partner_id` | UUID / `null` | Xeyr | Tərəfdaş. |
+| `expenses[].account_id` | UUID / `null` | Xeyr | Hesab. |
+| `expenses[].tax_id` | UUID / `null` | Xeyr | Vergi. |
+| `expenses[].due_date` | date / `null` | Xeyr | Ödəniş son tarixi. |
+| `expenses[].reference` | string / `null` | Xeyr | İstinad. |
 
 ```json
-{
-  "customer_id":"11111111-1111-1111-1111-111111111111",
-  "stock_id":"22222222-2222-2222-2222-222222222222",
-  "origin_type":"sale_order",
-  "origin_id":"33333333-3333-3333-3333-333333333333",
-  "items":[{"product_id":"44444444-4444-4444-4444-444444444444","quantity":2,"price":25.5}]
-}
+{"customer_id":"11111111-1111-1111-1111-111111111111","stock_id":"22222222-2222-2222-2222-222222222222","items":[{"product_id":"33333333-3333-3333-3333-333333333333","quantity":2,"price":25.5}]}
 ```
 
-Create `201`, update `200` qaytarır. Tam `data` objectində `id`, `name`, `state`, filial/valyuta/müştəri/anbar əlaqələri, `date`, `note`, origin, cəmlər, global discount, `expenses`, `expenses_total`, `tax_totals`, `items`, `ledger_items`, `action_availability`, `created_at`, `updated_at` var. `items[]` elementində məhsul, lot, unit, packaging, quantity/price/discount, taxes/applications və net/tax/gross məbləğləri qaytarılır.
+**Cavab — `201`** — tam receipt obyekti: başlıq, cəmlər, `items`, `expenses`, `expenses_total`, `tax_totals`, `ledger_items`, `action_availability`, audit sahələri.
 
-## State keçidi və biznes təsiri
+## `GET /api/v1/sale-receipts/{sale_receipt}`
 
-### `PATCH /api/v1/sale-receipts/{sale_receipt}/state`
+Bir qəbzi qaytarır; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `sale_receipt` | path | UUID | Bəli | Qəbz ID-si. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+
+**Cavab — `200`** — `POST` response-indəki tam receipt obyekti.
+
+## `PUT /api/v1/sale-receipts/{sale_receipt}`
+
+Qaralama qəbzi yeniləyir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `sale_receipt` | path | UUID | Bəli | Yenilənəcək qəbz. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+### Request body
+
+`POST` body-sindəki `customer_id`, `stock_id`, origin, tarix/valyuta/discount, item və expense sahələri qəbul edilir; update-də `customer_id` yalnız göndərildikdə yoxlanır.
+
+**Cavab — `200`** — tam receipt obyekti.
+
+## `PATCH /api/v1/sale-receipts/{sale_receipt}`
+
+Qaralama qəbzi yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `sale_receipt` | path | UUID | Bəli | Yenilənəcək qəbz. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+## `DELETE /api/v1/sale-receipts/{sale_receipt}`
+
+Qəbzi silir; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `sale_receipt` | path | UUID | Bəli | Silinəcək qəbz. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+**Cavab — `200`**
+
+```json
+{"status":"success","message":"Sale receipt deleted successfully.","data":null}
+```
+
+Post edilmiş və ya bağlı sənəd `422`/`409` ilə silinməyə bilər.
+
+## `PATCH /api/v1/sale-receipts/{sale_receipt}/state`
+
+Qəbzin biznes state-ni dəyişir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `sale_receipt` | path | UUID | Bəli | Hədəf qəbz. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+### Request body
+
+| Sahə | Tip | Tələb | Qayda |
+| --- | --- | --- | --- |
+| `state` | string | Bəli | `draft`, `posted`, `cancelled`. |
 
 ```json
 {"state":"posted"}
 ```
 
-`state` məcburidir və yalnız `draft`, `posted`, `cancelled` ola bilər. `posted` qəbz stok çıxışını, jurnal entry və debit/credit sətirlərini, həmçinin qəbz xərclərini bir database transaction-da yaradır. Vergilər postdan əvvəl dondurulur. `cancelled` post edilmiş stok/maliyyə nəticəsini revers edir və audit izini saxlayır. `draft`-a dönüş post edilmiş qəbzi əvvəl ləğv edir, sonra expense-ləri qaralamaya qaytarır. Uğurlu `200` response yuxarıdakı tam receipt object-dir.
+**Cavab — `200`** — tam receipt obyekti.
 
-### `DELETE /api/v1/sale-receipts/{sale_receipt}`
-
-Body yoxdur və uğurlu cavab `{"status":"success","data":null}`-dır. Post edilmiş və ya biznes qaydasına bağlı sənəd silinə bilməz; bu halda `422`/`409` qaytarılır.
+`posted` stok çıxışı, jurnal entry/debit-credit sətirləri və qəbz xərclərini bir transaction-da yaradır; vergilər postdan əvvəl dondurulur. `cancelled` maliyyə və stok nəticəsini revers edir. `draft` post edilmiş qəbzi əvvəl ləğv edir, sonra expense-ləri qaralamaya qaytarır.

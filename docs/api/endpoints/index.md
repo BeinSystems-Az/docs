@@ -8,9 +8,9 @@ API referansı tam Docusaurus səhifələri kimi təqdim olunur. Hər bölmədə
 
 ## İlk baxılacaq modullar
 
-- [Məhsullar API-si](../modules/products)
-- [Satış API-si](../modules/sales)
-- [Alış API-si](../modules/purchase)
+- [Məhsul kataloqu](/docs/api/catalog)
+- [Satış](/docs/api/sales)
+- [Satınalma](/docs/api/purchasing)
 
 - [Platform və idarəetmə](./platform)
 - [Əsas məlumatlar](./master-data)

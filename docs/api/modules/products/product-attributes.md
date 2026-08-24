@@ -1,36 +1,99 @@
 ---
 sidebar_position: 7
+slug: /api/catalog/product-attributes
 ---
 
-# Product attributes API
+# Məhsul atributları
 
-Attribute məhsul variantlarının xüsusiyyətidir. JWT və filial konteksti tələb olunur; `401`, `403`, `404`, `422`, `503` ümumi authentication, permission, resurs, validation və provisioning halları üçün qaytarılır.
+Atribut məhsul variantının xüsusiyyətidir. Bu master-data əməliyyatları stok və jurnal entry yaratmır. Bütün endpointlər Bearer token, products permission-u və filial konteksti tələb edir.
 
-## Endpointlər
+## `GET /api/v1/product-attributes`
 
-| Metod | URL | Body | Uğurlu cavab |
-| --- | --- | --- | --- |
-| `GET` | `/api/v1/product-attributes?query=&paginate=false&page=&per_page=` | Yoxdur | `200`, pagination və ya sadə array |
-| `POST` | `/api/v1/product-attributes` | Attribute body | `200`, Attribute object |
-| `GET` | `/api/v1/product-attributes/{product_attribute}` | Yoxdur | `200`, Attribute object |
-| `PUT`, `PATCH` | `/api/v1/product-attributes/{product_attribute}` | Attribute body | `200`, Attribute object |
-| `DELETE` | `/api/v1/product-attributes/{product_attribute}` | Yoxdur | `200`, `data:null` |
+Atributları qaytarır; request body yoxdur.
 
-`paginate=false` olduqda `data` pagination zərfi olmadan attribute array-dir. Əks halda `links` və `meta` qaytarılır.
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `query` | query | string | Xeyr | Ad üzrə axtarış. |
+| `paginate` | query | boolean | Xeyr | `false` olduqda `data` birbaşa array-dir; əks halda pagination qaytarılır. |
+| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
+| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
 
-## Attribute body
+**Cavab — `200`**
+
+```json
+{"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Rəng","display_type":"color","values":[{"id":"22222222-2222-2222-2222-222222222222","name":"Qara","hex_color":"#111111"}],"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
+```
+
+## `POST /api/v1/product-attributes`
+
+Atribut yaradır.
+
+### Request body
 
 | Sahə | Tip | Tələb | Qayda |
 | --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol, tenant daxilində unikal. |
-| `display_type` | string | Bəli | `select`, `radio`, `color`. |
-| `values` | array/null | Xeyr | Attribute value-ları. |
-| `values[].id` | UUID/null | Xeyr | Mövcud attribute value. |
-| `values[].name` | string | Şərti | `values` elementində tələb olunur, maksimum 100. |
-| `values[].hex_color` | string/null | Xeyr | Maksimum 20 simvol. |
+| `name` | string | Bəli | Maksimum 100 simvol; tenant daxilində unikaldır. |
+| `display_type` | string | Bəli | `select`, `radio` və ya `color`. |
+| `values` | array / `null` | Xeyr | Atribut dəyərləri. |
+| `values[].id` | UUID / `null` | Xeyr | Mövcud dəyəri yeniləmək üçün ID. |
+| `values[].name` | string | Bəli* | Maksimum 100 simvol. |
+| `values[].hex_color` | string / `null` | Xeyr | Maksimum 20 simvol. |
+
+`*` `values` massivində element olduqda tələb olunur.
 
 ```json
 {"name":"Rəng","display_type":"color","values":[{"name":"Qara","hex_color":"#111111"}]}
 ```
 
-Response `data` sahələri: `id`, `name`, `display_type`, `values:[{id,name,hex_color}]`, `created_at`, `updated_at`. Attribute yaratmaq/yeniləmək stok və jurnal yazılışı yaratmır.
+**Cavab — `200`** — tam Attribute obyekti.
+
+## `GET /api/v1/product-attributes/{product_attribute}`
+
+Bir atributu qaytarır; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `product_attribute` | path | UUID | Bəli | Atribut ID-si. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+
+**Cavab — `200`** — `id`, `name`, `display_type`, `values[]`, `created_at`, `updated_at` olan Attribute obyekti.
+
+## `PUT /api/v1/product-attributes/{product_attribute}`
+
+Atributu yeniləyir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `product_attribute` | path | UUID | Bəli | Yenilənəcək atribut. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+### Request body
+
+`name`, `display_type`, `values`, `values[].id`, `values[].name`, `values[].hex_color` `POST` body-sindəki tip və qaydalarla qəbul olunur.
+
+**Cavab — `200`** — tam Attribute obyekti.
+
+## `PATCH /api/v1/product-attributes/{product_attribute}`
+
+Atributu yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `product_attribute` | path | UUID | Bəli | Yenilənəcək atribut. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+## `DELETE /api/v1/product-attributes/{product_attribute}`
+
+Atributu silir; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `product_attribute` | path | UUID | Bəli | Silinəcək atribut. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
+
+**Cavab — `200`**
+
+```json
+{"status":"success","message":"Product attribute deleted successfully.","data":null}
+```

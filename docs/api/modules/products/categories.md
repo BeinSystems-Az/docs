@@ -1,40 +1,115 @@
 ---
 sidebar_position: 3
+slug: /api/catalog/categories
 ---
 
-# Categories API
+# Kateqoriyalar
 
-Kateqoriya master məlumatıdır. Bütün endpointlər JWT, `X-Branch-Id` və filial icazəsi tələb edir. `401`, `403`, `404`, `422`, `503` kodları authentication, permission, category tapılmaması, validation və provisioning xəta vəziyyətləridir.
+Kateqoriya məhsul kartları üçün master məlumatıdır; bu endpointlər stok və mühasibat hərəkəti yaratmır. Bütün sorğular `Authorization: Bearer <token>` qəbul edir; uyğun products icazəsi və `X-Branch-Id` filial konteksti tələb olunur. `401`, `403`, `422`, `503` müvafiq olaraq giriş, icazə, doğrulama və tenant hazırlığı xətalarıdır.
 
-## Endpointlər
+## `GET /api/v1/categories`
 
-| Metod | URL | Request | Uğurlu cavab |
-| --- | --- | --- | --- |
-| `GET` | `/api/v1/categories?query=&page=&per_page=` | Body yoxdur | `200`, pagination `data[]`, `links`, `meta` |
-| `POST` | `/api/v1/categories` | Aşağıdakı Category body | `200`, Category object |
-| `GET` | `/api/v1/categories/{category}` | Body yoxdur | `200`, Category object |
-| `PUT`, `PATCH` | `/api/v1/categories/{category}` | Category body | `200`, Category object |
-| `DELETE` | `/api/v1/categories/{category}` | Body yoxdur | `200`, `data: null` |
+Kateqoriyaları səhifələnmiş qaytarır. Request body yoxdur.
 
-`category` path parametri UUID-dir. `query` mətn axtarışı, `page`/`per_page` pagination üçündür.
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `query` | query | string | Xeyr | Ad üzrə axtarış. |
+| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
+| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu filial konteksti. |
 
-## Create və update body
+**Cavab — `200`**
+
+```json
+{"status":"success","message":"Categories listed successfully.","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
+```
+
+## `POST /api/v1/categories`
+
+Yeni kateqoriya yaradır.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
+
+### Request body
 
 | Sahə | Tip | Tələb | Qayda |
 | --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol, tenant daxilində unikal. |
-| `parent_id` | UUID/null | Xeyr | Ana kateqoriya UUID-si. |
-| `active` | boolean | Xeyr | Göndərilərsə boolean. |
-| `customFields` | object | Xeyr | Tenant category custom-field tərifi ilə uyğun. |
+| `name` | string | Bəli | Maksimum 100 simvol; tenant daxilində unikaldır. |
+| `parent_id` | UUID / `null` | Xeyr | Mövcud ana kateqoriya. |
+| `active` | boolean | Xeyr | Aktivlik bayrağı. |
+| `customFields` | object | Xeyr | Tenant-in category custom-field tərifi. |
 
 ```json
 {"name":"Qəhvə","parent_id":null,"active":true}
 ```
 
-Category response `data` sahələri: `id`, `name`, `parent_id`, `parent`, `parent_name`, `active`, `created_at`, `updated_at` və tenant custom fields-dir.
+**Cavab — `200`**
 
 ```json
-{"status":"success","message":"Category created successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
+{"status":"success","message":"Category created successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
 ```
 
-Delete response `{"status":"success","data":null}`-dır. Category yaratmaq/yeniləmək stok və mühasibat təsiri yaratmır; məhsul kartları həmin kateqoriyaya bağlana bilər.
+## `GET /api/v1/categories/{category}`
+
+Bir kateqoriyanı qaytarır; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `category` | path | UUID | Bəli | Kateqoriya identifikatoru. |
+| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu filial konteksti. |
+
+**Cavab — `200`**
+
+```json
+{"status":"success","message":"Category retrieved successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
+```
+
+Tapılmadıqda `404` qaytarılır.
+
+## `PUT /api/v1/categories/{category}`
+
+Kateqoriyanı yeniləyir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `category` | path | UUID | Bəli | Yenilənəcək kateqoriya. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
+
+### Request body
+
+| Sahə | Tip | Tələb | Qayda |
+| --- | --- | --- | --- |
+| `name` | string | Bəli | Maksimum 100 simvol; cari kateqoriya unikal yoxlamadan istisnadır. |
+| `parent_id` | UUID / `null` | Xeyr | Ana kateqoriya. |
+| `active` | boolean | Xeyr | Aktivlik bayrağı. |
+| `customFields` | object | Xeyr | Tenant custom fields. |
+
+**Cavab — `200`** — `POST` cavabındakı tam Category obyektini qaytarır. Məhsul və tarixi sənədlər yenidən hesablanmır.
+
+## `PATCH /api/v1/categories/{category}`
+
+Kateqoriyanı yeniləyir; route `PUT` ilə eyni doğrulama, request body və `200` Category response kontraktına malikdir.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `category` | path | UUID | Bəli | Yenilənəcək kateqoriya. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
+
+## `DELETE /api/v1/categories/{category}`
+
+Kateqoriyanı silir; request body yoxdur.
+
+| Parametr | Yer | Tip | Tələb | İzah |
+| --- | --- | --- | --- | --- |
+| `category` | path | UUID | Bəli | Silinəcək kateqoriya. |
+| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
+
+**Cavab — `200`**
+
+```json
+{"status":"success","message":"Category deleted successfully.","data":null}
+```
+
+Əlaqəli məhsullara görə silməyə icazə verilməzsə backend `422` və ya `409` qaytara bilər.

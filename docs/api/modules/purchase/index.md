@@ -1,10 +1,11 @@
 ---
 sidebar_position: 1
+slug: /api/purchasing
 ---
 
-# Alış modulu
+# Satınalma
 
 Alış sifarişi tədarük öhdəliyini, alış qəbzi fiziki mal qəbulunu təmsil edir. Qəbz post ediləndə stok və mühasibat nəticəsi yaranır.
 
-- [Purchase orders](./purchase-orders)
-- [Purchase receipts](./purchase-receipts)
+- [Alış sifarişləri](/docs/api/purchasing/orders)
+- [Alış qəbzləri](/docs/api/purchasing/receipts)
