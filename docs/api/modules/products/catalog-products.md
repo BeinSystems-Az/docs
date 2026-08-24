@@ -5,7 +5,13 @@ slug: /api/catalog/products
 
 # Məhsullar
 
+## Məqsəd və sərhəd
+
 Məhsul kartı ERP-də master məlumatdır. Kartın yaradılması, oxunması və yenilənməsi stok qalıqlarını, rezervasiyanı və mühasibat jurnalını dəyişmir. Qiymət, vergi, vahid, qablaşdırma və hesab sazlamaları məhsul sonradan sənədə daxil ediləndə tətbiq olunur.
+
+## İlkin şərtlər
+
+Məhsul yaratmaq üçün JWT ilə daxil olmuş və `products` resursunda uyğun icazəsi olan istifadəçi lazımdır. `name` məhsul kartının əsas identifikatorudur. `Category`, `Unit`, vergi, şöbə və qablaşdırma ID-ləri göndərilirsə, onlar tenant daxilində əvvəlcədən mövcud olmalıdır. Filiala məxsus qiymət və ya aktivlik fərqi lazım olduqda sorğu düzgün `X-Branch-Id` kontekstində göndərilir.
 
 ## İş axını
 
@@ -14,10 +20,16 @@ Məhsul kartı ERP-də master məlumatdır. Kartın yaradılması, oxunması və
 3. Filiala xüsusi qiymət və əlçatanlıq lazımdırsa filial override-ı yazın.
 4. Məhsulu satış, alış və anbar sənədlərində istifadə edin.
 
+## State-lər və biznes təsiri
+
+Məhsulun biznes sənədlərindəki `draft` və ya `posted` kimi həyat dövrü state-i yoxdur; kartın `active` dəyəri onun istifadəyə açıq olub-olmadığını ifadə edir. Məhsul kartını yazmaq fiziki qalıq, stok rezervasiyası, vergi tanınması və ya `JournalEntry` yaratmır. Stok nəticəsi yalnız stokda izlənən məhsul müvafiq biznes sənədində post ediləndə yaranır.
+
 ## Əlaqəli resurslar
 
 `Product` master məlumatdır; `Category`, `Unit`, qablaşdırma, vergi və filial sazlamaları məhsulun sənədlərdə necə istifadə olunacağını müəyyən edir. Məhsul kartı birbaşa qalıq və ya jurnal yaratmır. Stokda izlənən məhsul sətiri [Satış qəbzi](/docs/api/sales/receipts), [Alış qəbzi](/docs/api/purchasing/receipts) və ya `StockDocument` post ediləndə stok emalına daxil olur.
 
 Resurs əlaqələrinin tam xəritəsi üçün [Resurslar və əlaqələr](/docs/architecture/resources) səhifəsinə baxın.
 
-Sol menyuda hər əməliyyat ayrıca səhifədir. Bütün endpointlər Bearer JWT və uyğun `products` icazəsi tələb edir; `X-Branch-Id` filial kontekstini müəyyən edir.
+## Əsas məhdudiyyətlər
+
+Bütün endpointlər Bearer JWT və `products` resursunda uyğun `read`, `create`, `update` və ya `delete` icazəsi tələb edir. `X-Branch-Id: all` yalnız oxu sorğularında istifadə oluna bilər. Məhsulu yaratmaq və ya qiymətini dəyişmək əvvəl yazılmış qəbzlərin, stok hərəkətlərinin və jurnal yazılışlarının nəticəsini geriyə dönük dəyişmir.

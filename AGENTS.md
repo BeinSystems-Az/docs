@@ -14,6 +14,19 @@ Bu qaydalar Docusaurus portalının oxucuları üçün deyil. Bu repository-də 
 - Resurs səhifəsi həmin resursun collection, detail və action endpointlərini birlikdə saxlayır. Məsələn, Products səhifəsinə `GET/POST /products`, `GET/PUT/PATCH/DELETE /products/{product}` və məhsula aid nested action-lar daxildir.
 - Portalda bu daxili qaydanı, yazı şablonunu və ya contributor prosesini publish etməyin. İstifadəçi yalnız API kontraktını və biznes izahını görməlidir.
 
+## Resurs icmalı standardı
+
+Hər resursun icmalında aşağıdakı altı bölmə mütləq olmalıdır. Mətn qısa telegraflıqla deyil, inteqratorun resursun rolunu ilk oxunuşda başa düşəcəyi aydın dillə yazılmalıdır:
+
+1. **Məqsəd və sərhəd** — resursun nəyi təmsil etdiyi və hansı nəticəni özlüyündə yaratmadığı.
+2. **İlkin şərtlər** — əməliyyatdan əvvəl mövcud olmalı əsas məlumat və kontekst.
+3. **İş axını** — tipik istifadə ardıcıllığı.
+4. **State-lər və biznes təsiri** — mövcud state-lər, keçidlər və stok, rezerv, vergi, jurnal, audit nəticəsi.
+5. **Əlaqəli resurslar** — mənbə, törəmə və nəticə resursları, həmçinin növbəti əməliyyat.
+6. **Əsas məhdudiyyətlər** — icazə, filial scope-u, state və bağlı sənədlərdən doğan real məhdudiyyətlər.
+
+Endpointin səhifə və sidebar adı istifadəçi niyyətini ifadə etməlidir: məsələn, `Sifariş yarat`, `Sifarişi yenilə`, `Sifarişi siyahıla`. `GET`, `POST`, `PUT`, `PATCH` və `DELETE` həmin adda yazılmır; HTTP metod və tam URL endpoint bölməsinin əvvəlində göstərilir.
+
 ## Hər endpoint üçün məcburi məzmun
 
 Hər HTTP operation aşağıdakı ardıcıllıqla tam sənədləşdirilməlidir:

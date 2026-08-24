@@ -7,7 +7,9 @@ slug: /api/catalog/product-packagings
 
 Qablaşdırma məhsulun inventar vahidi ilə alış/satış vahidi arasındakı çevirməni saxlayır. Dəyişiklik tarixi sənədləri yenidən hesablamır. Bütün endpointlər Bearer token, products permission-u və filial konteksti tələb edir.
 
-## `GET /api/v1/product-packagings`
+## Qablaşdırmaları siyahıla
+
+`GET /api/v1/product-packagings`
 
 Qablaşdırmaları səhifələnmiş qaytarır; request body yoxdur.
 
@@ -25,7 +27,9 @@ Qablaşdırmaları səhifələnmiş qaytarır; request body yoxdur.
 {"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","product_id":"22222222-2222-2222-2222-222222222222","product_name":"Arabica qəhvə","unit_id":"33333333-3333-3333-3333-333333333333","unit_name":"Qutu","quantity_in_inventory_unit":"12.0000","purchase_price":"18.0000","sale_price":"25.5000","inventory_unit_id":"44444444-4444-4444-4444-444444444444","inventory_unit_name":"Ədəd","barcode":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
 ```
 
-## `POST /api/v1/product-packagings`
+## Qablaşdırma yarat
+
+`POST /api/v1/product-packagings`
 
 Qablaşdırma yaradır.
 
@@ -47,7 +51,9 @@ Qablaşdırma yaradır.
 
 **Cavab — `201`** — tam Packaging obyekti.
 
-## `GET /api/v1/product-packagings/{product_packaging}`
+## Qablaşdırmanı oxu
+
+`GET /api/v1/product-packagings/{product_packaging}`
 
 Bir qablaşdırmanı qaytarır; request body yoxdur.
 
@@ -58,7 +64,9 @@ Bir qablaşdırmanı qaytarır; request body yoxdur.
 
 **Cavab — `200`** — `GET` siyahısındakı tam Packaging obyekti.
 
-## `PUT /api/v1/product-packagings/{product_packaging}`
+## Qablaşdırmanı tam yenilə
+
+`PUT /api/v1/product-packagings/{product_packaging}`
 
 Qablaşdırmanı yeniləyir.
 
@@ -73,7 +81,9 @@ Qablaşdırmanı yeniləyir.
 
 **Cavab — `200`** — tam Packaging obyekti.
 
-## `PATCH /api/v1/product-packagings/{product_packaging}`
+## Qablaşdırmanı qismən yenilə
+
+`PATCH /api/v1/product-packagings/{product_packaging}`
 
 Qablaşdırmanı yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
 
@@ -82,7 +92,9 @@ Qablaşdırmanı yeniləyir; `PUT` ilə eyni path parametri, request body və `2
 | `product_packaging` | path | UUID | Bəli | Yenilənəcək qablaşdırma. |
 | `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
 
-## `DELETE /api/v1/product-packagings/{product_packaging}`
+## Qablaşdırmanı sil
+
+`DELETE /api/v1/product-packagings/{product_packaging}`
 
 Qablaşdırmanı silir; request body yoxdur.
 

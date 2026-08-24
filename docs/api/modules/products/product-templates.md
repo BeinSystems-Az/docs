@@ -7,7 +7,9 @@ slug: /api/catalog/product-templates
 
 Şablon variantlı məhsullar üçün master məlumatıdır; stok və jurnal entry yaratmır. Sorğular Bearer token, products permission-u və filial konteksti tələb edir.
 
-## `GET /api/v1/product-templates`
+## Məhsul şablonlarını siyahıla
+
+`GET /api/v1/product-templates`
 
 Şablonları səhifələnmiş qaytarır; request body yoxdur.
 
@@ -24,7 +26,9 @@ slug: /api/catalog/product-templates
 {"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Arabica qəhvə","type":1,"category_id":null,"category_name":null,"unit_id":null,"unit_name":null,"price":"25.5000","tracking":"lot","description":null,"active":true,"image":null,"variants_count":0,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
 ```
 
-## `POST /api/v1/product-templates`
+## Məhsul şablonu yarat
+
+`POST /api/v1/product-templates`
 
 Şablon yaradır.
 
@@ -49,7 +53,9 @@ slug: /api/catalog/product-templates
 
 **Cavab — `201`** — `GET` siyahısındakı tam Template obyekti `data` daxilində qaytarılır.
 
-## `GET /api/v1/product-templates/{product_template}`
+## Məhsul şablonunu oxu
+
+`GET /api/v1/product-templates/{product_template}`
 
 Bir şablonu qaytarır; request body yoxdur.
 
@@ -60,7 +66,9 @@ Bir şablonu qaytarır; request body yoxdur.
 
 **Cavab — `200`** — tam Template obyekti; tapılmadıqda `404`.
 
-## `PUT /api/v1/product-templates/{product_template}`
+## Məhsul şablonunu tam yenilə
+
+`PUT /api/v1/product-templates/{product_template}`
 
 Şablonu yeniləyir.
 
@@ -75,7 +83,9 @@ Bir şablonu qaytarır; request body yoxdur.
 
 **Cavab — `200`** — tam Template obyekti.
 
-## `PATCH /api/v1/product-templates/{product_template}`
+## Məhsul şablonunu qismən yenilə
+
+`PATCH /api/v1/product-templates/{product_template}`
 
 Şablonu yeniləyir; `PUT` ilə eyni path parametri, body kontraktı və `200` Template response-u tətbiq olunur.
 
@@ -84,7 +94,9 @@ Bir şablonu qaytarır; request body yoxdur.
 | `product_template` | path | UUID | Bəli | Yenilənəcək şablon. |
 | `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
 
-## `DELETE /api/v1/product-templates/{product_template}`
+## Məhsul şablonunu sil
+
+`DELETE /api/v1/product-templates/{product_template}`
 
 Şablonu silir; request body yoxdur.
 

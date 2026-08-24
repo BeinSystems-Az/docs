@@ -7,7 +7,9 @@ slug: /api/catalog/product-attributes
 
 Atribut məhsul variantının xüsusiyyətidir. Bu master-data əməliyyatları stok və jurnal entry yaratmır. Bütün endpointlər Bearer token, products permission-u və filial konteksti tələb edir.
 
-## `GET /api/v1/product-attributes`
+## Məhsul atributlarını siyahıla
+
+`GET /api/v1/product-attributes`
 
 Atributları qaytarır; request body yoxdur.
 
@@ -25,7 +27,9 @@ Atributları qaytarır; request body yoxdur.
 {"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Rəng","display_type":"color","values":[{"id":"22222222-2222-2222-2222-222222222222","name":"Qara","hex_color":"#111111"}],"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
 ```
 
-## `POST /api/v1/product-attributes`
+## Məhsul atributu yarat
+
+`POST /api/v1/product-attributes`
 
 Atribut yaradır.
 
@@ -48,7 +52,9 @@ Atribut yaradır.
 
 **Cavab — `200`** — tam Attribute obyekti.
 
-## `GET /api/v1/product-attributes/{product_attribute}`
+## Məhsul atributunu oxu
+
+`GET /api/v1/product-attributes/{product_attribute}`
 
 Bir atributu qaytarır; request body yoxdur.
 
@@ -59,7 +65,9 @@ Bir atributu qaytarır; request body yoxdur.
 
 **Cavab — `200`** — `id`, `name`, `display_type`, `values[]`, `created_at`, `updated_at` olan Attribute obyekti.
 
-## `PUT /api/v1/product-attributes/{product_attribute}`
+## Məhsul atributunu tam yenilə
+
+`PUT /api/v1/product-attributes/{product_attribute}`
 
 Atributu yeniləyir.
 
@@ -74,7 +82,9 @@ Atributu yeniləyir.
 
 **Cavab — `200`** — tam Attribute obyekti.
 
-## `PATCH /api/v1/product-attributes/{product_attribute}`
+## Məhsul atributunu qismən yenilə
+
+`PATCH /api/v1/product-attributes/{product_attribute}`
 
 Atributu yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
 
@@ -83,7 +93,9 @@ Atributu yeniləyir; `PUT` ilə eyni path parametri, request body və `200` resp
 | `product_attribute` | path | UUID | Bəli | Yenilənəcək atribut. |
 | `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
 
-## `DELETE /api/v1/product-attributes/{product_attribute}`
+## Məhsul atributunu sil
+
+`DELETE /api/v1/product-attributes/{product_attribute}`
 
 Atributu silir; request body yoxdur.
 

@@ -7,7 +7,9 @@ slug: /api/catalog/categories
 
 Kateqoriya məhsul kartları üçün master məlumatıdır; bu endpointlər stok və mühasibat hərəkəti yaratmır. Bütün sorğular `Authorization: Bearer <token>` qəbul edir; uyğun products icazəsi və `X-Branch-Id` filial konteksti tələb olunur. `401`, `403`, `422`, `503` müvafiq olaraq giriş, icazə, doğrulama və tenant hazırlığı xətalarıdır.
 
-## `GET /api/v1/categories`
+## Kateqoriyaları siyahıla
+
+`GET /api/v1/categories`
 
 Kateqoriyaları səhifələnmiş qaytarır. Request body yoxdur.
 
@@ -24,7 +26,9 @@ Kateqoriyaları səhifələnmiş qaytarır. Request body yoxdur.
 {"status":"success","message":"Categories listed successfully.","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
 ```
 
-## `POST /api/v1/categories`
+## Kateqoriya yarat
+
+`POST /api/v1/categories`
 
 Yeni kateqoriya yaradır.
 
@@ -51,7 +55,9 @@ Yeni kateqoriya yaradır.
 {"status":"success","message":"Category created successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
 ```
 
-## `GET /api/v1/categories/{category}`
+## Kateqoriyanı oxu
+
+`GET /api/v1/categories/{category}`
 
 Bir kateqoriyanı qaytarır; request body yoxdur.
 
@@ -68,7 +74,9 @@ Bir kateqoriyanı qaytarır; request body yoxdur.
 
 Tapılmadıqda `404` qaytarılır.
 
-## `PUT /api/v1/categories/{category}`
+## Kateqoriyanı tam yenilə
+
+`PUT /api/v1/categories/{category}`
 
 Kateqoriyanı yeniləyir.
 
@@ -88,7 +96,9 @@ Kateqoriyanı yeniləyir.
 
 **Cavab — `200`** — `POST` cavabındakı tam Category obyektini qaytarır. Məhsul və tarixi sənədlər yenidən hesablanmır.
 
-## `PATCH /api/v1/categories/{category}`
+## Kateqoriyanı qismən yenilə
+
+`PATCH /api/v1/categories/{category}`
 
 Kateqoriyanı yeniləyir; route `PUT` ilə eyni doğrulama, request body və `200` Category response kontraktına malikdir.
 
@@ -97,7 +107,9 @@ Kateqoriyanı yeniləyir; route `PUT` ilə eyni doğrulama, request body və `20
 | `category` | path | UUID | Bəli | Yenilənəcək kateqoriya. |
 | `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
 
-## `DELETE /api/v1/categories/{category}`
+## Kateqoriyanı sil
+
+`DELETE /api/v1/categories/{category}`
 
 Kateqoriyanı silir; request body yoxdur.
 
