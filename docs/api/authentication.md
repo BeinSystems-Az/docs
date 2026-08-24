@@ -26,4 +26,4 @@ Header olmadıqda istifadəçinin default filialı tətbiq edilir. Səlahiyyətl
 
 ## Public endpointlər
 
-Health endpointləri token tələb etmir. Tenant qeydiyyatı və provisioning endpointlərinin tələbləri [API Reference](./reference.mdx)-da ayrıca göstərilir.
+Health endpointləri token tələb etmir. Tenant qeydiyyatı və provisioning endpointlərinin tələbləri [Platform və idarəetmə endpointləri](./endpoints/platform)-də ayrıca göstərilir.

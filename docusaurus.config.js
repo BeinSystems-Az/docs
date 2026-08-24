@@ -40,7 +40,7 @@ const config = {
       title: 'BEIN ERP',
       items: [
         {type: 'docSidebar', sidebarId: 'documentation', position: 'left', label: 'Sənədlər'},
-        {to: '/docs/api/reference', label: 'API Reference', position: 'left'},
+        {to: '/docs/api/endpoints', label: 'API Endpointləri', position: 'left'},
         {href: 'https://github.com/BeinSystems-Az/docs', label: 'GitHub', position: 'right'},
       ],
     },
@@ -52,7 +52,7 @@ const config = {
           items: [
             {label: 'Başlanğıc', to: '/docs/intro'},
             {label: 'Arxitektura', to: '/docs/architecture/overview'},
-            {label: 'API Reference', to: '/docs/api/reference'},
+            {label: 'API Endpointləri', to: '/docs/api/endpoints'},
           ],
         },
       ],

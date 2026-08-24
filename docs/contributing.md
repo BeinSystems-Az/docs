@@ -5,8 +5,8 @@ sidebar_position: 6
 # Sənədlərə töhfə
 
 1. `master`-dan branch yaradın.
-2. API dəyişibsə `openapi/openapi.yaml` və uyğun Markdown səhifəsini eyni PR-da yeniləyin.
-3. `npm run check` əmri ilə OpenAPI lint və statik build-i yoxlayın.
+2. API dəyişibsə uyğun Docusaurus endpoint və biznes-məntiqi səhifəsini eyni PR-da yeniləyin.
+3. `npm run check` əmri ilə statik build-i yoxlayın.
 4. PR açın; merge-dən sonra portal avtomatik deploy olunacaq.
 
 ## Qaydalar

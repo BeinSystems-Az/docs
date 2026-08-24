@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # API əhatəsi və oxuma qaydası
 
-Bu portal backend-in aktiv `/api/v1` route inventarını əhatə edir. İndiki snapshot 302 unikal URI və 535 OpenAPI operation-dan ibarətdir; Laravel-də `GET|HEAD` və `PUT|PATCH` kimi birgə qeyd olunan metodlar API referansında ayrıca HTTP operation kimi göstərilir. Health endpointləri `/api/health*` altında ayrıca saxlanılır.
+Bu portal backend-in aktiv `/api/v1` route inventarını əhatə edir. İndiki snapshot 302 unikal URI və 535 HTTP operation-dan ibarətdir; Laravel-də `GET|HEAD` və `PUT|PATCH` kimi birgə qeyd olunan metodlar Docusaurus referansında ayrıca göstərilir. Health endpointləri `/api/health*` altında ayrıca saxlanılır.
 
 ## Referansın tərkibi
 

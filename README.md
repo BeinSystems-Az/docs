@@ -19,7 +19,7 @@ docker run --rm -p 8080:8080 erp-docs:local
 
 ## Yayım
 
-`master` branch-ına merge GitHub Actions workflow-unu işə salır. Workflow OpenAPI-ni lint edir, Docusaurus saytını və Redoc API referansını build edir, image-i DigitalOcean Container Registry-yə göndərir və `erp-dev` namespace-dəki `docs` Deployment-ini yeniləyir.
+`master` branch-ına merge GitHub Actions workflow-unu işə salır. Workflow Docusaurus saytını build edir, image-i DigitalOcean Container Registry-yə göndərir və `erp-dev` namespace-dəki `docs` Deployment-ini yeniləyir.
 
 Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
 
@@ -30,13 +30,4 @@ Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
 
 ## API əhatəsi
 
-`openapi/openapi.yaml` kanonik kontraktdır və Redoc API referansı ondan qurulur. Kontrakt snapshot-ını qonşu `erp-backend` repository-sindən yeniləmək üçün:
-
-```bash
-cd ../erp-backend
-php artisan route:list --json > /tmp/erp-routes.json
-cd ../docs
-npm run generate:api:inventory
-```
-
-Generator route, middleware, controller request DTO və mümkün response DTO-ları oxuyur. Backend kontraktı dəyişəndə generatoru işə salın, dəyişən operation-ların body/response nümunələrini controller və presenter ilə yoxlayın, sonra `npm run check` işlədin. Backend repository-si bu prosesdə dəyişdirilmir.
+API referansı tam olaraq `docs/api/endpoints/` altındakı Docusaurus Markdown səhifələrində saxlanılır. Backend kontraktı dəyişəndə uyğun endpointin request, response, autentifikasiya və biznes təsiri həmin səhifələrdə yenilənməlidir.

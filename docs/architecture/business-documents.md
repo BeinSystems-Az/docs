@@ -21,7 +21,7 @@ flowchart LR
   S --> C
 ```
 
-Bu ardıcıllıq bütün sənədlərə eyni qaydada tətbiq edilmir. Məsələn, satış sifarişi kommersiya öhdəliyi və rezervasiya yaradır, amma satış qəbzi kimi birbaşa stok və jurnal post etməz. Hər endpointin konkret təsiri [API Reference](../api/reference)-də göstərilən operation təsvirindən və bu bölmədəki uyğun axından müəyyən edilir.
+Bu ardıcıllıq bütün sənədlərə eyni qaydada tətbiq edilmir. Məsələn, satış sifarişi kommersiya öhdəliyi və rezervasiya yaradır, amma satış qəbzi kimi birbaşa stok və jurnal post etməz. Hər endpointin konkret təsiri [API endpointləri](../api/endpoints)-də və bu bölmədəki uyğun axında göstərilir.
 
 ## Satış və alış
 

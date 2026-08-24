@@ -29,4 +29,4 @@ flowchart LR
 
 ## Əsas qayda
 
-Controller biznes qaydasını daşımamalıdır. Yeni endpoint üçün əvvəl kontrakt, validation, service/action və test hazırlanır; sonra OpenAPI və bu portal yenilənir.
+Controller biznes qaydasını daşımamalıdır. Yeni endpoint üçün əvvəl kontrakt, validation, service/action və test hazırlanır; sonra bu portalın uyğun endpoint və biznes-məntiqi səhifələri yenilənir.
