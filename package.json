@@ -5,6 +5,8 @@
   "description": "Public technical documentation for BEIN ERP",
   "scripts": {
     "start": "docusaurus start",
+    "generate:api": "node scripts/generate-openapi.cjs",
+    "generate:api:inventory": "ERP_ROUTE_INVENTORY=/tmp/erp-routes.json node scripts/generate-openapi.cjs",
     "build:api": "redocly build-docs openapi/openapi.yaml -o static/api/index.html",
     "build": "npm run build:api && docusaurus build",
     "serve": "docusaurus serve build",

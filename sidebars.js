@@ -5,12 +5,12 @@ module.exports = {
     {
       type: 'category',
       label: 'API',
-      items: ['api/authentication', 'api/contract', 'api/reference'],
+      items: ['api/authentication', 'api/contract', 'api/reference', 'api/coverage'],
     },
     {
       type: 'category',
       label: 'Arxitektura',
-      items: ['architecture/overview', 'architecture/tenancy'],
+      items: ['architecture/overview', 'architecture/tenancy', 'architecture/business-documents'],
     },
     'modules/index',
     'contributing',

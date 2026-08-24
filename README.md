@@ -30,4 +30,13 @@ Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
 
 ## API əhatəsi
 
-`openapi/openapi.yaml` kanonik kontraktdır. İlkin fayl platforma endpointlərini və ümumi komponentləri qurur. Qalan `/api/v1` operation-ları backend-in real request/response davranışına uyğun domenlər üzrə əlavə edilməlidir; endpoint davranışını dəyişən hər backend işi eyni zamanda docs PR-ı tələb edir.
+`openapi/openapi.yaml` kanonik kontraktdır və Redoc API referansı ondan qurulur. Kontrakt snapshot-ını qonşu `erp-backend` repository-sindən yeniləmək üçün:
+
+```bash
+cd ../erp-backend
+php artisan route:list --json > /tmp/erp-routes.json
+cd ../docs
+npm run generate:api:inventory
+```
+
+Generator route, middleware, controller request DTO və mümkün response DTO-ları oxuyur. Backend kontraktı dəyişəndə generatoru işə salın, dəyişən operation-ların body/response nümunələrini controller və presenter ilə yoxlayın, sonra `npm run check` işlədin. Backend repository-si bu prosesdə dəyişdirilmir.
