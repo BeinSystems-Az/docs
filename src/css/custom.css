@@ -1,0 +1,36 @@
+:root {
+  --ifm-color-primary: #0b5e55;
+  --ifm-color-primary-dark: #095149;
+  --ifm-color-primary-darker: #084c44;
+  --ifm-color-primary-light: #0d6b61;
+  --ifm-color-primary-lighter: #0f7469;
+  --ifm-background-color: #f8faf9;
+  --ifm-font-color-base: #17231f;
+  --ifm-heading-font-family: Georgia, 'Times New Roman', serif;
+  --ifm-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ifm-code-font-size: 92%;
+  --ifm-navbar-shadow: 0 1px 0 rgba(23, 35, 31, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #64d4bf;
+  --ifm-color-primary-dark: #41c8ae;
+  --ifm-color-primary-darker: #31b99f;
+  --ifm-color-primary-light: #87dfcd;
+  --ifm-color-primary-lighter: #a0e6d7;
+  --ifm-background-color: #101a17;
+  --ifm-background-surface-color: #17231f;
+  --ifm-font-color-base: #e6f0ec;
+}
+
+.hero {
+  padding: 5.5rem 0 4.5rem;
+  background: linear-gradient(135deg, #e0f0e9 0%, #f8faf9 55%, #d4e7df 100%);
+}
+
+[data-theme='dark'] .hero {
+  background: linear-gradient(135deg, #123c35 0%, #101a17 58%, #1c4b42 100%);
+}
+
+.hero__title { max-width: 850px; }
+.hero__subtitle { max-width: 680px; font-size: 1.2rem; }

@@ -1,0 +1,129 @@
+openapi: 3.1.0
+info:
+  title: BEIN ERP API
+  version: 1.0.0
+  license:
+    name: Proprietary
+    url: https://beinsystems.az
+  description: |
+    BEIN ERP public API reference. All protected operations require a Bearer JWT
+    unless their security section explicitly says otherwise.
+servers:
+  - url: https://{apiHost}/api
+    variables:
+      apiHost:
+        default: api.beinsystems.az
+        description: Production API host supplied to the integrator.
+tags:
+  - name: Health
+    description: Application health and readiness checks.
+  - name: Tenant
+    description: Tenant lifecycle operations.
+  - name: Branches
+    description: Branch context and branch management operations.
+paths:
+  /health:
+    get:
+      tags: [Health]
+      operationId: health
+      summary: Application health status
+      security: []
+      responses:
+        '200':
+          description: Application is alive.
+  /health/live:
+    get:
+      tags: [Health]
+      operationId: healthLive
+      summary: Liveness probe
+      security: []
+      responses:
+        '200':
+          description: Process is alive.
+  /health/ready:
+    get:
+      tags: [Health]
+      operationId: healthReady
+      summary: Readiness probe
+      security: []
+      responses:
+        '200':
+          description: Dependencies are ready.
+  /v1/tenant/register:
+    post:
+      tags: [Tenant]
+      operationId: registerTenant
+      summary: Register a tenant
+      security: []
+      responses:
+        '201':
+          $ref: '#/components/responses/Success'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/me/branches:
+    get:
+      tags: [Branches]
+      operationId: listMyBranches
+      summary: List branches available to the authenticated user
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    branchContext:
+      type: apiKey
+      in: header
+      name: X-Branch-Id
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          const: success
+        message:
+          type: [string, 'null']
+        data: {}
+    ErrorEnvelope:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          const: error
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Success:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessEnvelope'
+    Unauthorized:
+      description: JWT is missing, invalid, or cannot resolve a tenant user.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    ValidationError:
+      description: Request validation failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+security:
+  - bearerAuth: []

@@ -1,0 +1,72 @@
+name: Build and deploy documentation
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+concurrency:
+  group: docs-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: registry.digitalocean.com/bein-erp
+  IMAGE_NAME: erp-docs
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_ACCESS_TOKEN }}
+      - run: doctl registry login --expiry-seconds 1200
+      - uses: docker/setup-buildx-action@v3
+      - id: image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+      - name: Configure Kubernetes access
+        env:
+          DO_KUBERNETES_CLUSTER_ID: ${{ secrets.DO_KUBERNETES_CLUSTER_ID }}
+        run: |
+          set -euo pipefail
+          : "${DO_KUBERNETES_CLUSTER_ID:?Configure this GitHub environment secret}"
+          doctl kubernetes cluster kubeconfig save "$DO_KUBERNETES_CLUSTER_ID"
+          kubectl auth can-i patch deployments -n erp-prod | grep -qx yes
+      - name: Deploy immutable image
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.image.outputs.digest }}
+        run: |
+          set -euo pipefail
+          kubectl apply -f infra/k8s/
+          kubectl set image deployment/docs docs="$IMAGE" -n erp-prod
+          kubectl rollout status deployment/docs -n erp-prod --timeout=180s
+      - name: Smoke test public documentation
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 6 --retry-delay 5 https://docs.beinsystems.az/healthz

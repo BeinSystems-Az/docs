@@ -1,0 +1,6 @@
+node_modules/
+build/
+.docusaurus/
+static/api/index.html
+npm-debug.log*
+.env
