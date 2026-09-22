@@ -5,106 +5,317 @@ slug: /api/catalog/units
 
 # Ölçü vahidləri
 
-Ölçü vahidi master məlumatıdır. Bütün sorğular Bearer token, products icazəsi və filial kontekstindən istifadə edir; əsas xətalar `401`, `403`, `404`, `422`, `503`-dür. Vahid dəyişikliyi post edilmiş sənəd sətirlərini yenidən hesablamır.
+:::info Kontekst
+`Bearer` JWT və ya integration token · `units.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
+:::
 
-## Ölçü vahidlərini siyahıla
+## Resursun işləmə qaydası
 
-`GET /api/v1/units`
+**Məqsəd və sərhəd.** Ölçü vahidi məhsul miqdarının necə saxlandığını və vahidlərarası çevirməni müəyyən edir.
 
-Vahidləri səhifələnmiş qaytarır; request body yoxdur.
+**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; çevirmə varsa `relative_unit_id` ilə mövcud vahid seçilir.
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `query` | query | string | Xeyr | Ad üzrə axtarış. |
-| `filter[product_id]` | query | UUID | Xeyr | Verildikdə məhsulun aktiv qablaşdırma vahidləri və inventar vahidi. |
-| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
-| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+**İş axını.** Əsas vahidi yaradın, ehtiyac olduqda çevirmə faktorunu təyin edin, sonra məhsul və qablaşdırmada istifadə edin.
 
-**Cavab — `200`**
+**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; vahid dəyişikliyi yeni sənəd seçimlərinə təsir edir, tarixi miqdarları dəyişmir.
 
-```json
-{"status":"success","message":"Units listed successfully.","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Qutu","relative_unit_id":"22222222-2222-2222-2222-222222222222","relative_unit_name":"Ədəd","relative_unit":{"id":"22222222-2222-2222-2222-222222222222","name":"Ədəd"},"relative_factor":"12.0000","factor":"12.0000","rounding_precision":"1.0000","sequence":10,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
-```
+**Əlaqəli resurslar.** Məhsullar, məhsul şablonları və qablaşdırmalar.
 
-## Ölçü vahidi yarat
+**Əsas məhdudiyyətlər.** `units` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; çevirmə dəyərləri validation-dan keçir.
 
-`POST /api/v1/units`
+## Field-lər
 
-Yeni ölçü vahidi yaradır.
+| Field | Tip | Məna və istifadə |
+| --- | --- | --- |
+| `id` | UUID | Vahidin dəyişməz identifikatorudur. |
+| `name` | string | Sənəd və stokda görünən vahid adıdır. |
+| `relative_unit_id` | UUID/null | Çevirmənin əsaslandığı başqa vahiddir. |
+| `relative_unit_name` | string/null | Response-da relative vahidin görünən adıdır. |
+| `relative_unit` | object/null | Response-da relative vahidin `id` və `name` xülasəsidir. |
+| `relative_factor` | decimal/null | Bir vahidin neçə relative unit etdiyini göstərir. |
+| `factor` | decimal | Response-da vahidin normallaşdırılmış çevirmə faktorudur. |
+| `rounding_precision` | decimal/null | Miqdar yuvarlaqlaşdırma addımıdır. |
+| `sequence` | integer/null | Seçim siyahısındakı sıralamadır. |
+| `active` | boolean | Vahidin yeni əməliyyatlarda seçilməsini idarə edir. |
+| `customFields` | object | Tenant-a məxsus dinamik sahələri qəbul edir; response-da onların açarları root səviyyəsində qaytarılır. |
+| `created_at` | datetime/null | Yaradılma vaxtıdır. |
+| `updated_at` | datetime/null | Son dəyişiklik vaxtıdır. |
 
-### Request body
+## Endpointlər
 
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol; tenant daxilində unikaldır. |
-| `relative_unit_id` | UUID / `null` | Xeyr | Mövcud vahid; cari vahid özü ola bilməz. |
-| `relative_factor` | numeric / `null` | Xeyr | Göndərilərsə `> 0`. |
-| `rounding_precision` | numeric / `null` | Xeyr | Göndərilərsə `> 0`. |
-| `sequence` | integer / `null` | Xeyr | Göndərilərsə `>= 0`. |
-| `active` | boolean | Xeyr | Aktivlik. |
-| `customFields` | object | Xeyr | Tenant custom fields. |
+### Siyahıla
 
-```json
-{"name":"Qutu","relative_unit_id":"22222222-2222-2222-2222-222222222222","relative_factor":12,"rounding_precision":1,"sequence":10,"active":true}
-```
+**Endpoint** · `GET /api/v1/units`
 
-**Cavab — `201`** — `GET` response-indəki Unit obyektini `data` daxilində qaytarır.
-
-## Ölçü vahidini oxu
-
-`GET /api/v1/units/{unit}`
-
-Bir vahidi qaytarır; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `unit` | path | UUID | Bəli | Ölçü vahidi ID-si. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
-
-**Cavab — `200`** — `data` daxilində `id`, `name`, `relative_unit_id`, `relative_unit_name`, `relative_unit`, `relative_factor`, `factor`, `rounding_precision`, `sequence`, `active`, `created_at`, `updated_at` qaytarılır.
-
-## Ölçü vahidini tam yenilə
-
-`PUT /api/v1/units/{unit}`
-
-Vahidi yeniləyir.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `unit` | path | UUID | Bəli | Yenilənəcək vahid. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-### Request body
-
-`name`, `relative_unit_id`, `relative_factor`, `rounding_precision`, `sequence`, `active` və `customFields` sahələri `POST` body-sindəki tip və qaydalarla qəbul olunur; `name` tələb olunur və cari vahid unikal yoxlamadan istisnadır.
-
-**Cavab — `200`** — tam Unit obyekti.
-
-## Ölçü vahidini qismən yenilə
-
-`PATCH /api/v1/units/{unit}`
-
-Vahidi yeniləyir; `PUT` ilə eyni path parametri, request body doğrulaması və `200` Unit response kontraktı tətbiq olunur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `unit` | path | UUID | Bəli | Yenilənəcək vahid. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-## Ölçü vahidini sil
-
-`DELETE /api/v1/units/{unit}`
-
-Vahidi silir; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `unit` | path | UUID | Bəli | Silinəcək vahid. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Unit deleted successfully.","data":null}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {
+    "query": "demo",
+    "page": 1,
+    "per_page": 25
+  },
+  "body": {}
+}
 ```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Units listed successfully.",
+  "data": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Qutu",
+      "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+      "relative_unit_name": "Ədəd",
+      "relative_factor": "12.0000",
+      "rounding_precision": "1.0000",
+      "sequence": 10,
+      "active": true
+    }
+  ],
+  "links": {
+    "first": null,
+    "last": null,
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "/api/v1/units",
+    "per_page": 25,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Yarat
+
+**Endpoint** · `POST /api/v1/units`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {},
+  "body": {
+    "name": "Qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_factor": 12,
+    "rounding_precision": 1,
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `201`**
+
+```json
+{
+  "status": "success",
+  "message": "Unit created successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_unit_name": "Ədəd",
+    "relative_factor": "12.0000",
+    "rounding_precision": "1.0000",
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data yazılır; stok və jurnal yaranmır.
+
+### Oxu
+
+**Endpoint** · `GET /api/v1/units/{unit}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "unit": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Unit details.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_unit_name": "Ədəd",
+    "relative_factor": "12.0000",
+    "rounding_precision": "1.0000",
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Tam yenilə
+
+**Endpoint** · `PUT /api/v1/units/{unit}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "unit": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_factor": 12,
+    "rounding_precision": 1,
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Unit updated.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_unit_name": "Ədəd",
+    "relative_factor": "12.0000",
+    "rounding_precision": "1.0000",
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Qismən yenilə
+
+**Endpoint** · `PATCH /api/v1/units/{unit}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "unit": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Böyük qutu",
+    "relative_factor": 24
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Unit updated.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Böyük qutu",
+    "relative_unit_id": "33333333-3333-4333-8333-333333333333",
+    "relative_unit_name": "Ədəd",
+    "relative_factor": 24,
+    "rounding_precision": "1.0000",
+    "sequence": 10,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Sil
+
+**Endpoint** · `DELETE /api/v1/units/{unit}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "unit": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Unit deleted.",
+  "data": null
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data silinir; tarixi əməliyyatlar dəyişmir.

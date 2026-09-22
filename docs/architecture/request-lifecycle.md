@@ -27,15 +27,15 @@ sequenceDiagram
 
 ## 1. Autentifikasiya və tenant seçimi
 
-Əksər `v1` route-ları Bearer JWT ilə qorunur. Backend credential-dan tenant hesabını və istifadəçi login-ini müəyyən edir, tenantı yoxlayır, sonra tenant database kontekstini aktivləşdirir. Tenant və ya istifadəçi tapılmadıqda sorğu `401` ilə tamamlanır.
+Əksər `v1` route-ları Bearer credential ilə qorunur. Xarici JWT tenant hesabı və user login-i, `bei_int_...` integration token isə bağlı integration client və user üzərindən həll olunur. Backend tenantı yoxlayır, sonra tenant database kontekstini aktivləşdirir. Tenant, client və ya istifadəçi tapılmadıqda sorğu `401` ilə tamamlanır.
 
 Tenant provisioning hələ hazır deyilsə, qorunan route `503` qaytara bilər. Credential formatları və istisna endpointlər üçün [Autentifikasiya və kontekst](../api/authentication) səhifəsinə baxın.
 
 ## 2. Filial scope-u
 
-Filial-scope route-larında `X-Branch-Id` seçilmiş əməliyyat kontekstidir. Header verilmədikdə backend istifadəçinin aktiv default və ya əlçatan filialını seçir. Seçilmiş filial aktiv və istifadəçi üçün əlçatan olmalıdır.
+Filial-scope route-larında header istifadə edilmir. `GET` və `HEAD` sorğularında `?filter[branch_id]=<uuid>` (və ya metadata formatında `?filter[branch_id][value]=<uuid>`) verilməzsə middleware istifadəçinin bütün icazəli aktiv filiallarını `branch_ids` scope-u kimi tətbiq edir. Konkret filial filteri göndərildikdə həmin filial aktiv və istifadəçi üçün əlçatan olmalıdır.
 
-`X-Branch-Id: all` yalnız `GET` və `HEAD` üçün oxu kontekstidir. Yazma sorğusunda bu dəyər qəbul edilmir. Request body-də `branch_id` varsa, o seçilmiş filialla eyni olmalıdır; fərqli olduqda sorğu rədd edilir.
+Yazma sorğularında konkret filial request body-də `branch_id` ilə seçilir. Field göndərilməzsə istifadəçinin aktiv default filialı, sonra ilk əlçatan aktiv filial seçilir. Seçilən filial request attribute-larında həm `branch_id`, həm də tək elementli `branch_ids` scope-u kimi controller və model qatına ötürülür.
 
 ## 3. İcazə, input və əməliyyat
 

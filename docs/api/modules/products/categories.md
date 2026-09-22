@@ -5,123 +5,293 @@ slug: /api/catalog/categories
 
 # Kateqoriyalar
 
-Kateqoriya məhsul kartları üçün master məlumatıdır; bu endpointlər stok və mühasibat hərəkəti yaratmır. Bütün sorğular `Authorization: Bearer <token>` qəbul edir; uyğun products icazəsi və `X-Branch-Id` filial konteksti tələb olunur. `401`, `403`, `422`, `503` müvafiq olaraq giriş, icazə, doğrulama və tenant hazırlığı xətalarıdır.
+:::info Kontekst
+`Bearer` JWT və ya integration token · `categories.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
+:::
 
-## Kateqoriyaları siyahıla
+## Resursun işləmə qaydası
 
-`GET /api/v1/categories`
+**Məqsəd və sərhəd.** Kateqoriya məhsulları iyerarxik qruplaşdıran master məlumatdır; stok və maliyyə hərəkəti yaratmır.
 
-Kateqoriyaları səhifələnmiş qaytarır. Request body yoxdur.
+**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; alt kateqoriya üçün `parent_id` ilə mövcud ana kateqoriya seçilir.
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `query` | query | string | Xeyr | Ad üzrə axtarış. |
-| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
-| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu filial konteksti. |
+**İş axını.** Kateqoriyanı yaradın, lazım gələrsə onu ana kateqoriyaya bağlayın, sonra məhsul və şablonlarda seçin.
 
-**Cavab — `200`**
+**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; `active` seçimi gələcək kataloq seçimlərinə təsir edir, tarixçəyə yox.
 
-```json
-{"status":"success","message":"Categories listed successfully.","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
-```
+**Əlaqəli resurslar.** Məhsullar və məhsul şablonları.
 
-## Kateqoriya yarat
+**Əsas məhdudiyyətlər.** `categories` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; `parent_id` həmin scope-da olmalıdır.
 
-`POST /api/v1/categories`
+## Field-lər
 
-Yeni kateqoriya yaradır.
+| Field | Tip | Məna və istifadə |
+| --- | --- | --- |
+| `id` | UUID | Kateqoriyanın dəyişməz identifikatorudur. |
+| `name` | string | Kataloqda görünən unikal addır. |
+| `parent_id` | UUID/null | Alt kateqoriyanı ana kateqoriyaya bağlayır. |
+| `parent_name` | string/null | Response-da ana kateqoriyanın görünən adıdır. |
+| `active` | boolean | Kateqoriyanın seçimlərdə görünməsini idarə edir. |
+| `customFields` | object | Tenant-a məxsus dinamik sahələri qəbul edir; response-da onların açarları root səviyyəsində qaytarılır. |
+| `created_at` | datetime/null | Yaradılma vaxtıdır. |
+| `updated_at` | datetime/null | Son dəyişiklik vaxtıdır. |
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
+## Endpointlər
 
-### Request body
+### Siyahıla
 
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol; tenant daxilində unikaldır. |
-| `parent_id` | UUID / `null` | Xeyr | Mövcud ana kateqoriya. |
-| `active` | boolean | Xeyr | Aktivlik bayrağı. |
-| `customFields` | object | Xeyr | Tenant-in category custom-field tərifi. |
+**Endpoint** · `GET /api/v1/categories`
 
-```json
-{"name":"Qəhvə","parent_id":null,"active":true}
-```
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Category created successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {
+    "query": "demo",
+    "page": 1,
+    "per_page": 25
+  },
+  "body": {}
+}
 ```
 
-## Kateqoriyanı oxu
-
-`GET /api/v1/categories/{category}`
-
-Bir kateqoriyanı qaytarır; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `category` | path | UUID | Bəli | Kateqoriya identifikatoru. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu filial konteksti. |
-
-**Cavab — `200`**
+**Response JSON · `200`**
 
 ```json
-{"status":"success","message":"Category retrieved successfully.","data":{"id":"11111111-1111-1111-1111-111111111111","name":"Qəhvə","parent_id":null,"parent":null,"parent_name":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}}
+{
+  "status": "success",
+  "message": "Kateqoriyalar yükləndi.",
+  "data": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Qəhvə",
+      "parent_id": null,
+      "active": true
+    }
+  ],
+  "links": {
+    "first": null,
+    "last": null,
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "/api/v1/categories",
+    "per_page": 25,
+    "to": 1,
+    "total": 1
+  }
+}
 ```
 
-Tapılmadıqda `404` qaytarılır.
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
 
-## Kateqoriyanı tam yenilə
+**Biznes təsiri** · Yoxdur.
 
-`PUT /api/v1/categories/{category}`
+### Yarat
 
-Kateqoriyanı yeniləyir.
+**Endpoint** · `POST /api/v1/categories`
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `category` | path | UUID | Bəli | Yenilənəcək kateqoriya. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
-
-### Request body
-
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol; cari kateqoriya unikal yoxlamadan istisnadır. |
-| `parent_id` | UUID / `null` | Xeyr | Ana kateqoriya. |
-| `active` | boolean | Xeyr | Aktivlik bayrağı. |
-| `customFields` | object | Xeyr | Tenant custom fields. |
-
-**Cavab — `200`** — `POST` cavabındakı tam Category obyektini qaytarır. Məhsul və tarixi sənədlər yenidən hesablanmır.
-
-## Kateqoriyanı qismən yenilə
-
-`PATCH /api/v1/categories/{category}`
-
-Kateqoriyanı yeniləyir; route `PUT` ilə eyni doğrulama, request body və `200` Category response kontraktına malikdir.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `category` | path | UUID | Bəli | Yenilənəcək kateqoriya. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
-
-## Kateqoriyanı sil
-
-`DELETE /api/v1/categories/{category}`
-
-Kateqoriyanı silir; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `category` | path | UUID | Bəli | Silinəcək kateqoriya. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma filial konteksti. |
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Category deleted successfully.","data":null}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {},
+  "body": {
+    "name": "Qəhvə",
+    "parent_id": null,
+    "active": true
+  }
+}
 ```
 
-Əlaqəli məhsullara görə silməyə icazə verilməzsə backend `422` və ya `409` qaytara bilər.
+**Response JSON · `201`**
+
+```json
+{
+  "status": "success",
+  "message": "Kateqoriya yaradıldı.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qəhvə",
+    "parent_id": null,
+    "parent": null,
+    "parent_name": null,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data yazılır; stok və jurnal yaranmır.
+
+### Oxu
+
+**Endpoint** · `GET /api/v1/categories/{category}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "category": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Kateqoriya yükləndi.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qəhvə",
+    "parent_id": null,
+    "parent": null,
+    "parent_name": null,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Tam yenilə
+
+**Endpoint** · `PUT /api/v1/categories/{category}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "category": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Qəhvə",
+    "parent_id": null,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Kateqoriya yeniləndi.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Qəhvə",
+    "parent_id": null,
+    "parent": null,
+    "parent_name": null,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Qismən yenilə
+
+**Endpoint** · `PATCH /api/v1/categories/{category}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "category": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Premium qəhvə"
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Kateqoriya yeniləndi.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Premium qəhvə",
+    "parent_id": null,
+    "parent": null,
+    "parent_name": null,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Sil
+
+**Endpoint** · `DELETE /api/v1/categories/{category}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "category": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Kateqoriya arxivləndi.",
+  "data": null
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data silinir; tarixi əməliyyatlar dəyişmir.

@@ -8,7 +8,7 @@ Sistem bir PostgreSQL database içində schema-per-tenant modelindən istifadə 
 
 - `central` schema tenant registri və shared sistem məlumatlarını saxlayır.
 - Hər tenant `tenant_<account>` schema-sında öz biznes məlumatlarına sahibdir.
-- JWT-dən tenant və istifadəçi müəyyən edilir; middleware həmin tenant üçün database context-i aktivləşdirir.
+- Bearer credential-dan tenant və istifadəçi müəyyən edilir: xarici JWT login məlumatı ilə, integration token isə bağlı integration client və user ilə həll olunur. Middleware həmin tenant üçün database context-i aktivləşdirir.
 - Branch context əməliyyat məlumatlarını filial səviyyəsində daraldır.
 
 ```mermaid
@@ -16,7 +16,7 @@ sequenceDiagram
   participant C as Client
   participant M as TenantAuthenticateMiddleware
   participant P as PostgreSQL
-  C->>M: Bearer JWT + request
+  C->>M: Bearer JWT və ya integration token + request
   M->>P: central schema-da tenant yoxlanışı
   M->>P: tenant schema search_path aktivləşdirilir
   M-->>C: Növbəti middleware/controller üçün tenant context

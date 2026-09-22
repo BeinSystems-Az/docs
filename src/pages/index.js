@@ -12,8 +12,8 @@ export default function Home() {
             <h1 className="hero__title">İnteqrasiya üçün dəqiq API, inkişaf üçün aydın arxitektura.</h1>
             <p className="hero__subtitle">Tenant, filial, biznes modulları və ERP əməliyyatları üçün vahid texniki mənbə.</p>
             <div className="margin-top--lg">
-              <Link className="button button--primary button--lg margin-right--md" to="/docs/intro">Başlanğıc</Link>
-              <Link className="button button--secondary button--lg" to="/docs/api/endpoints">API Endpointləri</Link>
+              <Link className="button button--primary button--lg margin-right--md" to="/docs/modules">Modulları araşdır</Link>
+              <Link className="button button--secondary button--lg" to="/docs/api/reference/route-finder">Endpoint axtar</Link>
             </div>
           </div>
         </header>

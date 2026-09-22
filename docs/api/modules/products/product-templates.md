@@ -5,108 +5,335 @@ slug: /api/catalog/product-templates
 
 # Məhsul şablonları
 
-Şablon variantlı məhsullar üçün master məlumatıdır; stok və jurnal entry yaratmır. Sorğular Bearer token, products permission-u və filial konteksti tələb edir.
+:::info Kontekst
+`Bearer` JWT və ya integration token · `product_templates.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
+:::
 
-## Məhsul şablonlarını siyahıla
+## Resursun işləmə qaydası
 
-`GET /api/v1/product-templates`
+**Məqsəd və sərhəd.** Məhsul şablonu variantlı məhsulların ortaq kataloq məlumatını saxlayır; stok və jurnal yaratmır.
 
-Şablonları səhifələnmiş qaytarır; request body yoxdur.
+**İlkin şərtlər.** Tenant və filial konteksti, həmçinin istifadə olunacaq kateqoriya və vahid mövcud olmalıdır.
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `query` | query | string | Xeyr | Ad üzrə axtarış. |
-| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
-| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+**İş axını.** Şablonu yaradın, atributları və variantları onun üzərində qurun, sonra məhsul kartlarında istifadə edin.
 
-**Cavab — `200`**
+**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; dəyişiklik yalnız gələcək kataloq seçimlərinə təsir edir.
 
-```json
-{"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Arabica qəhvə","type":1,"category_id":null,"category_name":null,"unit_id":null,"unit_name":null,"price":"25.5000","tracking":"lot","description":null,"active":true,"image":null,"variants_count":0,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
-```
+**Əlaqəli resurslar.** Məhsullar, kateqoriyalar, ölçü vahidləri və məhsul atributları.
 
-## Məhsul şablonu yarat
+**Əsas məhdudiyyətlər.** `product_templates` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; əlaqəli identifikatorlar həmin scope-da olmalıdır.
 
-`POST /api/v1/product-templates`
+## Field-lər
 
-Şablon yaradır.
+| Field | Tip | Məna və istifadə |
+| --- | --- | --- |
+| `id` | UUID | Şablonun dəyişməz identifikatorudur. |
+| `name` | string | Variantların paylaşdığı görünən addır. |
+| `type` | integer/null | Şablonun məhsul növünü seçir: 1, 2 və ya 3. |
+| `category_id` | UUID/null | Şablonu kataloq kateqoriyasına bağlayır. |
+| `category_name` | string/null | Response-da kateqoriyanın görünən adıdır. |
+| `unit_id` | UUID/null | Variantların default ölçü vahididir. |
+| `unit_name` | string/null | Response-da ölçü vahidinin görünən adıdır. |
+| `price` | decimal/null | Variant üçün başlanğıc satış qiymətidir. |
+| `tracking` | enum/null | Stok izləməsini `none`, `lot` və ya `serial` edir. |
+| `description` | string/null | Şablonun izah və qeyd mətnidir. |
+| `active` | boolean | Yeni variant və sənədlərdə istifadəyə açıq olmasını idarə edir. |
+| `image` | string/null | Şablon şəklinin saxlanmış istinadıdır. |
+| `variants_count` | integer | Response-da şablondan yaranan variant sayıdır. |
+| `customFields` | object | Tenant-a məxsus dinamik sahələri qəbul edir; response-da onların açarları root səviyyəsində qaytarılır. |
+| `created_at` | datetime/null | Yaradılma vaxtıdır. |
+| `updated_at` | datetime/null | Son dəyişiklik vaxtıdır. |
 
-### Request body
+## Endpointlər
 
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 255 simvol. |
-| `type` | integer / `null` | Xeyr | `1`, `2` və ya `3`. |
-| `category_id` | UUID / `null` | Xeyr | Mövcud kateqoriya. |
-| `unit_id` | UUID / `null` | Xeyr | Mövcud ölçü vahidi. |
-| `price` | numeric / `null` | Xeyr | Göndərilərsə `>= 0`. |
-| `tracking` | string / `null` | Xeyr | `none`, `lot` və ya `serial`. |
-| `description` | string / `null` | Xeyr | Təsvir. |
-| `image` | string / `null` | Xeyr | Şəkil dəyəri/ünvanı. |
-| `active` | boolean | Xeyr | Aktivlik. |
-| `customFields` | object | Xeyr | Tenant custom fields. |
+### Siyahıla
 
-```json
-{"name":"Arabica qəhvə","type":1,"tracking":"lot","price":25.5,"active":true}
-```
+**Endpoint** · `GET /api/v1/product-templates`
 
-**Cavab — `201`** — `GET` siyahısındakı tam Template obyekti `data` daxilində qaytarılır.
-
-## Məhsul şablonunu oxu
-
-`GET /api/v1/product-templates/{product_template}`
-
-Bir şablonu qaytarır; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_template` | path | UUID | Bəli | Şablon ID-si. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
-
-**Cavab — `200`** — tam Template obyekti; tapılmadıqda `404`.
-
-## Məhsul şablonunu tam yenilə
-
-`PUT /api/v1/product-templates/{product_template}`
-
-Şablonu yeniləyir.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_template` | path | UUID | Bəli | Yenilənəcək şablon. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-### Request body
-
-`name`, `type`, `category_id`, `unit_id`, `price`, `tracking`, `description`, `image`, `active`, `customFields` `POST` body-sindəki tip və qaydalarla qəbul olunur; `name` tələb olunur.
-
-**Cavab — `200`** — tam Template obyekti.
-
-## Məhsul şablonunu qismən yenilə
-
-`PATCH /api/v1/product-templates/{product_template}`
-
-Şablonu yeniləyir; `PUT` ilə eyni path parametri, body kontraktı və `200` Template response-u tətbiq olunur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_template` | path | UUID | Bəli | Yenilənəcək şablon. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-## Məhsul şablonunu sil
-
-`DELETE /api/v1/product-templates/{product_template}`
-
-Şablonu silir; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_template` | path | UUID | Bəli | Silinəcək şablon. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Product template deleted successfully.","data":null}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {
+    "query": "demo",
+    "page": 1,
+    "per_page": 25
+  },
+  "body": {}
+}
 ```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product templates listed successfully.",
+  "data": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Arabica qəhvə",
+      "type": 1,
+      "category_id": "33333333-3333-4333-8333-333333333333",
+      "category_name": "Qəhvə",
+      "unit_id": null,
+      "unit_name": null,
+      "price": "25.5000",
+      "tracking": "lot",
+      "active": true,
+      "variants_count": 0
+    }
+  ],
+  "links": {
+    "first": null,
+    "last": null,
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "/api/v1/product-templates",
+    "per_page": 25,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Yarat
+
+**Endpoint** · `POST /api/v1/product-templates`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {},
+  "body": {
+    "name": "Arabica qəhvə",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "price": 25.5,
+    "tracking": "lot",
+    "active": true
+  }
+}
+```
+
+**Response JSON · `201`**
+
+```json
+{
+  "status": "success",
+  "message": "Product template created successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Arabica qəhvə",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "category_name": "Qəhvə",
+    "unit_id": null,
+    "unit_name": null,
+    "price": "25.5000",
+    "tracking": "lot",
+    "active": true,
+    "variants_count": 0
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data yazılır; stok və jurnal yaranmır.
+
+### Oxu
+
+**Endpoint** · `GET /api/v1/product-templates/{product_template}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_template": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product template retrieved successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Arabica qəhvə",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "category_name": "Qəhvə",
+    "unit_id": null,
+    "unit_name": null,
+    "price": "25.5000",
+    "tracking": "lot",
+    "active": true,
+    "variants_count": 0
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Tam yenilə
+
+**Endpoint** · `PUT /api/v1/product-templates/{product_template}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_template": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Arabica qəhvə",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "price": 25.5,
+    "tracking": "lot",
+    "active": true
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product template updated successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Arabica qəhvə",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "category_name": "Qəhvə",
+    "unit_id": null,
+    "unit_name": null,
+    "price": "25.5000",
+    "tracking": "lot",
+    "active": true,
+    "variants_count": 0
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Qismən yenilə
+
+**Endpoint** · `PATCH /api/v1/product-templates/{product_template}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_template": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Arabica qəhvə Premium",
+    "price": 27
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product template updated successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Arabica qəhvə Premium",
+    "type": 1,
+    "category_id": "33333333-3333-4333-8333-333333333333",
+    "category_name": "Qəhvə",
+    "unit_id": null,
+    "unit_name": null,
+    "price": 27,
+    "tracking": "lot",
+    "active": true,
+    "variants_count": 0
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Sil
+
+**Endpoint** · `DELETE /api/v1/product-templates/{product_template}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_template": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product template deleted successfully.",
+  "data": null
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data silinir; tarixi əməliyyatlar dəyişmir.

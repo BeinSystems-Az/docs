@@ -1,23 +1,17 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 ---
 
-# API endpointləri
+# Avtomatik modul indeksləri
 
-API referansı tam Docusaurus səhifələri kimi təqdim olunur. Hər bölmədə endpointin metodu, parametrləri, request body-si, autentifikasiyası və response zərfi izah edilir.
+> Bu səhifələr cari Laravel route manifestindən yaranır. Request/response kontraktı üçün uyğun resurs səhifəsini, sürətli axtarış üçün [Endpoint axtarışını](../reference/route-finder) istifadə edin.
 
-## İlk baxılacaq modullar
-
-- [Məhsul kataloqu](/docs/api/catalog)
-- [Satış](/docs/api/sales)
-- [Satınalma](/docs/api/purchasing)
-
-- [Platform və idarəetmə](./platform)
-- [Əsas məlumatlar](./master-data)
-- [Satış və alış](./sales-purchase)
-- [Anbar və stok](./stock)
-- [Mühasibat və maliyyə](./accounting)
-- [İstehsal](./manufacturing)
-- [POS](./pos)
-- [Hesabatlar və çıxışlar](./reports-output)
-- [AI və inteqrasiyalar](./ai-integrations)
+- [Platforma və idarəetmə](./platform) — 109 operation.
+- [Əsas məlumatlar](./master-data) — 117 operation.
+- [Satış və alış](./sales-purchase) — 28 operation.
+- [Anbar və stok](./stock) — 58 operation.
+- [Mühasibat və maliyyə](./accounting) — 191 operation.
+- [İstehsal](./manufacturing) — 44 operation.
+- [POS](./pos) — 50 operation.
+- [Hesabatlar və çıxışlar](./reports-output) — 13 operation.
+- [Avtomatlaşdırma və inteqrasiyalar](./ai-integrations) — 52 operation.

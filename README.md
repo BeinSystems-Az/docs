@@ -1,5 +1,19 @@
 # BEIN ERP Docs
 
+## Canlı backend referansını yeniləmək
+
+Route və model siyahısı backend kodundan avtomatik çıxarılır; generated səhifələri əl ilə dəyişməyin.
+
+```bash
+npm run generate:reference
+npm run format:payloads
+npm run check
+```
+
+Skript standart olaraq qonşu `../erp-backend` repository-sini oxuyur. Başqa checkout istifadə etmək üçün `node scripts/generate-reference.mjs --backend=/tam/yol/erp-backend` işlədin.
+
+İnsan və AI üçün oxu ardıcıllığı: [entity xəritəsi](docs/domains/entity-map.md) → [AI sistem xəritəsi](docs/ai/system-map.md) → [tam route kataloqu](docs/api/reference/route-catalog.md) → endpointin controller/DTO/action/presenter kodu.
+
 `docs.beinsystems.az` üçün ayrıca Docusaurus repository-si.
 
 ## Lokal işə salma
@@ -30,4 +44,4 @@ Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
 
 ## API əhatəsi
 
-API referansı tam olaraq `docs/api/endpoints/` altındakı Docusaurus Markdown səhifələrində saxlanılır. Backend kontraktı dəyişəndə uyğun endpointin request, response, autentifikasiya və biznes təsiri həmin səhifələrdə yenilənməlidir.
+Tam endpoint mövcudluğu `src/generated/api-routes.json`, `docs/api/reference/route-catalog.md` və `docs/api/endpoints/` texniki indekslərində backend route manifestindən yaradılır. Resursa məxsus request/response JSON-ları və biznes izahı modul səhifələrində əl ilə, backend controller/DTO/presenter kontraktına əsasən saxlanılır. Backend kontraktı dəyişəndə generated route snapshotları və təsirlənən resurs səhifəsi birlikdə yenilənməlidir.

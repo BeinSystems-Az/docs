@@ -38,3 +38,104 @@
 
 .hero__title { max-width: 850px; }
 .hero__subtitle { max-width: 680px; font-size: 1.2rem; }
+
+/* Sidebar uzun bir ERP kataloqudur: qrupları görünən, oxunuşu isə sakit saxla. */
+.theme-doc-sidebar-container .menu {
+  font-size: 0.875rem;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible {
+  border-radius: 0.35rem;
+}
+
+.theme-doc-sidebar-container .menu__link--active,
+.theme-doc-sidebar-container .menu__caret:hover,
+.theme-doc-sidebar-container .menu__link:hover {
+  background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
+}
+
+.theme-doc-markdown {
+  max-width: 980px;
+}
+
+.theme-doc-markdown h2 {
+  margin-top: 2.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+.theme-doc-markdown h3 {
+  margin-top: 2rem;
+}
+
+.theme-doc-markdown pre {
+  max-height: 34rem;
+}
+
+.route-finder {
+  margin-top: 1.75rem;
+}
+
+.route-finder__filters {
+  display: grid;
+  grid-template-columns: minmax(16rem, 2fr) minmax(8rem, 0.65fr) minmax(12rem, 1fr);
+  gap: 0.85rem;
+  align-items: end;
+  padding: 1rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 0.6rem;
+  background: var(--ifm-background-surface-color);
+}
+
+.route-finder label,
+.route-finder label span {
+  display: block;
+}
+
+.route-finder label span {
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.route-finder input,
+.route-finder select {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.4rem;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
+.route-finder__count {
+  margin: 1rem 0 0.65rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.route-finder__table-wrap {
+  max-height: 36rem;
+  overflow: auto;
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 0.6rem;
+}
+
+.route-finder table {
+  width: 100%;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.route-finder th {
+  position: sticky;
+  top: 0;
+  background: var(--ifm-background-surface-color);
+  z-index: 1;
+}
+
+@media screen and (max-width: 996px) {
+  .route-finder__filters {
+    grid-template-columns: 1fr;
+  }
+}

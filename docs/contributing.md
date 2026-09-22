@@ -5,9 +5,10 @@ sidebar_position: 6
 # Sənədlərə töhfə
 
 1. `master`-dan branch yaradın.
-2. API dəyişibsə uyğun Docusaurus endpoint və biznes-məntiqi səhifəsini eyni PR-da yeniləyin.
-3. `npm run check` əmri ilə statik build-i yoxlayın.
-4. PR açın; merge-dən sonra portal avtomatik deploy olunacaq.
+2. Route və ya model dəyişibsə `npm run generate:reference` işlədin; yalnız texniki route/model indekslərini generated saxlayın.
+3. Request, response və biznes davranışı dəyişibsə uyğun modulun resurs səhifəsini controller, DTO, presenter və testlərə əsasən əl ilə yeniləyin.
+4. `npm run format:payloads` və `npm run check` ilə JSON formatını, naviqasiyanı, endpoint faktlarını və production build-i yoxlayın.
+5. PR açın; merge-dən sonra portal avtomatik deploy olunacaq.
 
 ## Qaydalar
 

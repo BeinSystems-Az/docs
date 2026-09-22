@@ -5,107 +5,320 @@ slug: /api/catalog/product-attributes
 
 # Məhsul atributları
 
-Atribut məhsul variantının xüsusiyyətidir. Bu master-data əməliyyatları stok və jurnal entry yaratmır. Bütün endpointlər Bearer token, products permission-u və filial konteksti tələb edir.
+:::info Kontekst
+`Bearer` JWT və ya integration token · `product_attributes.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
+:::
 
-## Məhsul atributlarını siyahıla
+## Resursun işləmə qaydası
 
-`GET /api/v1/product-attributes`
+**Məqsəd və sərhəd.** Məhsul atributu variantları rəng, ölçü və digər seçilən xüsusiyyətlər üzrə fərqləndirir.
 
-Atributları qaytarır; request body yoxdur.
+**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; rəng seçimi üçün `hex_color` dəyəri attribute value ilə verilir.
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `query` | query | string | Xeyr | Ad üzrə axtarış. |
-| `paginate` | query | boolean | Xeyr | `false` olduqda `data` birbaşa array-dir; əks halda pagination qaytarılır. |
-| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
-| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+**İş axını.** Atributu və görünüş tipini yaradın, seçilə bilən dəyərləri əlavə edin, sonra şablonun variant seçimində istifadə edin.
 
-**Cavab — `200`**
+**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; dəyişikliyin təsiri kataloq və variant seçimləri ilə məhdudlaşır.
 
-```json
-{"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","name":"Rəng","display_type":"color","values":[{"id":"22222222-2222-2222-2222-222222222222","name":"Qara","hex_color":"#111111"}],"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
-```
+**Əlaqəli resurslar.** Məhsul şablonları və onların variantları.
 
-## Məhsul atributu yarat
+**Əsas məhdudiyyətlər.** `product_attributes` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; `display_type` və value strukturu validation-dan keçir.
 
-`POST /api/v1/product-attributes`
+## Field-lər
 
-Atribut yaradır.
+| Field | Tip | Məna və istifadə |
+| --- | --- | --- |
+| `id` | UUID | Atributun identifikatorudur. |
+| `name` | string | Rəng və ya ölçü kimi atribut adıdır. |
+| `display_type` | enum | UI seçim formasını `select`, `radio` və ya `color` edir. |
+| `values` | array/null | Atributun seçilə bilən dəyərləridir; paginated siyahı response-u child kolleksiyanı qısa saxlamaq üçün buraxa bilər. |
+| `values[].id` | UUID/null | Mövcud atribut dəyərinin identifikatorudur. |
+| `values[].name` | string | İstifadəçiyə görünən dəyər adıdır. |
+| `values[].hex_color` | string/null | `color` tipi üçün vizual rəng kodudur. |
+| `created_at` | datetime/null | Yaradılma vaxtıdır. |
+| `updated_at` | datetime/null | Son dəyişiklik vaxtıdır. |
 
-### Request body
+## Endpointlər
 
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `name` | string | Bəli | Maksimum 100 simvol; tenant daxilində unikaldır. |
-| `display_type` | string | Bəli | `select`, `radio` və ya `color`. |
-| `values` | array / `null` | Xeyr | Atribut dəyərləri. |
-| `values[].id` | UUID / `null` | Xeyr | Mövcud dəyəri yeniləmək üçün ID. |
-| `values[].name` | string | Bəli* | Maksimum 100 simvol. |
-| `values[].hex_color` | string / `null` | Xeyr | Maksimum 20 simvol. |
+### Siyahıla
 
-`*` `values` massivində element olduqda tələb olunur.
+**Endpoint** · `GET /api/v1/product-attributes`
 
-```json
-{"name":"Rəng","display_type":"color","values":[{"name":"Qara","hex_color":"#111111"}]}
-```
-
-**Cavab — `200`** — tam Attribute obyekti.
-
-## Məhsul atributunu oxu
-
-`GET /api/v1/product-attributes/{product_attribute}`
-
-Bir atributu qaytarır; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_attribute` | path | UUID | Bəli | Atribut ID-si. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
-
-**Cavab — `200`** — `id`, `name`, `display_type`, `values[]`, `created_at`, `updated_at` olan Attribute obyekti.
-
-## Məhsul atributunu tam yenilə
-
-`PUT /api/v1/product-attributes/{product_attribute}`
-
-Atributu yeniləyir.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_attribute` | path | UUID | Bəli | Yenilənəcək atribut. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-### Request body
-
-`name`, `display_type`, `values`, `values[].id`, `values[].name`, `values[].hex_color` `POST` body-sindəki tip və qaydalarla qəbul olunur.
-
-**Cavab — `200`** — tam Attribute obyekti.
-
-## Məhsul atributunu qismən yenilə
-
-`PATCH /api/v1/product-attributes/{product_attribute}`
-
-Atributu yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_attribute` | path | UUID | Bəli | Yenilənəcək atribut. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-## Məhsul atributunu sil
-
-`DELETE /api/v1/product-attributes/{product_attribute}`
-
-Atributu silir; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_attribute` | path | UUID | Bəli | Silinəcək atribut. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Product attribute deleted successfully.","data":null}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {
+    "query": "demo",
+    "page": 1,
+    "per_page": 25
+  },
+  "body": {}
+}
 ```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attributes listed successfully.",
+  "data": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Rəng",
+      "display_type": "color"
+    }
+  ],
+  "links": {
+    "first": null,
+    "last": null,
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "/api/v1/product-attributes",
+    "per_page": 25,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Yarat
+
+**Endpoint** · `POST /api/v1/product-attributes`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {},
+  "body": {
+    "name": "Rəng",
+    "display_type": "color",
+    "values": [
+      {
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attribute created successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Rəng",
+    "display_type": "color",
+    "values": [
+      {
+        "id": "33333333-3333-4333-8333-333333333333",
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data yazılır; stok və jurnal yaranmır.
+
+### Oxu
+
+**Endpoint** · `GET /api/v1/product-attributes/{product_attribute}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_attribute": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attribute shown successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Rəng",
+    "display_type": "color",
+    "values": [
+      {
+        "id": "33333333-3333-4333-8333-333333333333",
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Tam yenilə
+
+**Endpoint** · `PUT /api/v1/product-attributes/{product_attribute}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_attribute": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Rəng",
+    "display_type": "color",
+    "values": [
+      {
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attribute updated successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Rəng",
+    "display_type": "color",
+    "values": [
+      {
+        "id": "33333333-3333-4333-8333-333333333333",
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Qismən yenilə
+
+**Endpoint** · `PATCH /api/v1/product-attributes/{product_attribute}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_attribute": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "name": "Məhsul rəngi",
+    "display_type": "color"
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attribute updated successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "name": "Məhsul rəngi",
+    "display_type": "color",
+    "values": [
+      {
+        "id": "33333333-3333-4333-8333-333333333333",
+        "name": "Qara",
+        "hex_color": "#111111"
+      }
+    ]
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Sil
+
+**Endpoint** · `DELETE /api/v1/product-attributes/{product_attribute}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_attribute": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Attribute deleted successfully.",
+  "data": null
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data silinir; tarixi əməliyyatlar dəyişmir.

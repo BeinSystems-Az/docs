@@ -7,7 +7,13 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "serve": "docusaurus serve build",
-    "check": "npm run build"
+    "check": "npm run check:navigation && npm run check:api-facts && npm run check:resource-docs && npm run build",
+    "check:navigation": "node scripts/check-docs-navigation.mjs",
+    "check:api-facts": "node scripts/check-api-facts.mjs",
+    "check:resource-docs": "node scripts/check-resource-docs.mjs",
+    "generate:reference": "node scripts/generate-reference.mjs --backend=../erp-backend",
+    "format:payloads": "node scripts/format-json-fences.mjs",
+    "generate:all-docs": "npm run generate:reference && npm run format:payloads"
   },
   "dependencies": {
     "@docusaurus/core": "^3.7.0",

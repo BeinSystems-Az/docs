@@ -5,106 +5,327 @@ slug: /api/catalog/product-packagings
 
 # Qablaşdırmalar
 
-Qablaşdırma məhsulun inventar vahidi ilə alış/satış vahidi arasındakı çevirməni saxlayır. Dəyişiklik tarixi sənədləri yenidən hesablamır. Bütün endpointlər Bearer token, products permission-u və filial konteksti tələb edir.
+:::info Kontekst
+`Bearer` JWT və ya integration token · `product_packagings.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
+:::
 
-## Qablaşdırmaları siyahıla
+## Resursun işləmə qaydası
 
-`GET /api/v1/product-packagings`
+**Məqsəd və sərhəd.** Qablaşdırma alış/satış vahidini məhsulun inventar vahidinə çevirir və ayrıca qiymət saxlaya bilir.
 
-Qablaşdırmaları səhifələnmiş qaytarır; request body yoxdur.
+**İlkin şərtlər.** Tenant və filial konteksti ilə mövcud `product_id` və `unit_id` seçilməlidir.
 
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_id` | query | UUID | Xeyr | Məhsula görə filter. |
-| `query` | query | string | Xeyr | Mətn axtarışı. |
-| `page` | query | integer | Xeyr | Səhifə nömrəsi. |
-| `per_page` | query | integer | Xeyr | Səhifə ölçüsü. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
+**İş axını.** Məhsulu və qablaşdırma vahidini seçin, inventar vahidi əmsalını və qiymətləri yazın, sonra sənəd sətirlərində istifadə edin.
 
-**Cavab — `200`**
+**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; `active` seçimi yeni alış/satış seçimlərinə təsir edir, tarixi sənədləri dəyişmir.
 
-```json
-{"status":"success","data":[{"id":"11111111-1111-1111-1111-111111111111","product_id":"22222222-2222-2222-2222-222222222222","product_name":"Arabica qəhvə","unit_id":"33333333-3333-3333-3333-333333333333","unit_name":"Qutu","quantity_in_inventory_unit":"12.0000","purchase_price":"18.0000","sale_price":"25.5000","inventory_unit_id":"44444444-4444-4444-4444-444444444444","inventory_unit_name":"Ədəd","barcode":null,"active":true,"created_at":"2026-08-24T10:00:00+00:00","updated_at":"2026-08-24T10:00:00+00:00"}],"links":{},"meta":{"current_page":1,"per_page":25,"total":1}}
-```
+**Əlaqəli resurslar.** Məhsullar, ölçü vahidləri, alış və satış sənəd sətirləri.
 
-## Qablaşdırma yarat
+**Əsas məhdudiyyətlər.** `product_packagings` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; məhsul və vahid identifikatorları həmin scope-da olmalıdır.
 
-`POST /api/v1/product-packagings`
+## Field-lər
 
-Qablaşdırma yaradır.
+| Field | Tip | Məna və istifadə |
+| --- | --- | --- |
+| `id` | UUID | Qablaşdırmanın identifikatorudur. |
+| `product_id` | UUID | Qablaşdırmanın aid olduğu məhsuldur. |
+| `product_name` | string/null | Response-da məhsulun görünən adıdır. |
+| `unit_id` | UUID | Qutu/paket kimi satış-alış vahididir. |
+| `unit_name` | string/null | Response-da qablaşdırma vahidinin adıdır. |
+| `inventory_unit_id` | UUID/null | Response-da məhsulun əsas inventar vahididir. |
+| `inventory_unit_name` | string/null | Response-da əsas inventar vahidinin adıdır. |
+| `quantity_in_inventory_unit` | decimal | Bir qablaşdırmadakı inventar vahidi sayıdır. |
+| `purchase_price` | decimal | Qablaşdırma üzrə alış qiymətidir. |
+| `sale_price` | decimal | Qablaşdırma üzrə satış qiymətidir. |
+| `barcode` | string/null | Qablaşdırmanı skan etmək üçün koddur. |
+| `active` | boolean | Qablaşdırmanın seçimlərdə görünməsini idarə edir. |
+| `created_at` | datetime/null | Yaradılma vaxtıdır. |
+| `updated_at` | datetime/null | Son dəyişiklik vaxtıdır. |
 
-### Request body
+## Endpointlər
 
-| Sahə | Tip | Tələb | Qayda |
-| --- | --- | --- | --- |
-| `product_id` | UUID | Bəli | Mövcud məhsul. |
-| `unit_id` | UUID | Bəli | Qablaşdırma vahidi. |
-| `quantity_in_inventory_unit` | numeric | Bəli | `> 0`. |
-| `purchase_price` | numeric | Bəli | `>= 0`. |
-| `sale_price` | numeric | Bəli | `>= 0`. |
-| `barcode` | string / `null` | Xeyr | Maksimum 100 simvol. |
-| `active` | boolean | Xeyr | Aktivlik. |
+### Siyahıla
 
-```json
-{"product_id":"22222222-2222-2222-2222-222222222222","unit_id":"33333333-3333-3333-3333-333333333333","quantity_in_inventory_unit":12,"purchase_price":18,"sale_price":25.5,"active":true}
-```
+**Endpoint** · `GET /api/v1/product-packagings`
 
-**Cavab — `201`** — tam Packaging obyekti.
-
-## Qablaşdırmanı oxu
-
-`GET /api/v1/product-packagings/{product_packaging}`
-
-Bir qablaşdırmanı qaytarır; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_packaging` | path | UUID | Bəli | Qablaşdırma ID-si. |
-| `X-Branch-Id` | header | UUID / `all` | Xeyr | Oxu konteksti. |
-
-**Cavab — `200`** — `GET` siyahısındakı tam Packaging obyekti.
-
-## Qablaşdırmanı tam yenilə
-
-`PUT /api/v1/product-packagings/{product_packaging}`
-
-Qablaşdırmanı yeniləyir.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_packaging` | path | UUID | Bəli | Yenilənəcək qablaşdırma. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-### Request body
-
-`product_id`, `unit_id`, `quantity_in_inventory_unit`, `purchase_price`, `sale_price`, `barcode`, `active` sahələri `POST` body-sindəki tip və qaydalarla qəbul olunur.
-
-**Cavab — `200`** — tam Packaging obyekti.
-
-## Qablaşdırmanı qismən yenilə
-
-`PATCH /api/v1/product-packagings/{product_packaging}`
-
-Qablaşdırmanı yeniləyir; `PUT` ilə eyni path parametri, request body və `200` response kontraktı tətbiq olunur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_packaging` | path | UUID | Bəli | Yenilənəcək qablaşdırma. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-## Qablaşdırmanı sil
-
-`DELETE /api/v1/product-packagings/{product_packaging}`
-
-Qablaşdırmanı silir; request body yoxdur.
-
-| Parametr | Yer | Tip | Tələb | İzah |
-| --- | --- | --- | --- | --- |
-| `product_packaging` | path | UUID | Bəli | Silinəcək qablaşdırma. |
-| `X-Branch-Id` | header | UUID | Xeyr | Yazma konteksti. |
-
-**Cavab — `200`**
+**Request JSON**
 
 ```json
-{"status":"success","message":"Product packaging deleted successfully.","data":null}
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {
+    "query": "demo",
+    "page": 1,
+    "per_page": 25
+  },
+  "body": {}
+}
 ```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packagings listed successfully.",
+  "data": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "product_id": "33333333-3333-4333-8333-333333333333",
+      "product_name": "Arabica qəhvə",
+      "unit_id": "11111111-1111-4111-8111-111111111111",
+      "unit_name": "Qutu",
+      "quantity_in_inventory_unit": "12.0000",
+      "purchase_price": "18.0000",
+      "sale_price": "25.5000",
+      "active": true
+    }
+  ],
+  "links": {
+    "first": null,
+    "last": null,
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "path": "/api/v1/product-packagings",
+    "per_page": 25,
+    "to": 1,
+    "total": 1
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Yarat
+
+**Endpoint** · `POST /api/v1/product-packagings`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {},
+  "query": {},
+  "body": {
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "quantity_in_inventory_unit": 12,
+    "purchase_price": 18,
+    "sale_price": 25.5,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `201`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packaging created successfully.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "product_name": "Arabica qəhvə",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "unit_name": "Qutu",
+    "quantity_in_inventory_unit": "12.0000",
+    "purchase_price": "18.0000",
+    "sale_price": "25.5000",
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data yazılır; stok və jurnal yaranmır.
+
+### Oxu
+
+**Endpoint** · `GET /api/v1/product-packagings/{product_packaging}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_packaging": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packaging details.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "product_name": "Arabica qəhvə",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "unit_name": "Qutu",
+    "quantity_in_inventory_unit": "12.0000",
+    "purchase_price": "18.0000",
+    "sale_price": "25.5000",
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Yoxdur.
+
+### Tam yenilə
+
+**Endpoint** · `PUT /api/v1/product-packagings/{product_packaging}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_packaging": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "quantity_in_inventory_unit": 12,
+    "purchase_price": 18,
+    "sale_price": 25.5,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packaging updated.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "product_name": "Arabica qəhvə",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "unit_name": "Qutu",
+    "quantity_in_inventory_unit": "12.0000",
+    "purchase_price": "18.0000",
+    "sale_price": "25.5000",
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Qismən yenilə
+
+**Endpoint** · `PATCH /api/v1/product-packagings/{product_packaging}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_packaging": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "quantity_in_inventory_unit": 12,
+    "purchase_price": 18,
+    "sale_price": 26,
+    "active": true
+  }
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packaging updated.",
+  "data": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "product_id": "33333333-3333-4333-8333-333333333333",
+    "product_name": "Arabica qəhvə",
+    "unit_id": "11111111-1111-4111-8111-111111111111",
+    "unit_name": "Qutu",
+    "quantity_in_inventory_unit": 12,
+    "purchase_price": 18,
+    "sale_price": 26,
+    "active": true
+  }
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Gələcək istifadəyə təsir edir; tarixi sənədlər yenidən hesablanmır.
+
+### Sil
+
+**Endpoint** · `DELETE /api/v1/product-packagings/{product_packaging}`
+
+**Request JSON**
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
+  },
+  "path": {
+    "product_packaging": "22222222-2222-4222-8222-222222222222"
+  },
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": "Product packaging deleted.",
+  "data": null
+}
+```
+
+**Xətalar** · `401/403` — giriş və permission; `404` — detail resurs tapılmır; `422` — request validation-u keçmir.
+
+**Biznes təsiri** · Master-data silinir; tarixi əməliyyatlar dəyişmir.

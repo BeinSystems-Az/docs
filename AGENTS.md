@@ -8,10 +8,17 @@ Bu qaydalar Docusaurus portalının oxucuları üçün deyil. Bu repository-də 
 - Kodla təsdiqlənməyən field, status, state keçidi, permission və ya biznes təsiri yazmayın.
 - Backend dəyişdirilmirsə, sənədləşdirmə üçün onu yalnız oxuyun.
 
+## Tam inventar və generasiya
+
+- `docs/api/reference/route-catalog.md` və `docs/domains/entity-inventory.md` generated fayllardır. Onları əl ilə redaktə etməyin.
+- Backend route və ya model dəyişdikdə, sənəd dəyişikliyini handoff etməzdən əvvəl `npm run generate:reference` işlədin. Skript route manifestini və `app/**/Models` siyahısını qonşu `../erp-backend` repository-sindən oxuyur.
+- Tam kataloq endpointin path, method, handler və middleware konteksti üçün avtoritet indeksdir. Field, enum, response və biznes nəticəsi yalnız controller → request/DTO → action/service → presenter və testlə təsdiq ediləndə ayrıca resurs sənədinə yazıla bilər.
+
 ## Səhifə quruluşu
 
-- Docusaurus-da hər modul kateqoriya, hər resurs ayrıca səhifədir.
+- Docusaurus-da hər modul kateqoriya, hər resurs **bir səhifədir**. CRUD və resursla əlaqəli domain action-ları ayrıca səhifələrə bölünmür; həmin resurs səhifəsində `###` operation başlıqları kimi saxlanılır.
 - Resurs səhifəsi həmin resursun collection, detail və action endpointlərini birlikdə saxlayır. Məsələn, Products səhifəsinə `GET/POST /products`, `GET/PUT/PATCH/DELETE /products/{product}` və məhsula aid nested action-lar daxildir.
+- Yeni və yenilənən resurs səhifələri `internal/resource-page-template.md` strukturunu istifadə etməlidir.
 - Portalda bu daxili qaydanı, yazı şablonunu və ya contributor prosesini publish etməyin. İstifadəçi yalnız API kontraktını və biznes izahını görməlidir.
 
 ## Resurs icmalı standardı
@@ -25,21 +32,19 @@ Hər resursun icmalında aşağıdakı altı bölmə mütləq olmalıdır. Mətn
 5. **Əlaqəli resurslar** — mənbə, törəmə və nəticə resursları, həmçinin növbəti əməliyyat.
 6. **Əsas məhdudiyyətlər** — icazə, filial scope-u, state və bağlı sənədlərdən doğan real məhdudiyyətlər.
 
-Endpointin səhifə və sidebar adı istifadəçi niyyətini ifadə etməlidir: məsələn, `Sifariş yarat`, `Sifarişi yenilə`, `Sifarişi siyahıla`. `GET`, `POST`, `PUT`, `PATCH` və `DELETE` həmin adda yazılmır; HTTP metod və tam URL endpoint bölməsinin əvvəlində göstərilir.
+Operation başlığı istifadəçi niyyətini ifadə etməlidir: məsələn, `### Sifariş yarat`. HTTP metod və tam URL növbəti sətirdə `**Endpoint** · POST /api/v1/...` formatında göstərilir. Sidebar-da yalnız resurs adı görünür.
 
 ## Hər endpoint üçün məcburi məzmun
 
-Hər HTTP operation aşağıdakı ardıcıllıqla tam sənədləşdirilməlidir:
+Resurs səhifəsində auth/context və bir dənə `Field-lər` cədvəli saxlanılır. Cədvəl hər field-in biznes mənasını və niyə istifadə olunduğunu izah edir; request kontraktını əvəz etmir. Ortaq request və ortaq response bölməsi yaradılmır. Hər HTTP operation `###` altında bu ardıcıllığı saxlayır:
 
-1. HTTP metod və tam `/api/v1/...` URL, qısa məqsəd.
-2. Autentifikasiya, permission, tenant və filial konteksti.
-3. Bütün path, query və header parametrləri: ad, tip/format, məcburilik, default, enum və izah.
-4. Request body field cədvəli: sahə, tip/format, required və conditional qayda, enum/limit, biznes mənası.
-5. Tam, fiktiv request JSON nümunəsi; body olmayan operation üçün bunun açıq qeydi.
-6. Uğurlu status kodu, response `data` sahələrinin cədvəli və tam JSON nümunəsi.
-7. Əməliyyata real aid olan `401`, `403`, `404`, `409`, `422` və `503` xətaları, hər birinin səbəbi.
-8. Biznes təsiri: state keçidi, stok, rezerv, jurnal entry/reversal, vergi, reconciliation və audit nəticəsi. Təsir yoxdursa bunu açıq yazın.
-9. Əlaqəli resurslara və növbəti əməliyyatlara keçid.
+1. `**Endpoint** · METHOD /api/v1/...` və bir cümləlik məqsəd.
+2. `Request JSON`: `headers`, `path`, `query`, `body` hissələri ilə operation-a aid ayrıca, sintetik və valid JSON nümunəsi. Body yoxdursa `body: {}` göstərilir.
+3. `Response JSON · status`: həmin operation-ın real response zərfini göstərən ayrıca, sintetik və valid JSON nümunəsi.
+4. Yalnız həmin operation-a real aid xətalar və səbəbləri.
+5. State, stok, rezerv, jurnal, vergi və audit təsirini bir sətirdə bildirin; təsir yoxdursa açıq yazın.
+
+Field mənalarını endpoint bloklarında cədvəl kimi təkrarlamayın; lakin request və response JSON-u hər endpointdə ayrıca və açıq göstərin. Başqa operation-a və ya ortaq payload-a istinad response nümunəsini əvəz etmir.
 
 ## Keyfiyyət qadağaları
 

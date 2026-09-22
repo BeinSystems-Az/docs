@@ -16,6 +16,6 @@ Bu portal BEIN ERP backend-i ilə işləyən developer və inteqratorlar üçün
 
 ## Versiya qaydası
 
-Hazırkı public API `v1` prefix-i altında təqdim edilir. Geriyə uyğun olmayan dəyişiklik yeni API versiyası və ya əvvəlcədən elan edilmiş deprecation mərhələsi tələb edir.
+Tenant biznes API-sinin əsas hissəsi `/api/v1` prefix-i altındadır. Aktivasiya və public store kimi bəzi xüsusi route-lar `/api` altında ayrıca təqdim edilir; dəqiq path üçün canlı route kataloqu əsasdır. Geriyə uyğun olmayan dəyişiklik yeni API versiyası və ya əvvəlcədən elan edilmiş deprecation mərhələsi tələb edir.
 
 Bu repository-də API davranışı dəyişən hər dəyişiklik uyğun endpoint və izah səhifəsini də yeniləməlidir.
