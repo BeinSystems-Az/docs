@@ -9,8 +9,8 @@
  * regenerate them after a backend route or model change instead.
  */
 import {execFileSync} from 'node:child_process';
-import {mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
-import {dirname, join, relative, resolve, sep} from 'node:path';
+import {mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {dirname, join, resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
 
@@ -172,68 +172,6 @@ for (const [name, items] of [...routeGroups.entries()].sort(([left], [right]) =>
   routeLines.push('');
 }
 
-write('docs/api/reference/route-catalog.md', `${routeLines.join('\n')}\n`);
-
-const endpointSummaries = [
-  {file: 'platform', title: 'Platforma və idarəetmə', categories: ['Platform və giriş', 'Platform və sistem']},
-  {file: 'master-data', title: 'Əsas məlumatlar', categories: ['Məhsul kataloqu', 'Tərəfdaşlar', 'CRM', 'İnsan resursları', 'İnventar', 'Onlayn mağaza']},
-  {file: 'sales-purchase', title: 'Satış və alış', categories: ['Satış', 'Satınalma']},
-  {file: 'stock', title: 'Anbar və stok', categories: ['Anbar və stok']},
-  {file: 'accounting', title: 'Mühasibat və maliyyə', categories: ['Mühasibat və maliyyə']},
-  {file: 'manufacturing', title: 'İstehsal', categories: ['İstehsal']},
-  {file: 'pos', title: 'POS', categories: ['POS']},
-  {file: 'reports-output', title: 'Hesabatlar və çıxışlar', categories: ['Hesabatlar', 'Çıxışlar']},
-  {file: 'ai-integrations', title: 'Avtomatlaşdırma və inteqrasiyalar', categories: ['AI', 'İnteqrasiyalar', 'Biznes şəbəkəsi', 'Workflow', 'Toplu əməliyyatlar']},
-];
-const assignedCategories = new Set(endpointSummaries.flatMap((summary) => summary.categories));
-const unassignedCategories = [...routeGroups.keys()].filter((name) => !assignedCategories.has(name));
-if (unassignedCategories.length) {
-  throw new Error(`Endpoint summary mapping is missing: ${unassignedCategories.join(', ')}`);
-}
-
-const endpointIndex = [
-  '---',
-  'sidebar_position: 1',
-  '---',
-  '',
-  '# Avtomatik modul indeksləri',
-  '',
-  '> Bu səhifələr cari Laravel route manifestindən yaranır. Request/response kontraktı üçün uyğun resurs səhifəsini, sürətli axtarış üçün [Endpoint axtarışını](../reference/route-finder) istifadə edin.',
-  '',
-];
-
-for (const [position, summary] of endpointSummaries.entries()) {
-  const summaryRoutes = routes.filter((route) => summary.categories.includes(category(route)));
-  const lines = [
-    '---',
-    `sidebar_position: ${position + 2}`,
-    '---',
-    '',
-    `# ${summary.title}`,
-    '',
-    `> Cari backend snapshotından yaranıb: **${summaryRoutes.length} HTTP operation**. Bu texniki indeks path və handler üçündür; field və JSON nümunələri resursun öz səhifəsində saxlanılır.`,
-    '',
-  ];
-  for (const name of summary.categories) {
-    const items = routeGroups.get(name) ?? [];
-    if (!items.length) continue;
-    lines.push(`## ${name}`, '', '| Metod | Path | Məqsəd | Giriş konteksti | Handler |', '| --- | --- | --- | --- | --- |');
-    for (const route of items) {
-      lines.push(`| \`${route.method}\` | \`/${markdown(route.uri)}\` | ${operationName(route.method, route.action)} | ${access(route.middleware)} | ${compactAction(route.action)} |`);
-    }
-    lines.push('');
-  }
-  write(`docs/api/endpoints/${summary.file}.md`, `${lines.join('\n')}\n`);
-  endpointIndex.push(`- [${summary.title}](./${summary.file}) — ${summaryRoutes.length} operation.`);
-}
-write('docs/api/endpoints/index.md', `${endpointIndex.join('\n')}\n`);
-
-const coveragePath = join(root, 'docs', 'api', 'coverage.md');
-const coverage = readFileSync(coveragePath, 'utf8')
-  .replace(/\*\*\d+ unikal URI\*\* və \*\*\d+ HTTP operation\*\*/g, `**${uniqueRouteCount} unikal URI** və **${routes.length} HTTP operation**`)
-  .replace(/bütün \d+ operation/g, `bütün ${routes.length} operation`);
-write('docs/api/coverage.md', coverage);
-
 write('src/generated/api-routes.json', `${JSON.stringify(routes.map((route) => ({
   method: route.method,
   path: `/${route.uri}`,
@@ -248,87 +186,4 @@ write('src/generated/api-routes.json', `${JSON.stringify(routes.map((route) => (
   requiresPermission: route.permission?.requires_permission ?? false,
 })), null, 2)}\n`);
 
-function phpFiles(directory) {
-  const entries = readdirSync(directory, {withFileTypes: true});
-  return entries.flatMap((entry) => {
-    const destination = join(directory, entry.name);
-    if (entry.isDirectory()) return phpFiles(destination);
-    return entry.isFile() && entry.name.endsWith('.php') ? [destination] : [];
-  });
-}
-
-function modelKind(name) {
-  if (/(Item|Line|Component|Output|Payment|Allocation|Operation|Rule|Event|Adjustment|Application)$/.test(name)) return 'Sətir / köməkçi qeyd';
-  if (/(Order|Receipt|Invoice|Return|Expense|Transfer|Entry|Document|Revaluation|Depreciation|Sale|Scrap|Consumption)$/.test(name)) return 'Biznes sənədi';
-  if (/(Setting|Configuration|Template|Definition|Profile|Preference|Policy|Mapping)$/.test(name)) return 'Sazlama / qayda';
-  if (/(Run|Issue|Inbox|Delivery|Log)$/.test(name)) return 'Proses / audit qeydi';
-  return 'Əsas məlumat və ya domen qeydi';
-}
-
-function modelRelations(source) {
-  const relations = [];
-  const expression = /(?:public|protected)\s+function\s+(\w+)\s*\([^)]*\)\s*(?::\s*[^\{]+)?\{\s*return\s+\$this->(belongsTo|hasMany|hasOne|belongsToMany|morphTo|morphMany|morphOne)\s*\(\s*([^,\)]+)/g;
-  for (const match of source.matchAll(expression)) {
-    let target = match[3]
-      .replace(/::class$/, '')
-      .replace(/^['"]|['"]$/g, '')
-      .split('\\').at(-1);
-    if (target === '__FUNCTION__') target = '';
-    relations.push(`${match[1]}: ${match[2]}${target ? ` ${target}` : ''}`);
-  }
-  return relations.length ? relations.join('; ') : '—';
-}
-
-const app = join(backend, 'app');
-const eloquentParents = new Set([
-  'Model', 'BaseModel', 'Authenticatable', 'BaseTenant', 'BaseDomain', 'SpatiePermission', 'SpatieRole',
-]);
-const models = phpFiles(app)
-  .map((file) => {
-    const source = readFileSync(file, 'utf8');
-    const namespace = source.match(/namespace\s+([^;]+);/)?.[1];
-    const declaration = source.match(/(?:(final|abstract)\s+)?class\s+(\w+)\s+extends\s+([\\\w]+)/);
-    if (!namespace || !declaration || declaration[1] === 'abstract') return null;
-    const [, , className, parent] = declaration;
-    if (!eloquentParents.has(parent.split('\\').at(-1))) return null;
-    const appRelative = relative(app, file).replaceAll(sep, '/');
-    const domain = appRelative.match(/^Domains\/([^/]+)\//)?.[1]
-      ?? (appRelative.startsWith('Core/') ? 'Core / audit'
-        : appRelative.startsWith('Infrastructure/Persistence/Eloquent/') ? 'Platform / persistence'
-          : appRelative.startsWith('Models/') ? 'Authorization'
-            : 'Digər');
-    return {
-      className,
-      domain,
-      file: `app/${appRelative}`,
-      fqcn: `${namespace}\\${className}`,
-      relations: modelRelations(source),
-    };
-  })
-  .filter(Boolean)
-  .sort((left, right) => left.domain.localeCompare(right.domain, 'az') || left.className.localeCompare(right.className));
-
-const modelGroups = Map.groupBy(models, (model) => model.domain);
-const modelLines = [
-  '---',
-  'sidebar_position: 2',
-  '---',
-  '',
-  '# Entity/model inventarı',
-  '',
-  '> Bu səhifə backend-də `Model`, `BaseModel`, `Authenticatable` və tenancy/permission model bazalarından törəyən konkret Eloquent siniflərindən avtomatik yaradılır. Modelin mövcudluğu, sahib domeni və kodda aşkar edilən relation-ları üçün tam siyahıdır; biznes mənası üçün [Entity xəritəsi](./entity-map) istifadə edin.',
-  '',
-  `Snapshot: ${snapshotLabel}; **${models.length} model**.`,
-  '',
-];
-
-for (const [domain, items] of [...modelGroups.entries()].sort(([left], [right]) => left.localeCompare(right, 'az'))) {
-  modelLines.push(`## ${domain}`, '', '| Entity | Təsnifat | Kod əlaqələri | Mənbə |', '| --- | --- | --- | --- |');
-  for (const model of items) {
-    modelLines.push(`| \`${model.className}\` | ${modelKind(model.className)} | ${markdown(model.relations)} | \`${model.file}\` |`);
-  }
-  modelLines.push('');
-}
-
-write('docs/domains/entity-inventory.md', `${modelLines.join('\n')}\n`);
-console.log(`Generated ${routes.length} API operations and ${models.length} models from ${backend}.`);
+console.log(`Generated ${routes.length} API operations from ${backend}.`);

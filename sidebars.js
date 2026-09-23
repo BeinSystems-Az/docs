@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const {isInternalResourceDocId} = require('./scripts/api-doc-scope.cjs');
 
 const resourceItems = (module) => {
   const resourceDir = path.join(__dirname, 'docs', 'modules', module, 'resources');
@@ -13,7 +12,6 @@ const resourceItems = (module) => {
 
   return fs.readdirSync(resourceDir)
     .filter((file) => file.endsWith('.md'))
-    .filter((file) => !isInternalResourceDocId(`modules/${module}/resources/${file.replace(/\.md$/, '')}`))
     .sort()
     .map((file) => {
       const source = fs.readFileSync(path.join(resourceDir, file), 'utf8');
@@ -98,13 +96,6 @@ module.exports = {
         moduleCategory('İnteqrasiyalar', 'integrations'),
         moduleCategory('İstifadəçi və giriş', 'access'),
         moduleCategory('Platforma və sistem', 'platform'),
-      ],
-    },
-    {
-      type: 'category', label: 'Məlumat modeli və AI', link: {type: 'doc', id: 'domains/entity-map'}, collapsed: true,
-      items: [
-        {type: 'doc', id: 'domains/entity-inventory', label: 'Bütün entity və modellər'},
-        {type: 'doc', id: 'ai/system-map', label: 'AI üçün sistem xəritəsi'},
       ],
     },
     {type: 'doc', id: 'contributing', label: 'Sənədlərə töhfə'},

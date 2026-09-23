@@ -13,7 +13,7 @@ export default function Home() {
             <p className="hero__subtitle">Tenant, filial, biznes modulları və ERP əməliyyatları üçün vahid texniki mənbə.</p>
             <div className="margin-top--lg">
               <Link className="button button--primary button--lg margin-right--md" to="/docs/modules">Modulları araşdır</Link>
-              <Link className="button button--secondary button--lg" to="/docs/api/reference/route-finder">Endpoint axtar</Link>
+              <Link className="button button--secondary button--lg" to="/docs/architecture/overview">Sistemi öyrən</Link>
             </div>
           </div>
         </header>

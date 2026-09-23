@@ -23,7 +23,7 @@ flowchart LR
   S --> C
 ```
 
-Bu ardıcıllıq bütün sənədlərə eyni qaydada tətbiq edilmir. Məsələn, satış sifarişi kommersiya öhdəliyi və rezervasiya yaradır, amma satış qəbzi kimi birbaşa stok və jurnal post etməz. Hər endpointin konkret təsiri [API endpointləri](../api/endpoints)-də və bu bölmədəki uyğun axında göstərilir.
+Bu ardıcıllıq bütün sənədlərə eyni qaydada tətbiq edilmir. Məsələn, satış sifarişi kommersiya öhdəliyi və rezervasiya yaradır, amma satış qəbzi kimi birbaşa stok və jurnal post etməz. Hər resursun konkret endpoint təsiri öz modul səhifəsində göstərilir.
 
 ## Satış və alış
 

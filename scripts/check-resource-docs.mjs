@@ -1,7 +1,10 @@
 import {readFileSync, readdirSync} from 'node:fs';
+import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
+const require = createRequire(import.meta.url);
+const {isInternalRoute} = require(resolve(root, 'scripts/api-doc-scope.cjs'));
 const handAuditedDocs = [
   'docs/api/modules/products/catalog-products.md',
   'docs/api/modules/products/product-templates.md',
@@ -37,7 +40,9 @@ const overviewLabels = [
 const failures = [];
 const liveRoutes = JSON.parse(readFileSync(resolve(root, 'src/generated/api-routes.json'), 'utf8'));
 const normalizePath = (path) => path.replace(/\{[^}]+\}/g, '{}').replace(/\/$/, '');
-const liveRouteKeys = new Set(liveRoutes.map(({method, path}) => `${method.toUpperCase()} ${normalizePath(path)}`));
+const liveRouteKeys = new Set(liveRoutes
+  .filter(({path}) => !isInternalRoute(path))
+  .map(({method, path}) => `${method.toUpperCase()} ${normalizePath(path)}`));
 const documentedRouteKeys = new Set();
 
 for (const file of resourceDocs) {
@@ -106,5 +111,5 @@ if (failures.length) {
   console.error(failures.map((failure) => `- ${failure}`).join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Resource-document audit passed: ${resourceDocs.length} resurs səhifəsi bütün ${documentedRouteKeys.size} API əməliyyatını standart request/response blokları ilə əhatə edir.`);
+  console.log(`Resource-document audit passed: ${resourceDocs.length} istifadəçi resurs səhifəsi ${documentedRouteKeys.size} user-facing API əməliyyatını standart request/response blokları ilə əhatə edir.`);
 }

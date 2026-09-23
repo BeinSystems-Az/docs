@@ -5,7 +5,6 @@ import {join, relative, resolve} from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const require = createRequire(import.meta.url);
 const sidebars = require(join(root, 'sidebars.js'));
-const {isTechnicalDocId} = require(join(root, 'scripts', 'api-doc-scope.cjs'));
 const sidebarDocIds = new Set();
 
 function collectSidebarItems(items) {
@@ -34,7 +33,7 @@ function collectMarkdown(directory) {
 
 for (const items of Object.values(sidebars)) collectSidebarItems(items);
 
-const markdownDocIds = new Set(collectMarkdown(join(root, 'docs')).filter((id) => !isTechnicalDocId(id)));
+const markdownDocIds = new Set(collectMarkdown(join(root, 'docs')));
 const hiddenDocs = [...markdownDocIds].filter((id) => !sidebarDocIds.has(id));
 const invalidSidebarIds = [...sidebarDocIds].filter((id) => !markdownDocIds.has(id));
 

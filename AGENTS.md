@@ -10,9 +10,9 @@ Bu qaydalar Docusaurus portalının oxucuları üçün deyil. Bu repository-də 
 
 ## Tam inventar və generasiya
 
-- `docs/api/reference/route-catalog.md` və `docs/domains/entity-inventory.md` generated fayllardır. Onları əl ilə redaktə etməyin.
-- Backend route və ya model dəyişdikdə, sənəd dəyişikliyini handoff etməzdən əvvəl `npm run generate:reference` işlədin. Skript route manifestini və `app/**/Models` siyahısını qonşu `../erp-backend` repository-sindən oxuyur.
-- Tam kataloq endpointin path, method, handler və middleware konteksti üçün avtoritet indeksdir. Field, enum, response və biznes nəticəsi yalnız controller → request/DTO → action/service → presenter və testlə təsdiq ediləndə ayrıca resurs sənədinə yazıla bilər.
+- Backend route snapshot-ı `src/generated/api-routes.json` faylında saxlanılır; onu əl ilə redaktə etməyin.
+- Backend route dəyişdikdə, sənəd dəyişikliyini handoff etməzdən əvvəl `npm run generate:reference` işlədin. Skript yalnız avtomatik audit üçün route snapshot-ını yeniləyir.
+- Endpointin field, enum, response və biznes nəticəsi yalnız controller → request/DTO → action/service → presenter və testlə təsdiq ediləndə istifadəçi resurs sənədinə yazıla bilər.
 
 ## Səhifə quruluşu
 
