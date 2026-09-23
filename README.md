@@ -12,7 +12,7 @@ npm run check
 
 Skript standart olaraq qonşu `../erp-backend` repository-sini oxuyur. Başqa checkout istifadə etmək üçün `node scripts/generate-reference.mjs --backend=/tam/yol/erp-backend` işlədin.
 
-İnsan və AI üçün oxu ardıcıllığı: [başlanğıc](docs/intro.md) → [arxitektura](docs/architecture/overview.md) → istifadə olunan biznes modulunun resurs səhifəsi → endpointin controller/DTO/action/presenter kodu.
+İnsan və AI üçün oxu ardıcıllığı: [başlanğıc](docs/intro.md) → istifadə olunan biznes modulunun resurs səhifəsi → endpointin controller/DTO/action/presenter kodu.
 
 `docs.beinsystems.az` üçün ayrıca Docusaurus repository-si.
 

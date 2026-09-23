@@ -51,7 +51,6 @@ const config = {
           title: 'Sənədlər',
           items: [
             {label: 'Başlanğıc', to: '/docs/intro'},
-            {label: 'Arxitektura', to: '/docs/architecture/overview'},
             {label: 'ERP modulları', to: '/docs/modules'},
           ],
         },

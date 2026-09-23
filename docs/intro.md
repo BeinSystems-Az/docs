@@ -10,9 +10,9 @@ Bu portal BEIN ERP backend-i ilə işləyən developer və inteqratorlar üçün
 
 1. [Autentifikasiya](./api/authentication.md) qaydasını oxuyun.
 2. [API kontraktı](./api/contract.md) ilə ümumi response və səhv formatlarını nəzərdən keçirin.
-3. İstifadə edəcəyiniz obyektin rolunu [resurslar və əlaqələr](./architecture/resources.md) səhifəsində müəyyən edin.
+3. İstifadə edəcəyiniz resursu seçin və onun rolunu həmin biznes modulunun giriş səhifəsində müəyyən edin.
 4. İstifadə etdiyiniz biznes modulunu seçin və həmin modulun resurs səhifəsində endpoint request/response nümunəsinə baxın.
-5. Tenant və filial kontekstini başa düşmək üçün [arxitektura](./architecture/overview.md) bölməsindən başlayın.
+5. Tenant və filial kontekstini [API kontraktı](./api/contract.md) və sorğu nümunələrindəki kontekst sahələri ilə yoxlayın.
 
 ## Versiya qaydası
 

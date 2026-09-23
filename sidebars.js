@@ -49,18 +49,6 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Sistem necə işləyir',
-      link: {type: 'doc', id: 'architecture/overview'},
-      collapsed: true,
-      items: [
-        {type: 'doc', id: 'architecture/tenancy', label: 'Tenant və filial modeli'},
-        {type: 'doc', id: 'architecture/request-lifecycle', label: 'Sorğunun həyat dövrü'},
-        {type: 'doc', id: 'architecture/resources', label: 'Resursların quruluşu'},
-        {type: 'doc', id: 'architecture/business-documents', label: 'Biznes sənədləri və təsirlər'},
-      ],
-    },
-    {
-      type: 'category',
       label: 'Biznes modulları',
       link: {type: 'doc', id: 'modules/index'},
       collapsed: false,
@@ -98,6 +86,5 @@ module.exports = {
         moduleCategory('Platforma və sistem', 'platform'),
       ],
     },
-    {type: 'doc', id: 'contributing', label: 'Sənədlərə töhfə'},
   ],
 };
