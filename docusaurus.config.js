@@ -41,7 +41,6 @@ const config = {
       items: [
         {type: 'docSidebar', sidebarId: 'documentation', position: 'left', label: 'Sənədlər'},
         {to: '/docs/modules', label: 'Modullar', position: 'left'},
-        {to: '/docs/api/reference/route-finder', label: 'Backend endpoint axtarışı', position: 'left'},
         {href: 'https://github.com/BeinSystems-Az/docs', label: 'GitHub', position: 'right'},
       ],
     },
@@ -54,8 +53,6 @@ const config = {
             {label: 'Başlanğıc', to: '/docs/intro'},
             {label: 'Arxitektura', to: '/docs/architecture/overview'},
             {label: 'ERP modulları', to: '/docs/modules'},
-            {label: 'Backend endpoint axtarışı', to: '/docs/api/reference/route-finder'},
-            {label: 'Tam API referansı', to: '/docs/api/reference/route-catalog'},
           ],
         },
       ],

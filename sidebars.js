@@ -107,27 +107,6 @@ module.exports = {
         {type: 'doc', id: 'ai/system-map', label: 'AI üçün sistem xəritəsi'},
       ],
     },
-    {
-      type: 'category', label: 'Texniki indekslər', collapsed: true, items: [
-        {type: 'doc', id: 'api/reference/route-finder', label: 'Backend endpoint axtarışı'},
-        {type: 'doc', id: 'api/coverage', label: 'Sənəd əhatəsi'},
-        {type: 'doc', id: 'api/reference/route-catalog', label: 'Route kataloqu'},
-        {
-          type: 'category', label: 'Endpoint indeksləri', link: {type: 'doc', id: 'api/endpoints/index'}, collapsed: true,
-          items: [
-            {type: 'doc', id: 'api/endpoints/platform', label: 'Platforma və idarəetmə'},
-            {type: 'doc', id: 'api/endpoints/master-data', label: 'Əsas məlumatlar'},
-            {type: 'doc', id: 'api/endpoints/sales-purchase', label: 'Satış və alış'},
-            {type: 'doc', id: 'api/endpoints/stock', label: 'Anbar və stok'},
-            {type: 'doc', id: 'api/endpoints/accounting', label: 'Mühasibat və maliyyə'},
-            {type: 'doc', id: 'api/endpoints/manufacturing', label: 'İstehsal'},
-            {type: 'doc', id: 'api/endpoints/pos', label: 'POS'},
-            {type: 'doc', id: 'api/endpoints/reports-output', label: 'Hesabatlar və çıxışlar'},
-            {type: 'doc', id: 'api/endpoints/ai-integrations', label: 'Avtomatlaşdırma və inteqrasiyalar'},
-          ],
-        },
-      ],
-    },
     {type: 'doc', id: 'contributing', label: 'Sənədlərə töhfə'},
   ],
 };

@@ -32,4 +32,12 @@ function isInternalResourceDocId(id) {
   return internalResourceDocs.has(`docs/${id}.md`) || internalResourceDocs.has(`docs/${id}.mdx`);
 }
 
-module.exports = {internalResourceDocs, isInternalResourceDocId};
+function isTechnicalDocId(id) {
+  return isInternalResourceDocId(id)
+    || id === 'api/coverage'
+    || id === 'api/reference/route-catalog'
+    || id === 'api/reference/route-finder'
+    || id.startsWith('api/endpoints/');
+}
+
+module.exports = {internalResourceDocs, isInternalResourceDocId, isTechnicalDocId};
