@@ -31,10 +31,15 @@ Mövcud state və icazəli keçidlər operation request-ində və backend domain
 
 ## Field-lər
 
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
+
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.
 
 | Field | Tip | Məna və istifadə |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabı; sistem tərəfindən təyin olunur və dəyişmir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-si; açıq seçilə, dəyişdirilə və təmizlənə bilər. |
 | `branch_id` | UUID | Əməliyyatın aid olduğu filialı müəyyən edir. |
 | `name` | string/null | İstifadəçiyə görünən addır. |
 | `date` | datetime/null | Əməliyyatın biznes tarixidir. |

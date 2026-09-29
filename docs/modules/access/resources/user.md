@@ -52,7 +52,103 @@ Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-
 | `allowed_branch_ids` | array/object | Resursun “allowed branch ids” məlumatını saxlayır və uyğun əməliyyatlarda istifadə olunur. |
 | `allowed_branch_ids[]` | UUID | Massiv elementində “allowed branch ids” dəyərini saxlayır. |
 
+## Sənəd yaradanı və cavabdeh əməkdaş
+
+`User` giriş və audit hesabıdır; `Employee` əməkdaş kartıdır. Biznes sənədinin `user_id` sahəsi yaradan User hesabını saxlayır və dəyişmir. Sənədin `owner_id` sahəsi cavabdeh Employee kartını saxlayır. Satınalma sifarişində keçid sxemi Employee cavabdehi müvəqqəti `owner_employee_id` sütununda saxlayır; contract buraxılışından sonra fiziki sütun `owner_id` olur. İstifadəçi öz Employee kartına bağlı deyilsə əl ilə sənəd yarada bilmir.
+
 ## Endpointlər
+
+### Cari istifadəçinin sənəd identifikasiyasını al
+
+**Endpoint** · `GET /api/v1/me/document-identity`
+
+Cari User ID-sini və bağlı aktiv Employee ID-sini qaytarır.
+
+**Request JSON**
+
+```json
+{
+  "headers": {"Authorization": "Bearer synthetic-token"},
+  "path": {},
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": null,
+  "data": {
+    "user_id": "11111111-1111-4111-8111-111111111111",
+    "employee_id": "22222222-2222-4222-8222-222222222222"
+  }
+}
+```
+
+`employee_id` aktiv əməkdaş bağlantısı yoxdursa `null` olur. **Xətalar** · `401` — giriş yoxdur. **Biznes təsiri** · Yoxdur.
+
+### Sənəd cavabdehi üçün əməkdaşları al
+
+**Endpoint** · `GET /api/v1/document-employees`
+
+Aktiv Employee kartlarının adlarını seçim üçün qaytarır. `q` və ya `search` ilə ad və soyad üzrə axtarış aparılır.
+
+**Request JSON**
+
+```json
+{
+  "headers": {"Authorization": "Bearer synthetic-token"},
+  "path": {},
+  "query": {"q": "Aysel"},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": null,
+  "data": [{"id": "22222222-2222-4222-8222-222222222222", "name": "Aysel Əliyeva", "active": true}],
+  "links": {"first": "https://erp.example.test/api/v1/document-employees?page=1", "last": "https://erp.example.test/api/v1/document-employees?page=1", "prev": null, "next": null},
+  "meta": {"current_page": 1, "last_page": 1, "per_page": 20, "total": 1}
+}
+```
+
+**Xətalar** · `401` — giriş yoxdur. **Biznes təsiri** · Yoxdur.
+
+### Sənəd cavabdehi üçün əməkdaşı oxu
+
+**Endpoint** · `GET /api/v1/document-employees/{employee}`
+
+Employee adını və aktivliyini qaytarır; əvvəl seçilmiş silinmiş kart da göstərilə bilər.
+
+**Request JSON**
+
+```json
+{
+  "headers": {"Authorization": "Bearer synthetic-token"},
+  "path": {"employee": "22222222-2222-4222-8222-222222222222"},
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": null,
+  "data": {"id": "22222222-2222-4222-8222-222222222222", "name": "Aysel Əliyeva", "active": true}
+}
+```
+
+**Xətalar** · `401` — giriş yoxdur; `404` — əməkdaş tapılmadı. **Biznes təsiri** · Yoxdur.
 
 ### İstifadəçilər: icazələri al
 
@@ -392,4 +488,3 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
 **Xətalar** · `401` — token etibarsızdır və ya yoxdur; `404` — path-dəki qeyd cari tenant/scope daxilində tapılmır; `422` — request field və ya domain validation-u keçmir.
 
 **Biznes təsiri** · İstifadəçilər konfiqurasiyası və ya qeydi dəyişir; bu əməliyyat üçün ayrıca stok və jurnal təsiri controller kontraktında göstərilmir.
-

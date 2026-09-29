@@ -32,12 +32,17 @@ Mövcud state və icazəli keçidlər operation request-ində və backend domain
 
 | State | Mənası | Sistem təsiri |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabı; sistem tərəfindən təyin olunur və dəyişmir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-si; açıq seçilə, dəyişdirilə və təmizlənə bilər. |
 | `draft` | Qaralama | Redaktə edilə bilər; post edilmiş əməliyyat nəticəsi yoxdur. |
 | `posted` | Post edilib | Əməliyyat yekunlaşıb; moduldan asılı olaraq stok, baş kitab, vergi və ya borc nəticəsi yaranır. |
 | `cancelled` | Ləğv edilib | Əməliyyat dayandırılıb; əvvəl yaranmış nəticələr domain qaydasına görə revers edilir. |
 | `reversed` | Revers edilib | Əvvəlki post edilmiş nəticə əks jurnal və ya hərəkətlə geri çevrilib. |
 
 ## Field-lər
+
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.
 

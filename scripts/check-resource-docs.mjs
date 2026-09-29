@@ -66,7 +66,11 @@ for (const file of resourceDocs) {
   for (const block of operationBlocks) {
     const operation = block.split('\n', 1)[0];
     const jsonBlocks = [...block.matchAll(/```json\n([\s\S]*?)\n```/g)];
-    if (!block.includes('**Endpoint**') || !block.includes('**Request JSON**') || !block.includes('**Response JSON') || jsonBlocks.length < 2) {
+    const csvExport = block.includes('**Endpoint** · `GET /api/v1/hr/attendance/export`');
+    const hasResponse = csvExport
+      ? block.includes('**Response CSV') && /```csv\n[\s\S]*?\n```/.test(block) && jsonBlocks.length >= 1
+      : block.includes('**Response JSON') && jsonBlocks.length >= 2;
+    if (!block.includes('**Endpoint**') || !block.includes('**Request JSON**') || !hasResponse) {
       failures.push(`${label}: “${operation}” ayrıca endpoint/request/response JSON şablonunu tamamlamır.`);
     }
     for (const [, source] of jsonBlocks) {

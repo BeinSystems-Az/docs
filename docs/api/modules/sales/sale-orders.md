@@ -32,11 +32,15 @@ slug: /api/sales/orders
 
 ## Field-lər
 
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
+
 | Field | Tip | Məna və istifadə |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabı; sistem tərəfindən təyin olunur və dəyişmir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-si; açıq seçilə, dəyişdirilə və təmizlənə bilər. |
 | `id` | UUID | Sifarişin dəyişməz texniki identifikatorudur. |
 | `name` | string | İstifadəçinin gördüyü sifariş nömrəsi/adıdır. |
-| `user_id` | UUID/null | Sifarişi yaradan/məsul istifadəçidir; göndərilməzsə autentifikasiya olunmuş user tətbiq edilir. |
 | `branch_id` | UUID/null | Yazma sorğusunda əməliyyat filialını seçir; response-da saxlanmış filialdır. |
 | `branch_name` | string/null | Response-da filialın görünən adıdır. |
 | `customer_id` | UUID | Satışın aid olduğu müştəri Partner-dir. |

@@ -39,17 +39,21 @@ Mövcud state və icazəli keçidlər operation request-ində və backend domain
 
 ## Field-lər
 
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
+
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.
 
 | Field | Tip | Məna və istifadə |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabıdır; dəyişmir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-sidir; dəyişdirilə və ya təmizlənə bilər. |
 | `branch_id` | UUID | Əməliyyatın aid olduğu filialı müəyyən edir. |
 | `created_by` | string/null | Resursun “created by” məlumatını saxlayır və uyğun əməliyyatlarda istifadə olunur. |
 | `category_id` | UUID | Qeydi əlaqəli “category” resursuna bağlayır. |
 | `product_id` | UUID | Sətirdə istifadə olunan məhsulu müəyyən edir. |
 | `stock_id` | UUID | Məhsul hərəkətinin aid olduğu anbarı müəyyən edir. |
 | `stock_document_id` | UUID | Qeydi əlaqəli “stock document” resursuna bağlayır. |
-| `responsible_user_id` | UUID | Qeydi əlaqəli “responsible user” resursuna bağlayır. |
 | `location_id` | UUID | Qeydi əlaqəli “location” resursuna bağlayır. |
 | `name` | string/null | İstifadəçiyə görünən addır. |
 | `code` | string/null | Axtarış və inteqrasiya üçün sabit qısa koddur. |
@@ -91,7 +95,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "q": "qəhvə",
     "state": "draft",
     "category_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "in_service_date": "2026-09-22",
     "in_service_date_from": "2026-09-22",
@@ -118,7 +122,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
       "product_id": "33333333-3333-4333-8333-333333333333",
       "stock_id": "33333333-3333-4333-8333-333333333333",
       "stock_document_id": "33333333-3333-4333-8333-333333333333",
-      "responsible_user_id": "33333333-3333-4333-8333-333333333333"
+      "owner_id": "33333333-3333-4333-8333-333333333333"
     }
   ],
   "links": {
@@ -164,7 +168,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "code": "DEMO",
     "barcode": "869000000001",
     "in_service_date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "category_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
@@ -192,7 +196,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "product_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
     "stock_document_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "barcode": "869000000001",
     "acquisition_date": "2026-09-22",
@@ -285,7 +289,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "product_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
     "stock_document_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "barcode": "869000000001",
     "acquisition_date": "2026-09-22",
@@ -326,7 +330,7 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
     "code": "DEMO",
     "barcode": "869000000001",
     "in_service_date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "category_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
@@ -354,7 +358,7 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
     "product_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
     "stock_document_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "barcode": "869000000001",
     "acquisition_date": "2026-09-22",
@@ -410,7 +414,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "product_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
     "stock_document_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "barcode": "869000000001",
     "acquisition_date": "2026-09-22",
@@ -426,4 +430,3 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
 **Xətalar** · `401` — token etibarsızdır və ya yoxdur; `404` — path-dəki qeyd cari tenant/scope daxilində tapılmır; `409/422` — cari state və ya bağlı əməliyyat keçidi bloklayır.
 
 **Biznes təsiri** · Draft dəyişiklik yalnız sənədi yeniləyir; post/cancel keçidi baş kitab, borc və ya aktiv nəticəsi yarada və revers edə bilər.
-

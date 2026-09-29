@@ -31,12 +31,18 @@ slug: /api/purchasing/orders
 
 ## Field-lər
 
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. Keçid sxemində `owner_employee_id` eyni Employee dəyərini qaytarır; contract buraxılışından sonra bu alias çıxarılır. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
+Köhnə User əlaqəsi keçid sxemində yalnız daxili saxlanılır və API cavabdehi kimi göstərilmir.
+
+
 | Field | Tip | Məna və istifadə |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabı; sistem tərəfindən təyin olunur və dəyişmir. |
+| `owner_employee_id` | UUID/null | Yalnız keçid sxemində `owner_id` ilə eyni Employee ID-sini qaytarır. |
 | `id` | UUID | Sifarişin dəyişməz texniki identifikatorudur. |
 | `name` | string | İstifadəçinin gördüyü sifariş nömrəsi/adıdır. |
-| `user_id` | UUID/null | Sifarişi yaradan istifadəçidir; göndərilməzsə autentifikasiya olunmuş user tətbiq edilir. |
-| `owner_id` | UUID/null | Sifarişə cavabdeh istifadəçidir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-si; açıq seçilə, dəyişdirilə və təmizlənə bilər. |
 | `branch_id` | UUID/null | Yazma sorğusunda əməliyyat filialını seçir; response-da saxlanmış filialdır. |
 | `branch_name` | string/null | Response-da filialın görünən adıdır. |
 | `project_id` | UUID/null | Sifarişi layihə ilə əlaqələndirir. |
@@ -144,6 +150,7 @@ slug: /api/purchasing/orders
     "supplier_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "44444444-4444-4444-8444-444444444444",
     "currency_id": "55555555-5555-4555-8555-555555555555",
+    "owner_id": "77777777-7777-4777-8777-777777777777",
     "items": [
       {
         "product_id": "66666666-6666-4666-8666-666666666666",
@@ -162,6 +169,10 @@ slug: /api/purchasing/orders
   "data": {
     "id": "22222222-2222-4222-8222-222222222222",
     "name": "PO-2026-0001",
+    "user_id": "88888888-8888-4888-8888-888888888888",
+    "owner_id": "77777777-7777-4777-8777-777777777777",
+    "owner_name": "Nümunə Əməkdaş",
+    "owner_employee_id": "77777777-7777-4777-8777-777777777777",
     "state": "draft",
     "items": [
       {

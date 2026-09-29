@@ -3,7 +3,7 @@
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'BEIN ERP Docs',
-  tagline: 'ERP API və texniki sənədləşdirmə',
+  tagline: 'ERP API və istifadəçi təlimatları',
   favicon: 'img/favicon.svg',
   url: 'https://docs.beinsystems.az',
   baseUrl: '/',
@@ -39,8 +39,10 @@ const config = {
     navbar: {
       title: 'BEIN ERP',
       items: [
-        {type: 'docSidebar', sidebarId: 'documentation', position: 'left', label: 'Sənədlər'},
-        {to: '/docs/modules', label: 'Modullar', position: 'left'},
+        {to: '/docs/api', label: 'API', position: 'left'},
+        {to: '/docs/user-guide', label: 'İstifadəçi təlimatı', position: 'left'},
+        {to: '/docs/glossary', label: 'Lüğət', position: 'left'},
+        {to: '/docs/faq', label: 'FAQ', position: 'left'},
         {href: 'https://github.com/BeinSystems-Az/docs', label: 'GitHub', position: 'right'},
       ],
     },
@@ -50,8 +52,10 @@ const config = {
         {
           title: 'Sənədlər',
           items: [
-            {label: 'Başlanğıc', to: '/docs/intro'},
-            {label: 'ERP modulları', to: '/docs/modules'},
+            {label: 'API', to: '/docs/api'},
+            {label: 'İstifadəçi təlimatı', to: '/docs/user-guide'},
+            {label: 'Lüğət', to: '/docs/glossary'},
+            {label: 'FAQ', to: '/docs/faq'},
           ],
         },
       ],

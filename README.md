@@ -1,5 +1,7 @@
 # BEIN ERP Docs
 
+Bu portal iki auditoriya üçün ayrılıb: inteqrasiya quran komandalar üçün **API** bölməsi və sahibkarlar/ERP istifadəçiləri üçün **İstifadəçi təlimatı**. Ümumi terminlər [Lüğət](docs/glossary.md), sistem üzrə suallar isə [FAQ](docs/faq.md) bölməsində toplanır.
+
 ## Canlı backend referansını yeniləmək
 
 Route və model siyahısı backend kodundan avtomatik çıxarılır; generated səhifələri əl ilə dəyişməyin.
@@ -12,7 +14,7 @@ npm run check
 
 Skript standart olaraq qonşu `../erp-backend` repository-sini oxuyur. Başqa checkout istifadə etmək üçün `node scripts/generate-reference.mjs --backend=/tam/yol/erp-backend` işlədin.
 
-İnsan və AI üçün oxu ardıcıllığı: [başlanğıc](docs/intro.md) → istifadə olunan biznes modulunun resurs səhifəsi → endpointin controller/DTO/action/presenter kodu.
+API oxu ardıcıllığı: [API-yə giriş](docs/api/index.md) → [autentifikasiya](docs/api/authentication.md) və [kontrakt](docs/api/contract.md) → istifadə olunan resursun endpoint səhifəsi. İstifadə qaydaları üçün [İstifadəçi təlimatı](docs/user-guide/index.md) bölməsindən modul və əməliyyatı seçin.
 
 `docs.beinsystems.az` üçün ayrıca Docusaurus repository-si.
 

@@ -62,7 +62,7 @@ Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-
 | `product_id` | UUID | Sətirdə istifadə olunan məhsulu müəyyən edir. |
 | `stock_id` | UUID | Məhsul hərəkətinin aid olduğu anbarı müəyyən edir. |
 | `stock_document_id` | UUID | Qeydi əlaqəli “stock document” resursuna bağlayır. |
-| `responsible_user_id` | UUID | Qeydi əlaqəli “responsible user” resursuna bağlayır. |
+| `owner_id` | UUID | Cavabdeh əməkdaşın Employee ID-sidir. |
 | `location_id` | UUID | Qeydi əlaqəli “location” resursuna bağlayır. |
 | `name` | string/null | İstifadəçiyə görünən addır. |
 | `code` | string/null | Axtarış və inteqrasiya üçün sabit qısa koddur. |
@@ -164,7 +164,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "as_of_date": "2026-09-22",
     "state": "draft",
     "category_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333"
   },
   "body": {}
@@ -188,7 +188,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "product_id": "33333333-3333-4333-8333-333333333333",
     "stock_id": "33333333-3333-4333-8333-333333333333",
     "stock_document_id": "33333333-3333-4333-8333-333333333333",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "barcode": "869000000001",
     "acquisition_date": "2026-09-22",

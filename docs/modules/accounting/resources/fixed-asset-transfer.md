@@ -31,14 +31,18 @@ Mövcud state və icazəli keçidlər operation request-ində və backend domain
 
 ## Field-lər
 
+**Sənəd identifikasiyası.** `user_id` dəyişməyən yaradan User hesabıdır; `owner_id` dəyişdirilə və boş saxlanıla bilən cavabdeh Employee qeydidir. İstifadəçi ilə yaradılan sənəddə ilkin cavabdeh həmin istifadəçiyə bağlı aktiv əməkdaş olur. İnteqrasiya və fon əməliyyatında cavabdeh açıq seçilməyibsə boş qalır. İstifadəçi əməkdaş qeydinə bağlı deyilsə əl ilə sənəd yarada bilmir.
+
+
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.
 
 | Field | Tip | Məna və istifadə |
 | --- | --- | --- |
+| `user_id` | UUID | Sənədi yaradan User hesabı; sistem tərəfindən təyin olunur və dəyişmir. |
+| `owner_id` | UUID/null | Cavabdeh əməkdaşın Employee ID-si; açıq seçilə, dəyişdirilə və təmizlənə bilər. |
 | `branch_id` | UUID | Əməliyyatın aid olduğu filialı müəyyən edir. |
 | `name` | string/null | İstifadəçiyə görünən addır. |
 | `date` | datetime/null | Əməliyyatın biznes tarixidir. |
-| `responsible_user_id` | UUID | Qeydi əlaqəli “responsible user” resursuna bağlayır. |
 | `location_id` | UUID | Qeydi əlaqəli “location” resursuna bağlayır. |
 | `state` | enum/string | Resursun cari lifecycle vəziyyətidir. |
 | `reason` | string/null | Resursun “reason” məlumatını saxlayır və uyğun əməliyyatlarda istifadə olunur. |
@@ -84,7 +88,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
       "state": "draft",
       "branch_id": "44444444-4444-4444-8444-444444444444",
       "date": "2026-09-22",
-      "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+      "owner_id": "33333333-3333-4333-8333-333333333333",
       "location_id": "33333333-3333-4333-8333-333333333333",
       "reason": "Nümunə səbəb",
       "created_by": "Nümunə dəyər",
@@ -133,7 +137,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
   "body": {
     "name": "Nümunə qeyd",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "items": [
@@ -156,7 +160,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "state": "draft",
     "branch_id": "44444444-4444-4444-8444-444444444444",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "created_by": "Nümunə dəyər",
@@ -244,7 +248,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "state": "draft",
     "branch_id": "44444444-4444-4444-8444-444444444444",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "created_by": "Nümunə dəyər"
@@ -278,7 +282,7 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
   "body": {
     "name": "Nümunə qeyd",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "items": [
@@ -301,7 +305,7 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
     "state": "draft",
     "branch_id": "44444444-4444-4444-8444-444444444444",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "created_by": "Nümunə dəyər",
@@ -352,7 +356,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "state": "draft",
     "branch_id": "44444444-4444-4444-8444-444444444444",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "created_by": "Nümunə dəyər"
@@ -398,7 +402,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
     "state": "draft",
     "branch_id": "44444444-4444-4444-8444-444444444444",
     "date": "2026-09-22",
-    "responsible_user_id": "33333333-3333-4333-8333-333333333333",
+    "owner_id": "33333333-3333-4333-8333-333333333333",
     "location_id": "33333333-3333-4333-8333-333333333333",
     "reason": "Nümunə səbəb",
     "created_by": "Nümunə dəyər"

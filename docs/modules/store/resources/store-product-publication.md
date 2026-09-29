@@ -41,6 +41,40 @@ Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-
 
 ## Endpointlər
 
+### Məhsulun dərc vəziyyətini oxu
+
+**Endpoint** · `GET /api/v1/store/products/{product}`
+
+Seçilmiş məhsulun həmin tenant mağazasında dərc edilib edilmədiyini qaytarır.
+
+**Request JSON**
+
+```json
+{
+  "headers": {"Authorization": "Bearer synthetic.jwt.token"},
+  "path": {"product": "22222222-2222-4222-8222-222222222222"},
+  "query": {},
+  "body": {}
+}
+```
+
+**Response JSON · `200`**
+
+```json
+{
+  "status": "success",
+  "message": null,
+  "data": {
+    "product_id": "22222222-2222-4222-8222-222222222222",
+    "is_published": true
+  }
+}
+```
+
+**Xətalar** · `403` — mağaza icazəsi yoxdur; `404` — mağaza və ya məhsul tapılmır.
+
+**Biznes təsiri** · Yoxdur; yalnız dərc vəziyyəti oxunur.
+
 ### Mağazada məhsul dərc edilməsi siyahısını al
 
 **Endpoint** · `GET /api/v1/store/products`
@@ -150,4 +184,3 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
 **Xətalar** · `401` — token etibarsızdır və ya yoxdur; `404` — path-dəki qeyd cari tenant/scope daxilində tapılmır; `422` — request field və ya domain validation-u keçmir.
 
 **Biznes təsiri** · Mağazada məhsul dərc edilməsi konfiqurasiyası və ya qeydi dəyişir; bu əməliyyat üçün ayrıca stok və jurnal təsiri controller kontraktında göstərilmir.
-
