@@ -11,24 +11,6 @@ Mağazada məhsul dərc edilməsi resursu onlayn mağaza modulunda aid olduğu m
 `Bearer` JWT və ya integration token · tenant scope-u · route üzrə authorization qərarı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Mağazada məhsul dərc edilməsi resursu onlayn mağaza modulunda aid olduğu məlumat və əməliyyatları idarə edir. Dərc etmə məhsulu mağazada görünən edir; bu endpointlər sifariş və ödəniş yaratmır.
-
-**İlkin şərtlər.** Store konfiqurasiyası və dərc ediləcək kataloq məhsulları mövcud olmalıdır.
-
-**İş axını.** Mağazanı konfiqurasiya edin, məhsulları dərc edin, public endpointlərlə kataloqu təqdim edin.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Görünürlük və storefront məlumatı dəyişir; stok və jurnal təsiri yoxdur.
-
-**Əlaqəli resurslar.** Məhsullar, kateqoriyalar və filial qiymətləri.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

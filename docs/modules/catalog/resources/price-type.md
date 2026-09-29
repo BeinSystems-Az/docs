@@ -11,24 +11,6 @@ Qiymət tipləri resursu məhsul və kataloq modulunda aid olduğu məlumat və 
 `Bearer` JWT və ya integration token · tenant scope-u · `price_types`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Qiymət tipləri resursu məhsul və kataloq modulunda aid olduğu məlumat və əməliyyatları idarə edir. Kataloq kommersiya və stok sənədlərinin master məlumatıdır; özü stok qalığı və ya jurnal yazılışı yaratmır.
-
-**İlkin şərtlər.** Tenant və filial konteksti, əlaqəli vahid, kateqoriya və qiymət məlumatı mövcud olmalıdır.
-
-**İş axını.** Əvvəl kateqoriya və vahidləri, sonra şablon və məhsulu, sonda qablaşdırma, atribut və filial parametrlərini qurun.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Dəyişikliklər gələcək sənəd seçimlərinə təsir edir; mövcud post edilmiş sənədlərin snapshot məlumatını dəyişmir.
-
-**Əlaqəli resurslar.** Satış, satınalma, stok, POS və onlayn mağaza.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

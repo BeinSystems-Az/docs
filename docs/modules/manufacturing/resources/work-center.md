@@ -11,24 +11,6 @@ title: İş mərkəzləri
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `manufacturing_work_centers`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** İş mərkəzləri resursu istehsal modulunda aid olduğu məlumat və əməliyyatları idarə edir. Master məlumatlar stok yaratmır; istehsal sifarişinin lifecycle action-ları material sərfi və hazır məhsul qəbuluna səbəb olur.
-
-**İlkin şərtlər.** Komponent və hazır məhsullar, BOM, anbar/lokasiya və lazım olduqda routing və iş mərkəzləri mövcud olmalıdır.
-
-**İş axını.** BOM və routing qurun, production order yaradın, təsdiqləyin, başladın, istehlakı qeyd edin və tamamlayın.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. İstehsalın icrası material stokunu azaldır, hazır məhsulu artırır və valuation nəticəsi yarada bilər.
-
-**Əlaqəli resurslar.** Məhsullar, stok, iş mərkəzləri və mühasibatlıq.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

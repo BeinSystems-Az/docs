@@ -27,13 +27,7 @@ const resourceItems = (module) => {
     });
 };
 
-const moduleCategory = (label, module, extraItems = []) => ({
-  type: 'category',
-  label,
-  link: {type: 'doc', id: `modules/${module}/index`},
-  collapsed: true,
-  items: [...extraItems, ...resourceItems(module)],
-});
+
 
 module.exports = {
   documentation: [
@@ -43,53 +37,138 @@ module.exports = {
       link: {type: 'doc', id: 'api/index'},
       collapsed: false,
       items: [
-        {type: 'doc', id: 'intro', label: 'API versiyası'},
-        {type: 'doc', id: 'api/authentication', label: 'Giriş və autentifikasiya'},
-        {type: 'doc', id: 'api/contract', label: 'API kontraktı'},
-        {
-          type: 'category',
-          label: 'API resursları',
-          link: {type: 'doc', id: 'modules/index'},
-          collapsed: true,
-          items: [
-            moduleCategory('Məhsul və kataloq', 'catalog', [
-              {type: 'doc', id: 'api/modules/products/catalog-products', label: 'Məhsullar'},
-              {type: 'doc', id: 'api/modules/products/product-templates', label: 'Məhsul şablonları'},
-              {type: 'doc', id: 'api/modules/products/categories', label: 'Kateqoriyalar'},
-              {type: 'doc', id: 'api/modules/products/units', label: 'Ölçü vahidləri'},
-              {type: 'doc', id: 'api/modules/products/product-packagings', label: 'Qablaşdırmalar'},
-              {type: 'doc', id: 'api/modules/products/product-attributes', label: 'Məhsul atributları'},
-            ]),
-            moduleCategory('Satış', 'sales', [
-              {type: 'doc', id: 'api/modules/sales/sale-orders', label: 'Satış sifarişləri'},
-              {type: 'doc', id: 'api/modules/sales/sale-receipts', label: 'Satış qəbzləri'},
-            ]),
-            moduleCategory('Satınalma', 'purchase', [
-              {type: 'doc', id: 'api/modules/purchase/purchase-orders', label: 'Alış sifarişləri'},
-              {type: 'doc', id: 'api/modules/purchase/purchase-receipts', label: 'Alış qəbzləri'},
-            ]),
-            moduleCategory('CRM', 'crm'),
-            moduleCategory('Tərəfdaşlar', 'partners'),
-            moduleCategory('Onlayn mağaza', 'store'),
-            moduleCategory('Anbar və stok', 'stock'),
-            moduleCategory('İstehsal', 'manufacturing'),
-            moduleCategory('POS', 'pos'),
-            moduleCategory('Mühasibatlıq və maliyyə', 'accounting'),
-            moduleCategory('Hesabatlar', 'reports'),
-            moduleCategory('Çıxış və çap', 'output'),
-            moduleCategory('İnsan resursları', 'hr'),
-            moduleCategory('Biznes şəbəkəsi', 'network'),
-            moduleCategory('Workflow və avtomatlaşdırma', 'automation'),
-            moduleCategory('İnteqrasiyalar', 'integrations'),
-            moduleCategory('İstifadəçi və giriş', 'access'),
-            moduleCategory('Platforma və sistem', 'platform'),
-          ],
-        },
+        {type: 'doc', id: 'intro', label: 'Versiya və əsas URL'},
+        {type: 'doc', id: 'api/authentication', label: 'Autentifikasiya və kontekst'},
+        {type: 'doc', id: 'api/contract', label: 'Ümumi kontrakt'},
+        {type: 'category', label: 'Şirkətim', collapsed: true, items: [
+          {type: 'doc', id: 'modules/platform/index', label: 'Platforma API-si'},
+          ...resourceItems('platform').filter(({id}) => !['modules/platform/resources/settings', 'modules/platform/resources/modules', 'modules/platform/resources/document-number-configuration'].includes(id)),
+          {type: 'doc', id: 'modules/automation/index', label: 'Avtomatlaşdırma API-si'},
+          ...resourceItems('automation'),
+          {type: 'doc', id: 'modules/integrations/index', label: 'İnteqrasiyalar API-si'},
+          ...resourceItems('integrations'),
+          {type: 'doc', id: 'modules/network/index', label: 'Şirkətlərarası şəbəkə API-si'},
+          ...resourceItems('network'),
+        ]},
+        {type: 'category', label: 'Məhsul', collapsed: true, items: [
+          {type: 'doc', id: 'modules/catalog/index', label: 'Məhsul kataloqu API-si'},
+          ...[
+            'api/modules/products/catalog-products', 'api/modules/products/product-templates',
+            'api/modules/products/categories', 'api/modules/products/units',
+            'api/modules/products/product-packagings', 'api/modules/products/product-attributes',
+          ].map((id) => ({type: 'doc', id})),
+          ...resourceItems('stock').filter(({id}) => id.endsWith('/stock-lot')),
+        ]},
+        {type: 'category', label: 'CRM', collapsed: true, items: [
+          {type: 'doc', id: 'modules/crm/index', label: 'CRM API-si'},
+          ...resourceItems('crm'),
+        ]},
+        {type: 'category', label: 'Təchizat', collapsed: true, items: [
+          {type: 'doc', id: 'modules/purchase/index', label: 'Təchizat API-si'},
+          {type: 'doc', id: 'api/modules/purchase/purchase-receipts', label: 'Alışlar'},
+          {type: 'doc', id: 'api/modules/purchase/purchase-orders', label: 'Sifarişlər'},
+          ...resourceItems('stock').filter(({id}) => id.endsWith('/product-suppliers')) ,
+          ...resourceItems('accounting').filter(({id}) => id.endsWith('/purchase-invoice') || id.endsWith('/purchase-return')),
+        ]},
+        {type: 'category', label: 'Satış', collapsed: true, items: [
+          {type: 'doc', id: 'modules/sales/index', label: 'Satış API-si'},
+          {type: 'doc', id: 'api/modules/sales/sale-receipts', label: 'Satışlar'},
+          {type: 'doc', id: 'api/modules/sales/sale-orders', label: 'Sifarişlər'},
+          ...resourceItems('accounting').filter(({id}) => id.endsWith('/sale-invoice') || id.endsWith('/sale-return')),
+        ]},
+        {type: 'category', label: 'Pərakəndə', collapsed: true, items: [
+          {type: 'doc', id: 'modules/pos/index', label: 'Pərakəndə API-si'},
+          ...resourceItems('pos').filter(({id}) => !id.endsWith('/pos-register') && !id.endsWith('/pos-payment-type') && !id.endsWith('/pos-cash-reason')),
+        ]},
+        {type: 'category', label: 'Anbar', collapsed: true, items: [
+          {type: 'doc', id: 'modules/stock/index', label: 'Anbar API-si'},
+          {type: 'doc', id: 'modules/stock/resources/stock-document', label: 'Daxilolmalar'},
+          {type: 'doc', id: 'modules/stock/resources/deliveries', label: 'Çıxışlar'},
+          {type: 'doc', id: 'modules/stock/resources/transfers', label: 'Yerdəyişmələr'},
+          {type: 'doc', id: 'modules/stock/resources/scrap', label: 'Silinmələr'},
+          {type: 'doc', id: 'modules/stock/resources/inventory', label: 'İnventarizasiyalar'},
+          {type: 'category', label: 'Anbar Hesabatları', collapsed: true, items: [
+            ...resourceItems('reports').filter(({id}) => id.endsWith('/stock-report')) ,
+            ...resourceItems('stock').filter(({id}) => id.endsWith('/stock-reorder-rules') || id.endsWith('/stock-replenishment')) ,
+          ]},
+          {type: 'category', label: 'Konfiqurasiya', collapsed: true, items: [
+            ...resourceItems('stock').filter(({id}) => id.endsWith('/stock') || id.endsWith('/stock-location')),
+          ]},
+        ]},
+        {type: 'category', label: 'Hesabatlar', collapsed: true, items: [
+          {type: 'doc', id: 'modules/reports/index', label: 'Hesabatlar API-si'},
+          ...resourceItems('reports').filter(({id}) => !id.endsWith('/stock-report') && !id.endsWith('/accounting-report-definition')),
+        ]},
+        {type: 'category', label: 'Maliyyə', collapsed: true, items: [
+          ...resourceItems('accounting').filter(({id}) => [
+            'debt', 'direct-expense', 'finance', 'payment', 'wallet', 'wallet-transfer',
+          ].some((name) => id.endsWith(`/resources/${name}`))),
+        ]},
+        {type: 'category', label: 'HR', collapsed: true, items: [
+          {type: 'doc', id: 'modules/hr/index', label: 'HR API-si'},
+          ...resourceItems('hr'),
+        ]},
+        {type: 'category', label: 'Mühasibatlıq', collapsed: true, items: [
+          {type: 'doc', id: 'modules/accounting/index', label: 'Mühasibatlıq API-si'},
+          ...resourceItems('accounting').filter(({id}) => ![
+            'purchase-invoice', 'purchase-return', 'sale-invoice', 'sale-return', 'currency',
+            'currency-rate', 'expense-category', 'tax', 'tax-profile', 'debt', 'direct-expense', 'finance',
+            'payment', 'wallet', 'wallet-transfer', 'fixed-asset', 'fixed-asset-category',
+            'fixed-asset-sale', 'fixed-asset-scrap', 'fixed-asset-transfer', 'account',
+            'accounting-report-definition',
+          ].some((name) => id.endsWith(`/resources/${name}`))),
+          {type: 'category', label: 'Hesabatlar', collapsed: true, items: [
+            ...resourceItems('reports').filter(({id}) => id.endsWith('/accounting-report-definition')),
+          ]},
+          {type: 'category', label: 'Konfiqurasiya', collapsed: true, items: [
+            ...resourceItems('accounting').filter(({id}) => id.endsWith('/account')) ,
+          ]},
+          {type: 'category', label: 'Əsas vəsaitlər', collapsed: true, items: [
+            ...resourceItems('accounting').filter(({id}) => [
+              'fixed-asset', 'fixed-asset-category', 'fixed-asset-sale', 'fixed-asset-scrap', 'fixed-asset-transfer',
+            ].some((name) => id.endsWith(`/resources/${name}`))),
+          ]},
+        ]},
+        {type: 'category', label: 'İstehsalat', collapsed: true, items: [
+          {type: 'doc', id: 'modules/manufacturing/index', label: 'İstehsalat API-si'},
+          ...resourceItems('manufacturing'),
+        ]},
+        {type: 'category', label: 'Ayarlar', collapsed: true, items: [
+          {type: 'category', label: 'Sistem', collapsed: true, items: [
+            {type: 'doc', id: 'modules/platform/resources/settings', label: 'Ümumi ayarlar'},
+            ...resourceItems('platform').filter(({id}) => id.endsWith('/modules') || id.endsWith('/document-number-configuration')),
+            {type: 'doc', id: 'modules/output/index', label: 'Çap API-si'},
+            ...resourceItems('output'),
+          ]},
+          {type: 'category', label: 'Online mağaza', collapsed: true, items: [
+            {type: 'doc', id: 'modules/store/index', label: 'Online mağaza API-si'},
+            ...resourceItems('store'),
+          ]},
+          {type: 'category', label: 'Məhsul', collapsed: true, items: [
+            ...resourceItems('catalog'),
+          ]},
+          {type: 'category', label: 'Pərakəndə', collapsed: true, items: [
+            ...resourceItems('pos').filter(({id}) => id.endsWith('/pos-register') || id.endsWith('/pos-payment-type') || id.endsWith('/pos-cash-reason')),
+          ]},
+          {type: 'category', label: 'Maliyyə', collapsed: true, items: [
+            ...resourceItems('accounting').filter(({id}) => id.endsWith('/currency') || id.endsWith('/currency-rate') || id.endsWith('/expense-category')),
+          ]},
+          {type: 'category', label: 'Mühasibatlıq', collapsed: true, items: [
+            ...resourceItems('accounting').filter(({id}) => id.endsWith('/tax') || id.endsWith('/tax-profile')),
+          ]},
+          {type: 'category', label: 'Təşkilat', collapsed: true, items: [
+            {type: 'doc', id: 'modules/access/index', label: 'İstifadəçi və giriş API-si'},
+            ...resourceItems('access').filter(({id}) => id.endsWith('/tenant') || id.endsWith('/branch')),
+          ]},
+          {type: 'category', label: 'İdarəetmə', collapsed: true, items: [
+            ...resourceItems('access').filter(({id}) => !id.endsWith('/tenant') && !id.endsWith('/branch')),
+          ]},
+        ]},
       ],
     },
     {
       type: 'category',
-      label: 'İstifadəçi təlimatı',
+      label: 'Təlimat',
       link: {type: 'doc', id: 'user-guide/index'},
       collapsed: false,
       items: [

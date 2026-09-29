@@ -9,20 +9,6 @@ slug: /api/sales/receipts
 `Bearer` JWT və ya integration token · `sale_receipts` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Satış qəbzi faktiki satış sənədidir. `posted` stok çıxışı, vergi, jurnal və stok maya dəyəri düzəlişlərini yaradır; `cancelled` nəticələri revers edir.
-
-**İlkin şərtlər.** Yeni qəbz üçün `customer_id` tələb olunur. Mənbə sifariş/faktura seçilmirsə `stock_id`, ən azı bir məhsul sətri, müsbət miqdar və mənfi olmayan qiymət də tələb olunur.
-
-**İş axını.** Sətirləri birbaşa yazın və ya mənbə sənəddən gətirin, qaralamanı yoxlayın, sonra post edin. Səhv post edilmiş sənədi yenidən redaktə etmək əvəzinə ləğv edin.
-
-**State-lər və biznes təsiri.** `draft`, `posted` və `cancelled` keçidləri aşağıdakı həyat dövründə göstərilir. Maliyyə və stok nəticəsi yalnız `posted` state-ində yaranır.
-
-**Əlaqəli resurslar.** Satış sifarişləri, tərəfdaşlar, anbar/stok, məhsullar, lotlar, vergilər, qiymət tipləri və mühasibat hesabları.
-
-**Əsas məhdudiyyətlər.** `sale_receipts` permission-ı, tenant/filial scope-u və mənbə sənədinə bağlı validation qaydaları tətbiq edilir. `origin_type` yalnız dəstəklənən mənbələri qəbul edir.
-
 ## Həyat dövrü
 
 - `draft` — redaktə olunan qəbzdir; stok və jurnal təsiri yoxdur.

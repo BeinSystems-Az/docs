@@ -5,19 +5,7 @@ title: Mühasibatlıq və maliyyə
 
 # Mühasibatlıq və maliyyə
 
-Hesab planı, jurnal yazılışları, satış və alış fakturaları, ödənişlər, borclar, vergi, pul hesabları və əsas vəsait uçotunu idarə edir.
-
-## Modulun sərhədi
-
-Bu modul maliyyə nəticəsini və baş kitabı idarə edir; fiziki stok hərəkətinin mənbəyi satış, alış və stok sənədləridir.
-
-## Tipik iş axını
-
-Əvvəl master məlumatları qurun, sənədi draft yaradın, sətirləri yoxlayın, sonra uyğun state action ilə post edin və hesabatlardan nəticəni izləyin.
-
-## Sistem təsiri
-
-Master məlumat dəyişiklikləri jurnal yaratmır. Maliyyə sənədinin `posted` vəziyyəti baş kitab və borc nəticəsi yarada, `cancelled` isə həmin nəticəni revers edə bilər.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -64,7 +52,3 @@ Master məlumat dəyişiklikləri jurnal yaratmır. Maliyyə sənədinin `posted
 | [Əsas vəsait transferləri](./resources/fixed-asset-transfer) | Aktivi məsul şəxs və ya lokasiya arasında keçirir. |
 | [Əsas vəsait satışları](./resources/fixed-asset-sale) | Aktiv satışını post edir və uçotdan çıxarma nəticəsini yaradır. |
 | [Əsas vəsait silinmələri](./resources/fixed-asset-scrap) | Aktiv scrap/silinmə əməliyyatını və mühasibat nəticəsini yaradır. |
-
-## Əlaqələr
-
-Satış, satınalma, tərəfdaşlar, stok, layihələr və hesabatlar.

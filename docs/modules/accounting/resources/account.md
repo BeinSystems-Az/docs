@@ -11,20 +11,6 @@ Hesab planı baş kitab yazılışlarında istifadə edilən mühasibat hesablar
 `Authorization: Bearer <token>` · tenant konteksti · `accounts.read/create/update/delete`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Hər hesab kod, ad, daxili qrup və uçot tipi ilə debet/kredit sətirlərinin mənasını müəyyən edir. Hesab yaratmaq özlüyündə jurnal yazılışı və maliyyə nəticəsi yaratmır.
-
-**İlkin şərtlər.** İstifadəçinin uyğun `accounts.*` icazəsi və ən azı bir əlçatan filialı olmalıdır. Kod nöqtələrlə ayrılmış iyerarxik formata uyğun gəlməli, `internal_group` və `user_type_id` dəstəklənən dəyərlərdən seçilməlidir.
-
-**İş axını.** Hesabı yaradın, seçim endpointində `q` ilə kod və ya ada görə axtarın, sonra sənəd sətirlərində hesabın `id` dəyərindən istifadə edin. Controller `parent_id` dəyərini hesab kodundan özü çıxarır.
-
-**State-lər və biznes təsiri.** Ayrıca lifecycle state yoxdur. `active=false` hesabı yeni seçimlər üçün passivləşdirir; `reconcile=true` həmin hesabın açıq sətirlərinin uzlaşdırılmasına imkan verir. CRUD əməliyyatları mövcud jurnal məbləğlərini dəyişmir.
-
-**Əlaqəli resurslar.** Jurnal sətirləri, account property-lər, pul hesabları, vergi tərifləri və maliyyə hesabatları hesab planına istinad edir.
-
-**Əsas məhdudiyyətlər.** `code` unikaldır və boşluq, tire və ardıcıl olmayan nöqtə strukturu qəbul etmir. `package_code`, `package_version`, `template_key`, qüvvədəolma tarixləri və `is_statutory` lokalizasiya tərəfindən idarə olunan response sahələridir; create/update body-də qəbul edilmir.
-
 ## Həyat dövrü
 
 Hesab yaradılır, lazım olduqda adı və uçot davranışı yenilənir, passivləşdirilir və ya silinir. Bu resursda post/cancel keçidi yoxdur.

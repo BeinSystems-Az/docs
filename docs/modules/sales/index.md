@@ -5,19 +5,7 @@ title: Satış
 
 # Satış
 
-Müştəri sifarişini və faktiki satış qəbzini idarə edir.
-
-## Modulun sərhədi
-
-Sifariş kommersiya öhdəliyidir; faktiki stok və mühasibat nəticəsi satış qəbzi post ediləndə yaranır.
-
-## Tipik iş axını
-
-Sifariş yaradın və təsdiqləyin, sonra qəbzə çevirib post edin.
-
-## Sistem təsiri
-
-Post edilmiş satış qəbzi stok çıxışı, vergi və jurnal nəticəsi yaradır; ləğv nəticələri revers edir.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -25,7 +13,3 @@ Post edilmiş satış qəbzi stok çıxışı, vergi və jurnal nəticəsi yarad
 | --- | --- |
 | [Satış sifarişləri](../../api/sales/orders) | Satış sifarişləri üzrə master məlumat və bütün əlaqəli endpoint əməliyyatları. |
 | [Satış qəbzləri](../../api/sales/receipts) | Satış qəbzləri üzrə master məlumat və bütün əlaqəli endpoint əməliyyatları. |
-
-## Əlaqələr
-
-Tərəfdaşlar, kataloq, stok, POS və mühasibatlıq.

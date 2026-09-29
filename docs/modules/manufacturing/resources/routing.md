@@ -11,20 +11,6 @@ title: İstehsal marşrutları
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `manufacturing_routings`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** İstehsal marşrutları resursu istehsal modulunda aid olduğu məlumat və əməliyyatları idarə edir. Master məlumatlar stok yaratmır; istehsal sifarişinin lifecycle action-ları material sərfi və hazır məhsul qəbuluna səbəb olur.
-
-**İlkin şərtlər.** Komponent və hazır məhsullar, BOM, anbar/lokasiya və lazım olduqda routing və iş mərkəzləri mövcud olmalıdır.
-
-**İş axını.** BOM və routing qurun, production order yaradın, təsdiqləyin, başladın, istehlakı qeyd edin və tamamlayın.
-
-**State-lər və biznes təsiri.** İstehsalın icrası material stokunu azaldır, hazır məhsulu artırır və valuation nəticəsi yarada bilər.
-
-**Əlaqəli resurslar.** Məhsullar, stok, iş mərkəzləri və mühasibatlıq.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
 ## Həyat dövrü
 
 Mövcud state və icazəli keçidlər operation request-ində və backend domain qaydalarında yoxlanılır; keçidin stok və jurnal təsiri aşağıdakı endpoint blokunda ayrıca göstərilir.

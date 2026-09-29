@@ -5,19 +5,7 @@ title: İstifadəçi və giriş
 
 # İstifadəçi və giriş
 
-Tenant, filial, istifadəçi, rol, permission və authorization policy-lərini idarə edir.
-
-## Modulun sərhədi
-
-Giriş idarəetməsi hansı əməliyyatın görülə biləcəyini müəyyən edir; özü biznes sənədi yaratmır.
-
-## Tipik iş axını
-
-Tenant və filialı qurun, istifadəçi və rolları yaradın, permission və policy-ləri təyin edin.
-
-## Sistem təsiri
-
-İcazə və görünürlük dəyişir; stok və jurnal təsiri yoxdur, təhlükəsizlik audit izi yarana bilər.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -32,8 +20,3 @@ Tenant və filialı qurun, istifadəçi və rolları yaradın, permission və po
 | [İstifadəçilər](./resources/user) | İstifadəçilər məlumat və əməliyyatlarını idarə edir. |
 | [Rollar](./resources/role) | Rollar məlumat və əməliyyatlarını idarə edir. |
 | [Tenant idarəetməsi](./resources/tenant) | Tenant idarəetməsi məlumat və əməliyyatlarını idarə edir. |
-
-## Əlaqələr
-
-Bütün modullar, audit və inteqrasiya client-ləri.
-

@@ -8,5 +8,5 @@ Bu bölmədə BEIN ERP-də müxtəlif modullarda işlənən ümumi terminlər v�
 
 | Termin | İzah | Əlaqəli bölmə |
 | --- | --- | --- |
-| Modul | Sistemdə müəyyən biznes sahəsinin funksiyalarını birləşdirən hissə. | [İstifadəçi təlimatı](/docs/user-guide) |
+| Modul | Sistemdə müəyyən biznes sahəsinin funksiyalarını birləşdirən hissə. | [Təlimat](/docs/user-guide) |
 | Sənəd | Biznes əməliyyatını və onun məlumatlarını qeyd edən ERP qeydi. | API resursu və istifadəçi təlimatı |

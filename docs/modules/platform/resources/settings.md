@@ -11,20 +11,6 @@ Sistem parametrləri resursu platforma və sistem modulunda aid olduğu məlumat
 `Bearer` JWT və ya integration token · tenant scope-u · route üzrə authorization qərarı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Sistem parametrləri resursu platforma və sistem modulunda aid olduğu məlumat və əməliyyatları idarə edir. Bu resurslar UI və platform davranışını idarə edir; biznes sənədinin domain kontraktını əvəz etmir.
-
-**İlkin şərtlər.** Endpointdən asılı olaraq tenant autentifikasiyası, istifadəçi və platform metadata-sı tələb olunur.
-
-**İş axını.** Schema və metadata-nı oxuyun, istifadəçi seçimlərini saxlayın, audit və sistem vəziyyətini izləyin.
-
-**State-lər və biznes təsiri.** Əsasən platform konfiqurasiyası və görünüş dəyişir; reset kimi inzibati əməliyyatlar ayrıca ciddi məhdudiyyət daşıyır.
-
-**Əlaqəli resurslar.** Autentifikasiya, bütün biznes modulları və audit.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
 ## Həyat dövrü
 
 Mövcud state və icazəli keçidlər operation request-ində və backend domain qaydalarında yoxlanılır; keçidin stok və jurnal təsiri aşağıdakı endpoint blokunda ayrıca göstərilir.

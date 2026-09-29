@@ -1,29 +1,15 @@
 ---
 sidebar_position: 5
-title: Stok sənədləri
+title: Anbar daxilolmaları
 ---
 
-# Stok sənədləri
+# Anbar daxilolmaları
 
-Stok sənədləri resursu anbar və stok modulunda aid olduğu məlumat və əməliyyatları idarə edir.
+Anbar daxilolmaları üçün API əməliyyatları ortaq `/api/v1/stock-documents` endpoint ailəsindən istifadə edir. Bu səhifədə yalnız `receipt` tipli sənəd nümunələri göstərilir.
 
 :::info Kontekst
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `stock_documents`
 :::
-
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Stok sənədləri resursu anbar və stok modulunda aid olduğu məlumat və əməliyyatları idarə edir. Master məlumatlar stok miqdarını dəyişmir; yalnız post edilmiş hərəkət sənədləri faktiki qalıq və valuation nəticəsi yaradır.
-
-**İlkin şərtlər.** Filial, anbar/lokasiya, məhsul və tələb olunan valuation hesabları mövcud olmalıdır.
-
-**İş axını.** Anbar strukturunu qurun, sənədi draft yaradın, sətirləri yoxlayın, sonra post edin və hesabatlardan nəticəni izləyin.
-
-**State-lər və biznes təsiri.** Post etmə stok hərəkəti və lazım olduqda jurnal yaradır; cancel/reversal nəticəni geri çevirir.
-
-**Əlaqəli resurslar.** Kataloq, satış, satınalma, istehsal və mühasibatlıq.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
 
 ## Həyat dövrü
 
@@ -91,7 +77,7 @@ Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-
 
 ## Endpointlər
 
-### Stok sənədləri siyahısını al
+### Anbar daxilolmaları siyahısını al
 
 **Endpoint** · `GET /api/v1/stock-documents`
 
@@ -107,7 +93,9 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
     "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.synthetic"
   },
   "path": {},
-  "query": {},
+  "query": {
+    "type": "receipt"
+  },
   "body": {}
 }
 ```
@@ -153,7 +141,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
 
 **Biznes təsiri** · Yoxdur; yalnız məlumat oxunur.
 
-### Stok sənədləri qeydi yarat
+### Anbar daxilolmaları qeydi yarat
 
 **Endpoint** · `POST /api/v1/stock-documents`
 
@@ -249,7 +237,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
 
 **Biznes təsiri** · State keçidindən asılı olaraq stok hərəkəti, valuation və jurnal nəticəsi yarana və ya revers oluna bilər.
 
-### Stok sənədləri qeydini sil
+### Anbar daxilolmaları qeydini sil
 
 **Endpoint** · `DELETE /api/v1/stock-documents/{stock_document}`
 
@@ -286,7 +274,7 @@ Qeydi backend-in silmə və bağlı məlumat məhdudiyyətlərinə uyğun arxivl
 
 **Biznes təsiri** · State keçidindən asılı olaraq stok hərəkəti, valuation və jurnal nəticəsi yarana və ya revers oluna bilər.
 
-### Stok sənədləri qeydini oxu
+### Anbar daxilolmaları qeydini oxu
 
 **Endpoint** · `GET /api/v1/stock-documents/{stock_document}`
 
@@ -342,7 +330,7 @@ Cari istifadəçi və scope daxilində məlumatı dəyişiklik etmədən qaytar�
 
 **Biznes təsiri** · Yoxdur; yalnız məlumat oxunur.
 
-### Stok sənədləri qeydini yenilə
+### Anbar daxilolmaları qeydini yenilə
 
 **Endpoint** · `PATCH|PUT /api/v1/stock-documents/{stock_document}`
 
@@ -440,7 +428,7 @@ Mövcud qeydin göndərilən sahələrini validation və domain qaydalarına uy�
 
 **Biznes təsiri** · State keçidindən asılı olaraq stok hərəkəti, valuation və jurnal nəticəsi yarana və ya revers oluna bilər.
 
-### Stok sənədləri qeydini ləğv et
+### Anbar daxilolmaları qeydini ləğv et
 
 **Endpoint** · `POST /api/v1/stock-documents/{stockDocument}/cancel`
 
@@ -496,7 +484,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
 
 **Biznes təsiri** · State keçidindən asılı olaraq stok hərəkəti, valuation və jurnal nəticəsi yarana və ya revers oluna bilər.
 
-### Stok sənədləri: qaralamaya qaytar
+### Anbar daxilolmaları: qaralamaya qaytar
 
 **Endpoint** · `POST /api/v1/stock-documents/{stockDocument}/draft`
 
@@ -552,7 +540,7 @@ Sorğudakı məlumatla yeni qeyd və ya resursa aid domain əməliyyatı yaradı
 
 **Biznes təsiri** · State keçidindən asılı olaraq stok hərəkəti, valuation və jurnal nəticəsi yarana və ya revers oluna bilər.
 
-### Stok sənədləri qeydini post et
+### Anbar daxilolmaları qeydini post et
 
 **Endpoint** · `POST /api/v1/stock-documents/{stockDocument}/post`
 

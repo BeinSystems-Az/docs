@@ -9,20 +9,6 @@ slug: /api/purchasing/receipts
 `Bearer` JWT və ya integration token · `purchase_receipts` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Alış qəbzi fiziki mal qəbuludur. `posted` stok, valuation, vergi, jurnal və xərcləri yaradır; `cancelled` nəticələri revers edir.
-
-**İlkin şərtlər.** Mənbə sifariş/faktura seçilmirsə `supplier_id`, `stock_id` və ən azı bir məhsul sətri tələb olunur. Hər məhsul sətri müsbət miqdar daşıyır.
-
-**İş axını.** Qəbzi birbaşa yaradın və ya Alış sifarişi/fakturadan gətirin, qəbul olunan miqdar və xərcləri yoxlayın, sonra post edin. Səhv nəticəni düzəltmək üçün qəbzi ləğv edin.
-
-**State-lər və biznes təsiri.** `draft`, `posted` və `cancelled` keçidləri aşağıdakı həyat dövründə göstərilir. Stok və mühasibat nəticəsi yalnız `posted` state-ində yaranır.
-
-**Əlaqəli resurslar.** Alış sifarişləri, Alış fakturaları, təchizatçılar, anbar/stok, məhsullar, lotlar, vergilər və mühasibat hesabları.
-
-**Əsas məhdudiyyətlər.** `purchase_receipts` permission-ı, tenant/filial scope-u və mənbə sənəd validation-u tətbiq edilir. Update zamanı `origin_type` və `origin_id` göndərilə bilməz.
-
 ## Həyat dövrü
 
 - `draft` — redaktə olunan qəbul sənədidir; stok və jurnal təsiri yoxdur.

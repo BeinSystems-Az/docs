@@ -11,24 +11,6 @@ Sənəd çıxışları resursu çıxış və çap modulunda aid olduğu məlumat
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `document_outputs`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Sənəd çıxışları resursu çıxış və çap modulunda aid olduğu məlumat və əməliyyatları idarə edir. Çıxış mövcud sənədi render edir; biznes sənədinin state və məbləğini dəyişmir.
-
-**İlkin şərtlər.** Mənbə sənəd və lazım olduqda uyğun output template mövcud olmalıdır.
-
-**İş axını.** Template-i qurun, sənəd üçün output preview/render tələb edin və nəticəni çap və ya ixrac edin.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Yoxdur; yalnız təqdimat nəticəsi yaradır.
-
-**Əlaqəli resurslar.** Satış, satınalma, mühasibatlıq və stok sənədləri.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

@@ -9,20 +9,6 @@ slug: /api/catalog/products
 `Bearer` JWT və ya integration token · məhsul CRUD-u üçün `products.*`, filial sazlamaları üçün `branch_product_settings.update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Məhsul satış, alış, stok və istehsal sənədlərinin istifadə etdiyi master kartdır. Kartı dəyişmək stok, rezerv və jurnal yaratmır; həmin nəticələr məhsul biznes sənədində istifadə ediləndə yaranır.
-
-**İlkin şərtlər.** `name` məcburidir. `category_id`, `unit_id`, vergi, hesab, təchizatçı, qablaşdırma və replenishment qaydası göndərilirsə, həmin identifikatorlar tenant-da mövcud olmalıdır.
-
-**İş axını.** Məhsul kartını yaradın, lazım olan kataloq və qiymət sazlamalarını bağlayın, sonra onu sənəd sətirlərində seçin. Filiala məxsus qiymət üçün branch setting-dən istifadə edin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; `active` yalnız yeni seçimləri idarə edir. Qiymət və kart dəyişiklikləri post edilmiş sənədləri yenidən hesablamır.
-
-**Əlaqəli resurslar.** Kateqoriyalar, ölçü vahidləri, məhsul şablonları, qablaşdırmalar, təchizatçı sazlamaları, stok və alış/satış sənəd sətirləri.
-
-**Əsas məhdudiyyətlər.** `name` tenant daxilində unikaldır. `products` permission-ı, tenant/filial scope-u və hər əlaqəli field üçün request validation-u tətbiq edilir.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

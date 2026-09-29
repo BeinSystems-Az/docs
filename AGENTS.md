@@ -1,63 +1,36 @@
 # API sənədləşdirmə standardı
 
-Bu qaydalar Docusaurus portalının oxucuları üçün deyil. Bu repository-də API sənədi yaradan və ya yeniləyən bütün agent və developer-lər üçün məcburi iş təlimatıdır.
+Bu daxili qaydalar API bölməsini yaradan və yeniləyən developer-lər üçündür.
 
 ## Fakt mənbəyi
 
-- Endpoint faktlarını `../erp-backend` mənbə kodundan yoxlayın: route, middleware, controller, request validation DTO, presenter/response DTO, action/service və uyğun test.
-- Kodla təsdiqlənməyən field, status, state keçidi, permission və ya biznes təsiri yazmayın.
-- Backend dəyişdirilmirsə, sənədləşdirmə üçün onu yalnız oxuyun.
+- Route, middleware, controller, request validation, DTO, action/service, presenter və testlər API kontraktının mənbəyidir. Backend dəyişmirsə, onu yalnız oxuyun.
+- Kodla təsdiqlənməyən path, field, tip, məcburilik, status, permission, xəta və nəticə yazmayın.
+- src/generated/api-routes.json avtomatik route snapshot-ıdır; əl ilə redaktə etməyin. Backend route-u dəyişəndə npm run generate:reference işlədin.
 
-## Tam inventar və generasiya
+## Sabit API quruluşu
 
-- Backend route snapshot-ı `src/generated/api-routes.json` faylında saxlanılır; onu əl ilə redaktə etməyin.
-- Backend route dəyişdikdə, sənəd dəyişikliyini handoff etməzdən əvvəl `npm run generate:reference` işlədin. Skript yalnız avtomatik audit üçün route snapshot-ını yeniləyir.
-- Endpointin field, enum, response və biznes nəticəsi yalnız controller → request/DTO → action/service → presenter və testlə təsdiq ediləndə istifadəçi resurs sənədinə yazıla bilər.
+Menyu ardıcıllığı: versiya və əsas URL, autentifikasiya və kontekst, ümumi kontrakt, sonra ERP frontend menyusunu izləyən API kateqoriyaları. Eyni menyu ekranında idarə olunan hər API resursu ayrıca səhifədə olmalıdır; fərqli biznes sənəd növləri ortaq endpoint işlətsə belə, hər növ üçün ayrıca API səhifəsi yaradın və uyğun type/filter nümunələrini verin. Ayarların çoxsaylı açarları bir xüsusi API resursundan idarə olunursa, onları bir API səhifəsində saxlayın. API bölməsində istifadəçi interfeysi təlimatı və təkrarlanan biznes workflow-u saxlanmır. API-si olmayan frontend bölməsi üçün saxta endpoint kateqoriyası yaratmayın.
 
-## Səhifə quruluşu
+Modul səhifəsi həmin modulun API resurslarına indeks verir. Bir resurs səhifəsi resursun bütün endpointlərini bir yerdə saxlayır. Mövcud public URL-ləri qoruyun; URL dəyişikliyi zəruridirsə, köhnə URL üçün redirect yaradın.
 
-- Docusaurus-da hər modul kateqoriya, hər resurs **bir səhifədir**. CRUD və resursla əlaqəli domain action-ları ayrıca səhifələrə bölünmür; həmin resurs səhifəsində `###` operation başlıqları kimi saxlanılır.
-- Resurs səhifəsi həmin resursun collection, detail və action endpointlərini birlikdə saxlayır. Məsələn, Products səhifəsinə `GET/POST /products`, `GET/PUT/PATCH/DELETE /products/{product}` və məhsula aid nested action-lar daxildir.
-- Yeni və yenilənən resurs səhifələri `internal/resource-page-template.md` strukturunu istifadə etməlidir.
-- Portalda bu daxili qaydanı, yazı şablonunu və ya contributor prosesini publish etməyin. İstifadəçi yalnız API kontraktını və biznes izahını görməlidir.
+API reference əhatəsindən qəsdən çıxarılan resurs və route-ları internal/api-doc-exclusions.json-da əsaslandırması ilə qeyd edin; route audit-i bu siyahını yoxlamalıdır. Yeni resurs səhifələri internal/resource-page-template.md şablonuna uyğun olmalıdır. Giriş qısa API məqsədini və lazım olduqda auth, permission, tenant və filial kontekstini bildirir. Təkrarlanan biznes xülasələri məcburi deyil. State keçidini yalnız konkret API davranışını anlamaq üçün lazım olduqda saxlayın.
 
-## Resurs icmalı standardı
+## Endpoint məzmunu
 
-Hər resursun icmalında aşağıdakı altı bölmə mütləq olmalıdır. Mətn qısa telegraflıqla deyil, inteqratorun resursun rolunu ilk oxunuşda başa düşəcəyi aydın dillə yazılmalıdır:
-
-1. **Məqsəd və sərhəd** — resursun nəyi təmsil etdiyi və hansı nəticəni özlüyündə yaratmadığı.
-2. **İlkin şərtlər** — əməliyyatdan əvvəl mövcud olmalı əsas məlumat və kontekst.
-3. **İş axını** — tipik istifadə ardıcıllığı.
-4. **State-lər və biznes təsiri** — mövcud state-lər, keçidlər və stok, rezerv, vergi, jurnal, audit nəticəsi.
-5. **Əlaqəli resurslar** — mənbə, törəmə və nəticə resursları, həmçinin növbəti əməliyyat.
-6. **Əsas məhdudiyyətlər** — icazə, filial scope-u, state və bağlı sənədlərdən doğan real məhdudiyyətlər.
-
-Operation başlığı istifadəçi niyyətini ifadə etməlidir: məsələn, `### Sifariş yarat`. HTTP metod və tam URL növbəti sətirdə `**Endpoint** · POST /api/v1/...` formatında göstərilir. Sidebar-da yalnız resurs adı görünür.
-
-## Hər endpoint üçün məcburi məzmun
-
-Resurs səhifəsində auth/context və bir dənə `Field-lər` cədvəli saxlanılır. Cədvəl hər field-in biznes mənasını və niyə istifadə olunduğunu izah edir; request kontraktını əvəz etmir. Ortaq request və ortaq response bölməsi yaradılmır. Hər HTTP operation `###` altında bu ardıcıllığı saxlayır:
-
-1. `**Endpoint** · METHOD /api/v1/...` və bir cümləlik məqsəd.
-2. `Request JSON`: `headers`, `path`, `query`, `body` hissələri ilə operation-a aid ayrıca, sintetik və valid JSON nümunəsi. Body yoxdursa `body: {}` göstərilir.
-3. `Response JSON · status`: həmin operation-ın real response zərfini göstərən ayrıca, sintetik və valid JSON nümunəsi.
-4. Yalnız həmin operation-a real aid xətalar və səbəbləri.
-5. State, stok, rezerv, jurnal, vergi və audit təsirini bir sətirdə bildirin; təsir yoxdursa açıq yazın.
-
-Field mənalarını endpoint bloklarında cədvəl kimi təkrarlamayın; lakin request və response JSON-u hər endpointdə ayrıca və açıq göstərin. Başqa operation-a və ya ortaq payload-a istinad response nümunəsini əvəz etmir.
-
-## Keyfiyyət qadağaları
-
-- `GenericRequest`, naməlum `data`, “və s.”, placeholder və natamam response izahı ilə kifayətlənməyin.
-- Request və response nümunələrində real token, tenant, istifadəçi, müştəri və ya secret istifadə etməyin; yalnız sintetik məlumat yazın.
-- İzahlar Azərbaycan dilində, endpoint və JSON field adları ingiliscə olmalıdır.
-- API davranışı dəyişəndə eyni dəyişiklikdə uyğun resurs səhifəsi də yenilənməlidir.
+- Hər operation ayrıca başlıq, HTTP metodu və tam endpoint yolu ilə göstərilir.
+- Hər operation üçün ayrıca sintetik request və success response JSON nümunəsi verin. Request headers, path, query və body hissələrini aydın ayırır; istifadə olunmayan hissələr boş obyektdir.
+- Permission və həmin operation-a aid, backend-də təsdiqlənmiş əsas xətaları göstərin.
+- Field cədvəlini yalnız inteqrasiya üçün vacib field-ləri bir yerdə anlamağa kömək etdikdə saxlayın. Field adı, tipi və qısa texniki məna verin.
+- Stok, rezerv, jurnal, vergi və state təsirini yalnız konkret API nəticəsi üçün vacib və backend-də təsdiqlənmiş olduqda yazın.
+- İzahlar Azərbaycan dilində, endpoint və JSON field adları ingiliscədir. Nümunələrdə real token və ya müştəri məlumatı işlətməyin.
 
 ## Yoxlama
 
-- Yeni və ya dəyişən sənədin bütün məlumatlarını backend kodu ilə tutuşdurun.
-- Hər resurs səhifəsində yuxarıdakı bütün endpoint bölmələrinin olmasını yoxlayın.
-- Handoff-dan əvvəl `npm run check` işlədin və qırıq Docusaurus linki saxlamayın.
+Handoff-dan əvvəl npm run check işlədin. Route audit-i backend snapshot-ı ilə müqayisə etməli, qırıq link və etibarsız JSON saxlanmamalıdır.
+
+Ətraflı qərarlar: internal/decisions/001-api-reference-structure.md, internal/decisions/002-api-docs-follow-frontend-navigation.md
+
 
 ## İstifadəçi təlimatı səhifə standartı
 

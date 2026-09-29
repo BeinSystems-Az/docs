@@ -5,19 +5,7 @@ title: Məhsul və kataloq
 
 # Məhsul və kataloq
 
-Məhsul, şablon, kateqoriya, vahid, qablaşdırma, atribut, filial qiyməti və qiymət tipi kimi əsas kataloq məlumatını idarə edir.
-
-## Modulun sərhədi
-
-Kataloq kommersiya və stok sənədlərinin master məlumatıdır; özü stok qalığı və ya jurnal yazılışı yaratmır.
-
-## Tipik iş axını
-
-Əvvəl kateqoriya və vahidləri, sonra şablon və məhsulu, sonda qablaşdırma, atribut və filial parametrlərini qurun.
-
-## Sistem təsiri
-
-Dəyişikliklər gələcək sənəd seçimlərinə təsir edir; mövcud post edilmiş sənədlərin snapshot məlumatını dəyişmir.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -30,7 +18,3 @@ Dəyişikliklər gələcək sənəd seçimlərinə təsir edir; mövcud post edi
 | [Qablaşdırmalar](../../api/catalog/product-packagings) | Qablaşdırmalar üzrə master məlumat və bütün əlaqəli endpoint əməliyyatları. |
 | [Məhsul atributları](../../api/catalog/product-attributes) | Məhsul atributları üzrə master məlumat və bütün əlaqəli endpoint əməliyyatları. |
 | [Qiymət tipləri](./resources/price-type) | Qiymət tipləri məlumat və əməliyyatlarını idarə edir. |
-
-## Əlaqələr
-
-Satış, satınalma, stok, POS və onlayn mağaza.

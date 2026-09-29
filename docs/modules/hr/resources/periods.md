@@ -8,20 +8,6 @@ title: HR dövrləri
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Davamiyyət ayının açıq və bağlı vəziyyətini, reviziyasını saxlayır.
-
-**İlkin şərtlər.** HR modulu və tam dövr icazəsi olmalıdır.
-
-**İş axını.** Ayı yoxlayın, bitmiş ayı bağlayın, düzəliş üçün səbəblə yenidən açın.
-
-**State-lər və biznes təsiri.** open və closed; close snapshot yaradır, reopen reviziyanı artırır və draft maaş hesabını silir.
-
-**Əlaqəli resurslar.** Davamiyyət, vaxt qeydləri və maaş hesabı.
-
-**Əsas məhdudiyyətlər.** Cari ay bağlanmır; təsdiqlənmiş maaş hesabı olan dövr yenidən açılmır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

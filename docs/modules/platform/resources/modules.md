@@ -8,20 +8,6 @@ title: Tenant modulları
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Tenant üçün modulların aktivlik vəziyyətini göstərir və dəyişir.
-
-**İlkin şərtlər.** Tenant konteksti və modul idarəetmə icazəsi olmalıdır.
-
-**İş axını.** Kataloqu oxuyun, seçilmiş modulun is_active dəyərini yeniləyin.
-
-**State-lər və biznes təsiri.** is_active modulu iş axınında açır və ya bağlayır; deaktiv etmə workflow-lara təsir edə bilər.
-
-**Əlaqəli resurslar.** Naviqasiya, metadata və workflow modulları.
-
-**Əsas məhdudiyyətlər.** Yalnız kataloqdakı modul açarları qəbul olunur.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

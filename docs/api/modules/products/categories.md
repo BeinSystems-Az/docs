@@ -9,20 +9,6 @@ slug: /api/catalog/categories
 `Bearer` JWT və ya integration token · `categories.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Kateqoriya məhsulları iyerarxik qruplaşdıran master məlumatdır; stok və maliyyə hərəkəti yaratmır.
-
-**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; alt kateqoriya üçün `parent_id` ilə mövcud ana kateqoriya seçilir.
-
-**İş axını.** Kateqoriyanı yaradın, lazım gələrsə onu ana kateqoriyaya bağlayın, sonra məhsul və şablonlarda seçin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; `active` seçimi gələcək kataloq seçimlərinə təsir edir, tarixçəyə yox.
-
-**Əlaqəli resurslar.** Məhsullar və məhsul şablonları.
-
-**Əsas məhdudiyyətlər.** `categories` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; `parent_id` həmin scope-da olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

@@ -1,11 +1,16 @@
 ---
 sidebar_position: 1
+title: Versiya və əsas URL
 ---
 
-# API versiyası
+# API versiyası və əsas URL
 
-BEIN ERP tenant biznes API-sinin əsas hissəsi `/api/v1` prefix-i altındadır. Aktivasiya və public store kimi bəzi xüsusi route-lar `/api` altında ayrıca təqdim edilir; konkret path və JSON nümunəsi uyğun resurs səhifəsində göstərilir.
+Tenant biznes endpoint-lərinin əsas prefix-i /api/v1-dir. Nümunə base URL:
 
-## Geriyə uyğunluq
+```text
+https://API_HOST/api/v1
+```
 
-Geriyə uyğun olmayan dəyişiklik yeni API versiyası və ya əvvəlcədən elan edilmiş köhnəlmə mərhələsi tələb edir. İnteqrasiya qurarkən resurs səhifəsində göstərilən endpoint, sorğu və cavab formatlarını əsas götürün.
+Public mağaza, POS aktivasiya, cihaz sinxronizasiyası və health endpoint-ləri ayrıca path və protokol istifadə edə bilər. Həmin endpoint-in resurs səhifəsində path, auth və nümunəni yoxlayın.
+
+Geriyə uyğun olmayan kontrakt dəyişikliyi yeni API versiyası və ya əvvəlcədən elan olunmuş köhnəlmə mərhələsi tələb edir.

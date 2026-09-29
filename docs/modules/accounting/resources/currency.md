@@ -11,24 +11,6 @@ Valyutalar sənəd məbləğlərinin hansı pul vahidində saxlandığını, gö
 `Authorization: Bearer <token>` · tenant konteksti · `currencies.read/create/update/delete`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Valyuta ISO kodu, ad, simvol və onluq dəqiqliyi saxlayır. `rates` alt kolleksiyası tarixi məzənnələri eyni create/update sorğusunda sinxronlaşdıra bilər. Valyuta yaratmaq jurnal yazılışı yaratmır.
-
-**İlkin şərtlər.** `code` üç böyük hərfdən ibarət ISO formatında olmalıdır. Məzənnə əlavə edilirsə tarix, sıfırdan böyük `rate` və `official`, `market` və ya `interbank` tipi verilir.
-
-**İş axını.** Valyutanı yaradın, xarici valyuta üçün tarixli məzənnələri saxlayın, sonra sənəd və pul hesablarında `currency_id` istifadə edin. Təşkilatın əsas valyutası settings-də ayrıca seçilir.
-
-**State-lər və biznes təsiri.** Lifecycle state yoxdur. `active=false` valyutanı yeni seçimlər üçün passivləşdirir. Məzənnə dəyişikliyi əvvəl post edilmiş sənədləri yenidən hesablamır.
-
-**Əlaqəli resurslar.** Valyuta məzənnələri, settings-də təşkilat valyutası, wallet-lər, ödənişlər, fakturalar və jurnal sətirləri.
-
-**Əsas məhdudiyyətlər.** Təşkilatın əsas valyutası üçün ayrıca məzənnə saxlanmır: onun dəyəri həmişə `1` sayılır. Əsas valyuta və maliyyə sənədlərində istifadə olunan valyuta silinə bilməz. Eyni tarix və tip üçün yalnız bir məzənnə qəbul edilir.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

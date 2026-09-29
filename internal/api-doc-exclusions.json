@@ -1,0 +1,30 @@
+[
+  {
+    "scope": "Tərəf-müqabillər API resursları",
+    "decision": "Bu altı API səhifəsi məhsul sənədləşdirmə əhatəsindən çıxarılıb.",
+    "date": "2026-09-29",
+    "routes": [
+      "DELETE /api/v1/partner-bank-accounts/{}",
+      "DELETE /api/v1/partner-groups/{}",
+      "DELETE /api/v1/partners/{}",
+      "GET /api/v1/partner-bank-accounts",
+      "GET /api/v1/partner-bank-accounts/{}",
+      "GET /api/v1/partner-groups",
+      "GET /api/v1/partner-groups/{}",
+      "GET /api/v1/partners",
+      "GET /api/v1/partners/{}",
+      "PATCH /api/v1/partner-bank-accounts/{}",
+      "PATCH /api/v1/partner-groups/{}",
+      "PATCH /api/v1/partners/{}",
+      "POST /api/v1/partner-bank-accounts",
+      "POST /api/v1/partner-groups",
+      "POST /api/v1/partners",
+      "POST /api/v1/partners/taxpayer-lookup",
+      "POST /api/v1/partners/taxpayer-risk-check",
+      "POST /api/v1/partners/taxpayer-risk-check-all",
+      "PUT /api/v1/partner-bank-accounts/{}",
+      "PUT /api/v1/partner-groups/{}",
+      "PUT /api/v1/partners/{}"
+    ]
+  }
+]

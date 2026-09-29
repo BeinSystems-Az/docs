@@ -3,14 +3,13 @@ sidebar_position: 1
 title: API
 ---
 
-# API sənədləri
+# API
 
-Bu bölmə BEIN ERP ilə inteqrasiya quran developer və texniki komandalar üçündür. Burada autentifikasiya, ümumi API qaydaları və resurslar üzrə endpoint kontraktları verilir.
+BEIN ERP ilə inteqrasiya üçün endpoint reference.
 
-## Başlamaq üçün
+## Oxuma ardıcıllığı
 
-1. [Giriş və autentifikasiya](./authentication) qaydasını oxuyun.
-2. [API kontraktı](./contract) ilə ümumi sorğu və cavab formatlarına baxın.
-3. [API resursları](../modules/) bölməsindən istifadə edəcəyiniz modulu və resursu seçin.
-
-İstifadəçi interfeysində gündəlik iş qaydaları üçün [İstifadəçi təlimatı](/docs/user-guide) bölməsinə keçin.
+1. [Versiya və əsas URL](../intro) — API versiyası və host.
+2. [Autentifikasiya və kontekst](./authentication) — token, tenant və filial qaydaları.
+3. [Ümumi kontrakt](./contract) — sorğu, cavab, pagination, xətalar və idempotency.
+4. Lazım olan resursu sidebar-dakı ERP bölmələrindən seçin; hər resurs və sənəd növü ayrıca endpoint səhifəsində izah olunur.

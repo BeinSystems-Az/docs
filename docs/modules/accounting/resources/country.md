@@ -11,28 +11,6 @@ title: Ölkələr
 `Authorization: Bearer <token>` · tenant konteksti · `countries.read/create/update/delete`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Hər qeyd iki hərfli ölkə kodunu və adını saxlayır. Ölkə seçimi ünvan və lokalizasiya kontekstidir; jurnal, vergi və stok nəticəsini özü yaratmır.
-
-**İlkin şərtlər.** Oxu üçün `countries.read` icazəsi tələb olunur. Kataloq tenant provisioning zamanı əvvəlcədən doldurulur.
-
-**İş axını.** Siyahını oxuyun və tərəfdaş/vergi formalarında ölkənin `id` dəyərini saxlayın. Cari backend-də write route-ları olsa da controller write field-ləri qəbul etmir.
-
-**State-lər və biznes təsiri.** Lifecycle state yoxdur və oxu əməliyyatlarının biznes təsiri yoxdur.
-
-**Əlaqəli resurslar.** Tərəfdaşlar, tenant/təşkilat məlumatı və vergi profili.
-
-**Əsas məhdudiyyətlər.** `CountryController` `validationRules()` override etmir. Buna görə POST body-si validation-dan sonra boşalır və create hazırda DB məhdudiyyətində uğursuz olur; PUT/PATCH body-si isə tətbiq edilmir. Client cari versiyada kataloqu read-only qəbul etməlidir.
-
-:::warning Cari backend məhdudiyyəti
-`POST`, `PUT` və `PATCH` route-ları route kataloqunda mövcuddur, lakin işlək ölkə write kontraktı implement edilməyib. Aşağıdakı bloklar real cari davranışı göstərir; yeni inteqrasiya yalnız GET endpointlərindən istifadə etməlidir.
-:::
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

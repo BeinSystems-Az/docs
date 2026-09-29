@@ -8,20 +8,6 @@ title: Əməkhaqqı tarifləri
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əməkdaşın qüvvəyə minən aylıq və ya saatlıq tariflərini saxlayır.
-
-**İlkin şərtlər.** Employee olmalı və əməkhaqqı məlumatına tam icazə verilməlidir.
-
-**İş axını.** Tarifləri oxuyun, ayın ilk günündən yeni tarif əlavə edin, sonra dövrü hesablayın.
-
-**State-lər və biznes təsiri.** Tarif versiyaları tarix üzrə qüvvədədir; keçmiş bağlı dövr dəyişdirilmir.
-
-**Əlaqəli resurslar.** Əməkdaşlar, qrafiklər, HR dövrləri və maaş hesabı.
-
-**Əsas məhdudiyyətlər.** effective_from ayın ilk günü olmalı, həmin tarixdə ikinci tarif olmamalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

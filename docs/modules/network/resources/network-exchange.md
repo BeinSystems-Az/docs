@@ -11,20 +11,6 @@ Sənəd mübadiləsi resursu biznes şəbəkəsi modulunda aid olduğu məlumat 
 `Bearer` JWT və ya integration token · tenant scope-u · route üzrə authorization qərarı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Sənəd mübadiləsi resursu biznes şəbəkəsi modulunda aid olduğu məlumat və əməliyyatları idarə edir. Şəbəkə qəbul və göndəriş qatıdır; yerli biznes sənədi yalnız import/accept əməliyyatında yaranır.
-
-**İlkin şərtlər.** Hər iki tərəfin profili, əlaqəsi və tələb olunan master-data mapping-ləri hazır olmalıdır.
-
-**İş axını.** Profili tapın, əlaqə yaradın, mapping-ləri qurun, exchange göndərin və qarşı tərəfdə qəbul və ya rədd edin.
-
-**State-lər və biznes təsiri.** Qəbul edilən exchange yerli sənəd yarada bilər; rədd yalnız mübadilə state-ni dəyişir.
-
-**Əlaqəli resurslar.** Tərəfdaşlar, satış, satınalma və inteqrasiyalar.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
 ## Həyat dövrü
 
 Mövcud state və icazəli keçidlər operation request-ində və backend domain qaydalarında yoxlanılır; keçidin stok və jurnal təsiri aşağıdakı endpoint blokunda ayrıca göstərilir.

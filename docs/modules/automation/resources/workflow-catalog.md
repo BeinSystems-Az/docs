@@ -11,24 +11,6 @@ Workflow kataloqu resursu workflow və avtomatlaşdırma modulunda aid olduğu m
 `Bearer` JWT və ya integration token · tenant scope-u · route üzrə authorization qərarı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Workflow kataloqu resursu workflow və avtomatlaşdırma modulunda aid olduğu məlumat və əməliyyatları idarə edir. Definition özü nəticə yaratmır; run və bulk action seçilən resursda dəyişiklik edə bilər.
-
-**İlkin şərtlər.** Trigger, action kataloqu, icazələr və hədəf resurslar mövcud olmalıdır.
-
-**İş axını.** Kataloqdan trigger/action seçin, workflow yaradın, run nəticələrini izləyin və uğursuz run-u retry edin.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Seçilən action-dan asılıdır; hər run status və nəticə tarixçəsi saxlayır.
-
-**Əlaqəli resurslar.** Bütün biznes modulları, audit və inteqrasiyalar.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

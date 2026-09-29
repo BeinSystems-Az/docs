@@ -11,24 +11,6 @@ Fiziki və ya virtual satış nöqtəsini anbar, nağd wallet və qəbul etdiyi 
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `pos_registers`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Fiziki və ya virtual satış nöqtəsini anbar, nağd wallet və qəbul etdiyi ödəniş tipləri ilə bağlayır. POS operativ satış kanalıdır; konfiqurasiya resursları nəticə yaratmır, post edilmiş satış və qaytarışlar isə stok və maliyyə nəticəsi yaradır.
-
-**İlkin şərtlər.** Filial, anbar, nağd wallet, ödəniş tipləri və aktivləşdirilmiş POS cihazı mövcud olmalıdır.
-
-**İş axını.** Registr və ödəniş tiplərini qurun, cihazı aktivləşdirin, növbə açın, əməliyyatları sync edin və növbəni bağlayın.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Post edilmiş POS satışı stok çıxışı və maliyyə nəticəsi, qaytarış isə əks hərəkət yaradır; sync inbox idempotent emalı qoruyur.
-
-**Əlaqəli resurslar.** Məhsullar, stok, wallet-lər, satış və mühasibatlıq.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

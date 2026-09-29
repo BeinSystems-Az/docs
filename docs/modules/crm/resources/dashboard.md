@@ -11,20 +11,6 @@ CRM icmalı resursu crm modulunda aid olduğu məlumat və əməliyyatları idar
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `crm_leads`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** CRM icmalı resursu crm modulunda aid olduğu məlumat və əməliyyatları idarə edir. CRM satış imkanının kommersiya tarixçəsini saxlayır; özü stok və mühasibat yazılışı yaratmır.
-
-**İlkin şərtlər.** Pipeline və mərhələlər, məsul istifadəçi, filial və müştəri/tərəfdaş məlumatı hazırlanmalıdır.
-
-**İş axını.** Pipeline və mərhələləri qurun, lead yaradın, tapşırıqlarla izləyin və uyğun olduqda satış sifarişinə keçirin.
-
-**State-lər və biznes təsiri.** Lead və task dəyişiklikləri CRM vəziyyətini yeniləyir; stok və jurnal təsiri yoxdur.
-
-**Əlaqəli resurslar.** Tərəfdaşlar, istifadəçilər, filiallar və satış sifarişləri.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
 ## Həyat dövrü
 
 Mövcud state və icazəli keçidlər operation request-ində və backend domain qaydalarında yoxlanılır; keçidin stok və jurnal təsiri aşağıdakı endpoint blokunda ayrıca göstərilir.

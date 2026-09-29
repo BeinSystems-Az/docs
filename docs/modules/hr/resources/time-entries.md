@@ -8,20 +8,6 @@ title: İş vaxtı qeydləri
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əməkdaşın giriş və çıxış saatlarını qeydə alır; əməkhaqqı təsdiqi yaratmır.
-
-**İlkin şərtlər.** Employee və açıq HR dövrü olmalıdır.
-
-**İş axını.** Ay üzrə qeydləri oxuyun, giriş/çıxışı yazın, düzəlişdə replaces_id və səbəb verin.
-
-**State-lər və biznes təsiri.** Aktiv qeyd düzəliş zamanı əvəz olunur; bağlı ayda yazı bloklanır.
-
-**Əlaqəli resurslar.** İş qrafikləri, əməkdaşlar və dövr yekunu.
-
-**Əsas məhdudiyyətlər.** Saatlar üst-üstə düşməməli, çıxış girişdən sonra və eyni gündə olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

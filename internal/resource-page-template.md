@@ -1,97 +1,64 @@
 # API resurs səhifəsi şablonu
 
-Bu fayl contributor/agent üçündür, Docusaurus portalında publish edilmir. Kvadrat mötərizədəki hissələri real backend kontraktı ilə əvəz edin.
+Bu daxili şablon publish edilmir. Hər nümunəni backend kontraktı ilə yoxlayın.
 
-```md
 ---
-sidebar_position: [N]
-slug: /api/[module]/[resource]
+title: [Resurs adı]
 ---
 
-# [Resursun istifadəçi adı]
+# [Resurs adı]
 
-[2–3 cümlə: resurs nədir, nə vaxt istifadə olunur, özü hansı nəticəni yaratmır.]
+[API-də resursun məqsədini bildirən bir-iki cümlə.]
 
 :::info Kontekst
-`Bearer` JWT və ya integration token · `[resource.action permission]` · `[tenant/branch scope]`
+Bearer JWT və ya integration token · permission · tətbiq olunursa tenant/filial scope-u
 :::
-
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** [...]
-
-**İlkin şərtlər.** [...]
-
-**İş axını.** [...]
-
-**State-lər və biznes təsiri.** [...]
-
-**Əlaqəli resurslar.** [...]
-
-**Əsas məhdudiyyətlər.** [...]
-
-## Həyat dövrü
-
-| State | Mənası | Sistem təsiri |
-| --- | --- | --- |
-| `[state]` | [...] | [...] |
 
 ## Field-lər
 
-Bu, operation kontraktı deyil; resursun field lüğətidir. Hər field-in biznes mənasını və niyə istifadə olunduğunu bir dəfə izah edin.
+Yalnız inteqrasiya üçün vacib field-ləri bir cədvəldə izah edin.
 
-| Field | Tip | Məna və istifadə |
+| Field | Tip | Məna |
 | --- | --- | --- |
-| `[field]` | `[type]` | [...] |
+| `id` | UUID | Resurs identifikatoru. |
 
 ## Endpointlər
 
-### [İstifadəçi niyyəti]
+### [Əməliyyat niyyəti]
 
-**Endpoint** · `[METHOD] /api/v1/[path]`
+**Endpoint** · `POST /api/v1/[path]`
 
-[Bir cümləlik məqsəd.]
+[Operation-ın texniki məqsədi.]
+
+**İcazə** · `[permission]`
 
 **Request JSON**
 
-[Hər endpoint üçün ayrıca yazın. Body olmasa belə `headers`, `path` və `query` obyektlərini göstərən valid JSON istifadə edin.]
-
 ```json
 {
-  "headers": {
-    "Authorization": "Bearer <token>"
-  },
+  "headers": {"Authorization": "Bearer <token>"},
   "path": {},
   "query": {},
   "body": {}
 }
 ```
 
-**Response JSON · `[status]`**
+**Response JSON · `200`**
 
 ```json
 {
   "status": "success",
-  "message": "[...]",
+  "message": null,
   "data": {}
 }
 ```
 
-**Xətalar** · `[status]` — [səbəb]; `[status]` — [səbəb].
+**Xətalar** · `[status]` — [backend-də təsdiqlənmiş səbəb].
 
-**Biznes təsiri** · [stok, rezerv, jurnal, vergi, audit/state təsiri; yoxdursa “Yoxdur”.]
-```
+Qısa qaydalar:
 
-## Yazı qaydası
-
-- Bir resurs bir səhifədir; CRUD və domain action-ları həmin səhifədə `###` başlıqlarıdır.
-- Endpoint sətri həmişə `**Endpoint** · METHOD /api/v1/...` formatındadır.
-- Səhifədə yalnız bir `#` başlıq, əsas bölmələrdə `##`, operation-larda `###` istifadə edilir.
-- Səhifədə bir dənə `## Field-lər` cədvəli olur. Orada field-in required statusunu deyil, biznes mənasını və nə üçün istifadə olunduğunu yazın.
-- Hər field ayrıca cədvəl sətrində olur; bir sətirdə bir neçə field-i cəmləməyin. Nested field-ləri `items[].product_id` kimi ayrıca göstərin.
-- Ortaq request və ortaq response bölməsi yaratmayın. Hər operation öz tam request və response JSON nümunəsini daşıyır.
-- Body olmayan request-də belə `headers`, `path`, `query`, `body` quruluşunu göstərin; istifadə olunmayan hissə boş obyekt olsun.
-- Nümunələr sintetik, qısa və valid JSON olmalıdır; `...` və ya real məlumat istifadə etməyin.
-- Integration token nümunəsidirsə mutation request-in header-lərinə 8–200 simvolluq `Idempotency-Key` əlavə edin; JWT nümunəsində tələb olunmur.
-- Field, enum, status və biznes təsirini backend controller, DTO/request, presenter və testdən təsdiqləyin.
-- Sistem təsiri yoxdursa `Biznes təsiri · Yoxdur` yazın.
+- Bir səhifə həmin resursun bütün endpointlərini əhatə edir.
+- Hər operation üçün ayrıca, sintetik və valid request/response nümunəsi verilir.
+- Body olmayan sorğuda `body: {}` göstərilir.
+- Lifecycle və biznes təsiri yalnız konkret API davranışını müəyyən edəndə daxil edilir.
+- Dəyişiklikdən sonra `npm run check` işlədilir.

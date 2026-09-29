@@ -11,24 +11,6 @@ Hesab xüsusiyyətləri tərəfdaş, məhsul və vergi kimi resurslar üçün is
 `Authorization: Bearer <token>` · tenant konteksti · `account_properties.read/create/update/delete`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Property qeydi `res_model` və istəyə bağlı `res_id` üçün gəlir, xərc, stok valuation, debitor və digər uçot rolunu konkret `account_id` ilə bağlayır. Qeyd yaratmaq jurnal yazılışı yaratmır; sonrakı posting zamanı hesab seçiminə təsir edir.
-
-**İlkin şərtlər.** `account_id` hesab planında mövcud olmalıdır. `res_model` yalnız `partner`, `product` və `account_tax`; `property_name` isə backend `PostingProperty` kataloqundakı dəyərlərdən biri ola bilər.
-
-**İş axını.** Əvvəl hesabı yaradın, sonra ümumi model səviyyəsində və ya konkret `res_id` üçün property saxlayın. Sənəd post edilərkən accounting resolver uyğun property-ni tapıb jurnal hesabını seçir.
-
-**State-lər və biznes təsiri.** Lifecycle state yoxdur. Dəyişiklik əvvəlki jurnal sətirlərini yenidən hesablamır, yalnız sonrakı posting əməliyyatlarında hesab seçimini dəyişir.
-
-**Əlaqəli resurslar.** Hesab planı, məhsullar, tərəfdaşlar, vergilər, stok valuation və satış/alış posting xidmətləri.
-
-**Əsas məhdudiyyətlər.** `res_model`, `res_id`, `property_name` və `account_id` birlikdə tenant daxilində uçot xəritəsini müəyyən edir. Response-da `res_id` sadə UUID yox, `value` və `label` obyektinə çevrilə bilər.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

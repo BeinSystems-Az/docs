@@ -11,24 +11,6 @@ Mövcud report key-ləri, filter kontraktları və hesablanmış hesabat nətic�
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `reports`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Mövcud report key-ləri, filter kontraktları və hesablanmış hesabat nəticələrini təqdim edir. Hesabat endpointləri mənbə əməliyyat məlumatını oxuyur; biznes sənədini və ya jurnal nəticəsini dəyişmir.
-
-**İlkin şərtlər.** İstifadəçinin hesabat icazəsi və hesabatın tələb etdiyi tarix, filial və digər filter konteksti olmalıdır.
-
-**İş axını.** Əvvəl kataloqdan report key və filter kontraktını alın, sonra həmin key ilə hesabatı icra edin.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Yoxdur; yalnız hesablanmış oxu nəticəsi qaytarılır.
-
-**Əlaqəli resurslar.** Mühasibatlıq, satış, satınalma, stok, POS və istehsal.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

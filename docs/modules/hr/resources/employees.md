@@ -8,20 +8,6 @@ title: Əməkdaşlar
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Şəxs və iş təyinatı ilə Employee master qeydini idarə edir; login hesabı yaratmır.
-
-**İlkin şərtlər.** Başlanma tarixi, şəxs adı və ya mövcud partner_id tələb olunur.
-
-**İş axını.** Şəxsi seçin və ya yaradın, iş təyinatını saxlayın, sonra sənədlərdə cavabdeh kimi Employee ID-sini seçin.
-
-**State-lər və biznes təsiri.** active işçi təyinatını göstərir; deaktiv etmə cari iş dövrünü bitirir.
-
-**Əlaqəli resurslar.** Partner şəxslər, User hesabı, şöbə, vəzifə və biznes sənədləri.
-
-**Əsas məhdudiyyətlər.** Bağlı şəxsi başqa partner_id ilə əvəz etmək olmaz; iş dövrlərinin tarixləri uyğun olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

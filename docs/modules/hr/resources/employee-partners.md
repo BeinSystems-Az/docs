@@ -8,20 +8,6 @@ title: Əməkdaş üçün şəxslər
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əməkdaş qeydinə bağlana bilən, hələ bağlanmamış fiziki şəxsləri göstərir; yeni şəxs yaratmır.
-
-**İlkin şərtlər.** Tenant daxilində aktiv fiziki şəxs olmalıdır.
-
-**İş axını.** Siyahıda axtarın, şəxs ID-sini yoxlayın, sonra Employee yaradarkən partner_id verin.
-
-**State-lər və biznes təsiri.** Ayrıca state keçidi yoxdur; yalnız aktiv və bağlanmamış şəxslər siyahıdadır.
-
-**Əlaqəli resurslar.** Partner və Employee master qeydləri.
-
-**Əsas məhdudiyyətlər.** Şirkətlər və artıq Employee-ə bağlı şəxslər siyahıya düşmür.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

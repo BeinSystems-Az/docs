@@ -8,20 +8,6 @@ title: İcazə sorğuları
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Employee üçün tarix aralığı üzrə icazə qərarını sənədləşdirir.
-
-**İlkin şərtlər.** Employee mövcud olmalı, əl ilə sənəd yaradan User aktiv Employee-ə bağlanmalıdır.
-
-**İş axını.** Sorğunu yaradın, pending vaxtı redaktə edin, səlahiyyətlə approved və ya rejected qərarı verin.
-
-**State-lər və biznes təsiri.** pending, approved, rejected; approved günləri davamiyyətə leave kimi yazılır.
-
-**Əlaqəli resurslar.** Əməkdaşlar və davamiyyət qeydləri.
-
-**Əsas məhdudiyyətlər.** Eyni əməkdaş üçün rədd edilməmiş icazə tarixləri üst-üstə düşməz; qərardan sonra redaktə bloklanır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

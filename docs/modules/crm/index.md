@@ -5,19 +5,7 @@ title: CRM
 
 # CRM
 
-Lead, pipeline, mərhələ, mənbə, itirmə səbəbi və CRM tapşırıqları ilə satış imkanlarını izləyir.
-
-## Modulun sərhədi
-
-CRM satış imkanının kommersiya tarixçəsini saxlayır; özü stok və mühasibat yazılışı yaratmır.
-
-## Tipik iş axını
-
-Pipeline və mərhələləri qurun, lead yaradın, tapşırıqlarla izləyin və uyğun olduqda satış sifarişinə keçirin.
-
-## Sistem təsiri
-
-Lead və task dəyişiklikləri CRM vəziyyətini yeniləyir; stok və jurnal təsiri yoxdur.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -30,8 +18,3 @@ Lead və task dəyişiklikləri CRM vəziyyətini yeniləyir; stok və jurnal t�
 | [CRM tapşırıqları](./resources/task) | Lead ilə bağlı zəng, görüş və digər izləmə tapşırıqlarını saxlayır. |
 | [İtirmə səbəbləri](./resources/lost-reason) | İtirmə səbəbləri məlumat və əməliyyatlarını idarə edir. |
 | [Lead-lər](./resources/lead) | Potensial satış imkanını, gözlənən gəliri, ehtimalı, məsul şəxsi və pipeline mərhələsini saxlayır. |
-
-## Əlaqələr
-
-Tərəfdaşlar, istifadəçilər, filiallar və satış sifarişləri.
-

@@ -5,19 +5,7 @@ title: Onlayn mağaza
 
 # Onlayn mağaza
 
-Storefront konfiqurasiyasını, dərc olunan məhsulları və public kataloq oxusunu idarə edir.
-
-## Modulun sərhədi
-
-Dərc etmə məhsulu mağazada görünən edir; bu endpointlər sifariş və ödəniş yaratmır.
-
-## Tipik iş axını
-
-Mağazanı konfiqurasiya edin, məhsulları dərc edin, public endpointlərlə kataloqu təqdim edin.
-
-## Sistem təsiri
-
-Görünürlük və storefront məlumatı dəyişir; stok və jurnal təsiri yoxdur.
+Bu modulun API resursları aşağıdadır. Endpoint kontraktı üçün resurs səhifəsini açın.
 
 ## Resurslar
 
@@ -27,8 +15,3 @@ Görünürlük və storefront məlumatı dəyişir; stok və jurnal təsiri yoxd
 | [Mağazada məhsul dərc edilməsi](./resources/store-product-publication) | Mağazada məhsul dərc edilməsi məlumat və əməliyyatlarını idarə edir. |
 | [Public mağaza kataloqu](./resources/public-store) | Public mağaza kataloqu məlumat və əməliyyatlarını idarə edir. |
 | [Public Store Checkout](./resources/public-store-checkout) | Public Store Checkout məlumat və əməliyyatlarını idarə edir. |
-
-## Əlaqələr
-
-Məhsullar, kateqoriyalar və filial qiymətləri.
-

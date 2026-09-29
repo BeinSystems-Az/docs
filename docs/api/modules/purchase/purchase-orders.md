@@ -9,20 +9,6 @@ slug: /api/purchasing/orders
 `Bearer` JWT və ya integration token · `purchase_orders` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Alış sifarişi təchizatçıya qarşı kommersiya öhdəliyidir. `confirmed` öhdəliyi təsdiqləyir, amma stok və jurnal nəticəsi yaratmır.
-
-**İlkin şərtlər.** `supplier_id` və `stock_id` məcburidir. Sətir göndərilirsə məhsul və ya mövcud sətir identifikatoru, miqdar və qiymət request validation-undan keçməlidir.
-
-**İş axını.** Təchizatçı, qəbul anbarı və sətirlərlə sifarişi yaradın, şərtləri yoxlayın, sonra `confirmed` edin. Fiziki mal gəldikdə Alış qəbzi yaradın.
-
-**State-lər və biznes təsiri.** `draft`, `confirmed` və `cancelled` keçidləri aşağıdakı həyat dövründə göstərilir. Sifarişin özü stok və jurnal yaratmır.
-
-**Əlaqəli resurslar.** Tərəfdaşlar, stok/anbar, məhsullar, qablaşdırmalar, vergilər, Alış qəbzləri və Alış fakturaları.
-
-**Əsas məhdudiyyətlər.** `purchase_orders` permission-ı, tenant/filial scope-u və əlaqəli identifikatorların validation-u tətbiq edilir. Endirim tipi yalnız `percent` və ya `fixed` ola bilər.
-
 ## Həyat dövrü
 
 - `draft` — redaktə olunan sifarişdir; stok və jurnal təsiri yoxdur.

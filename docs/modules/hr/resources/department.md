@@ -11,24 +11,6 @@ title: Şöbələr
 `Bearer` JWT və ya integration token · tenant scope-u · `departments`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Şöbələr resursu insan resursları modulunda aid olduğu məlumat və əməliyyatları idarə edir. HR master məlumatı istifadəçi və əməliyyat aidiyyətini təşkil edir; özü əməkhaqqı və jurnal nəticəsi yaratmır.
-
-**İlkin şərtlər.** Tenant və lazım olduqda parent şöbə mövcud olmalıdır.
-
-**İş axını.** Şöbə ağacını yaradın, aktivlik və ardıcıllığı qurun, istifadəçi və proseslərdə istifadə edin.
-
-**State-lər və biznes təsiri.** Bu resurs ayrıca lifecycle state saxlamır. Yalnız təşkilati təsnifat dəyişir; stok və jurnal təsiri yoxdur.
-
-**Əlaqəli resurslar.** İstifadəçilər, filiallar və layihələr.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

@@ -9,20 +9,6 @@ slug: /api/catalog/product-templates
 `Bearer` JWT və ya integration token · `product_templates.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Məhsul şablonu variantlı məhsulların ortaq kataloq məlumatını saxlayır; stok və jurnal yaratmır.
-
-**İlkin şərtlər.** Tenant və filial konteksti, həmçinin istifadə olunacaq kateqoriya və vahid mövcud olmalıdır.
-
-**İş axını.** Şablonu yaradın, atributları və variantları onun üzərində qurun, sonra məhsul kartlarında istifadə edin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; dəyişiklik yalnız gələcək kataloq seçimlərinə təsir edir.
-
-**Əlaqəli resurslar.** Məhsullar, kateqoriyalar, ölçü vahidləri və məhsul atributları.
-
-**Əsas məhdudiyyətlər.** `product_templates` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; əlaqəli identifikatorlar həmin scope-da olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

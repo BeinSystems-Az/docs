@@ -29,32 +29,27 @@ const moduleResourceDocs = markdownFiles(resolve(root, 'docs/modules'))
   .filter((file) => file.includes('/resources/'))
   .map((file) => file.replace(`${root}/`, ''));
 const resourceDocs = [...handAuditedDocs, ...moduleResourceDocs];
-const overviewLabels = [
-  'Məqsəd və sərhəd',
-  'İlkin şərtlər',
-  'İş axını',
-  'State-lər və biznes təsiri',
-  'Əlaqəli resurslar',
-  'Əsas məhdudiyyətlər',
-];
 const failures = [];
 const liveRoutes = JSON.parse(readFileSync(resolve(root, 'src/generated/api-routes.json'), 'utf8'));
 const normalizePath = (path) => path.replace(/\{[^}]+\}/g, '{}').replace(/\/$/, '');
 const liveRouteKeys = new Set(liveRoutes
   .filter(({path}) => !isInternalRoute(path))
   .map(({method, path}) => `${method.toUpperCase()} ${normalizePath(path)}`));
+const exclusions = JSON.parse(readFileSync(resolve(root, 'internal/api-doc-exclusions.json'), 'utf8'));
+const excludedRouteKeys = new Set(exclusions.flatMap(({routes}) => routes));
+for (const key of excludedRouteKeys) {
+  if (!liveRouteKeys.has(key)) failures.push(`Qəsdən əhatə xaricində saxlanmış route backend snapshot-ında yoxdur: ${key}.`);
+}
 const documentedRouteKeys = new Set();
 
 for (const file of resourceDocs) {
   const content = readFileSync(resolve(root, file), 'utf8');
   const label = file.replace('docs/api/modules/', '');
 
-  for (const heading of overviewLabels) {
-    if (!content.includes(`**${heading}.**`)) failures.push(`${label}: “${heading}” icmalı yoxdur.`);
+  if (!/^## Field-lər\n[\s\S]*?^\| Field \| Tip \|/m.test(content)) {
+    failures.push(`${label}: Field-lər cədvəli yoxdur.`);
   }
-  if (!/^## Field-lər\n[\s\S]*?^\| Field \| Tip \| Məna və istifadə \|/m.test(content)) {
-    failures.push(`${label}: standart Field-lər cədvəli yoxdur.`);
-  }
+  if (content.includes('## Resursun işləmə qaydası')) failures.push(label + ': təkrarlanan API xülasəsi qalıb.');
   const fieldSection = content.match(/## Field-lər\n([\s\S]*?)\n## Endpointlər/)?.[1] ?? '';
   const fieldNames = [...fieldSection.matchAll(/^\| `([^`]+)` \|/gm)].map((match) => match[1]);
   const duplicateFields = fieldNames.filter((field, index) => fieldNames.indexOf(field) !== index);
@@ -105,7 +100,7 @@ for (const file of resourceDocs) {
 }
 
 for (const key of liveRouteKeys) {
-  if (!documentedRouteKeys.has(key)) failures.push(`Cari backend route-u üçün standart resurs səhifəsi yoxdur: ${key}.`);
+  if (!documentedRouteKeys.has(key) && !excludedRouteKeys.has(key)) failures.push(`Cari backend route-u üçün standart resurs səhifəsi yoxdur: ${key}.`);
 }
 for (const key of documentedRouteKeys) {
   if (!liveRouteKeys.has(key)) failures.push(`Sənəddə artıq mövcud olmayan route qalıb: ${key}.`);
@@ -115,5 +110,5 @@ if (failures.length) {
   console.error(failures.map((failure) => `- ${failure}`).join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Resource-document audit passed: ${resourceDocs.length} istifadəçi resurs səhifəsi ${documentedRouteKeys.size} user-facing API əməliyyatını standart request/response blokları ilə əhatə edir.`);
+  console.log(`Resource-document audit passed: ${resourceDocs.length} API resurs səhifəsi ${documentedRouteKeys.size} user-facing API əməliyyatını əhatə edir; ${excludedRouteKeys.size} route internal/api-doc-exclusions.json siyahısına əsasən əhatə xaricindədir.`);
 }

@@ -8,20 +8,6 @@ title: Davamiyyət qeydləri
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əməkdaşın gün üzrə davamiyyət statusunu saxlayır; əməkhaqqı hesabını özü yaratmır.
-
-**İlkin şərtlər.** Aktiv Employee qeydi və HR modulu olmalıdır.
-
-**İş axını.** Günü qeyd edin, düzəlişi yeniləyin, lazım gəldikdə aylıq CSV çıxarın.
-
-**State-lər və biznes təsiri.** present, absent və leave statusları var. leave üçün təsdiqlənmiş icazə tələb olunur.
-
-**Əlaqəli resurslar.** Əməkdaşlar, icazə sorğuları və HR dövrləri.
-
-**Əsas məhdudiyyətlər.** Əməkdaş və tarix düzəlişlə dəyişmir; təsdiqlənmiş icazə günü ilə status uyğun gəlməlidir.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

@@ -1,8 +1,8 @@
 ---
-title: İstifadəçi təlimatı
+title: Təlimat
 ---
 
-# İstifadəçi təlimatı
+# Təlimat
 
 Bu bölmə sahibkarlar və ERP istifadəçiləri üçündür. Təlimat menyusu ERP frontend-dəki modulların, altbölmələrin və səhifələrin sırasını izləyir; hər səhifədə konkret ekran və ya sənəd ayrıca izah olunur.
 
@@ -32,4 +32,4 @@ Təlimatlarda bəzi addımların yanında şəkil və video əlavə etmək qeydi
 
 ### Niyə bütün modullarda ümumi bir əməliyyat səhifəsi yoxdur?
 
-İstifadəçi təlimatı menyudakı konkret ekran və sənədləri ayrıca izah edir. Məsələn, anbar daxilolması və çıxışı fərqli nəticələr yaratdığı üçün ayrı səhifələrdədir.
+Təlimat menyudakı konkret ekran və sənədləri ayrıca izah edir. Məsələn, anbar daxilolması və çıxışı fərqli nəticələr yaratdığı üçün ayrı səhifələrdədir.

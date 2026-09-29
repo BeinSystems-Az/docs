@@ -11,20 +11,6 @@ title: Əsas vəsait hesabatları
 `Bearer` JWT və ya integration token · tenant və filial scope-u · `fixed_assets`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əsas vəsait hesabatları resursu hesabatlar modulunda aid olduğu məlumat və əməliyyatları idarə edir. Hesabat endpointləri mənbə əməliyyat məlumatını oxuyur; biznes sənədini və ya jurnal nəticəsini dəyişmir.
-
-**İlkin şərtlər.** İstifadəçinin hesabat icazəsi və hesabatın tələb etdiyi tarix, filial və digər filter konteksti olmalıdır.
-
-**İş axını.** Əvvəl kataloqdan report key və filter kontraktını alın, sonra həmin key ilə hesabatı icra edin.
-
-**State-lər və biznes təsiri.** Yoxdur; yalnız hesablanmış oxu nəticəsi qaytarılır.
-
-**Əlaqəli resurslar.** Mühasibatlıq, satış, satınalma, stok, POS və istehsal.
-
-**Əsas məhdudiyyətlər.** Cari tenant və permission scope-u həmişə tətbiq edilir; filial oxuda `filter[branch_id]`, yazmada body-də `branch_id` ilə seçilir. Path identifikatorları həmin scope daxilində mövcud olmalıdır.
-
 ## Həyat dövrü
 
 Mövcud state və icazəli keçidlər operation request-ində və backend domain qaydalarında yoxlanılır; keçidin stok və jurnal təsiri aşağıdakı endpoint blokunda ayrıca göstərilir.

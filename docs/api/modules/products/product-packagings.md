@@ -9,20 +9,6 @@ slug: /api/catalog/product-packagings
 `Bearer` JWT və ya integration token · `product_packagings.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Qablaşdırma alış/satış vahidini məhsulun inventar vahidinə çevirir və ayrıca qiymət saxlaya bilir.
-
-**İlkin şərtlər.** Tenant və filial konteksti ilə mövcud `product_id` və `unit_id` seçilməlidir.
-
-**İş axını.** Məhsulu və qablaşdırma vahidini seçin, inventar vahidi əmsalını və qiymətləri yazın, sonra sənəd sətirlərində istifadə edin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; `active` seçimi yeni alış/satış seçimlərinə təsir edir, tarixi sənədləri dəyişmir.
-
-**Əlaqəli resurslar.** Məhsullar, ölçü vahidləri, alış və satış sənəd sətirləri.
-
-**Əsas məhdudiyyətlər.** `product_packagings` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; məhsul və vahid identifikatorları həmin scope-da olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

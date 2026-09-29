@@ -8,20 +8,6 @@ title: Vəzifələr
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** HR iş təyinatında istifadə olunan vəzifə master qeydlərini saxlayır.
-
-**İlkin şərtlər.** HR modulu aktiv olmalıdır.
-
-**İş axını.** Vəzifə yaradın, Employee iş dövrünə seçin, istifadə olunmayan vəzifəni arxivləşdirin.
-
-**State-lər və biznes təsiri.** active görünürlük bayrağıdır; vəzifə özü maaş hesablamır.
-
-**Əlaqəli resurslar.** Əməkdaşların iş təyinatları.
-
-**Əsas məhdudiyyətlər.** İş tarixçəsində istifadə olunan vəzifə silinə bilməz; code unikal olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

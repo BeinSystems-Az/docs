@@ -9,20 +9,6 @@ slug: /api/sales/orders
 `Bearer` JWT və ya integration token · `sale_orders` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Satış sifarişi müştəriyə qarşı kommersiya öhdəliyidir. `sale_order` rezerv və qaralama delivery yarada bilər, lakin faktiki stok çıxışı və jurnal nəticəsi Satış qəbzindən yaranır.
-
-**İlkin şərtlər.** `customer_id`, `stock_id` və ən azı bir `items` sətri məcburidir; hər sətirdə mövcud məhsul, müsbət miqdar və mənfi olmayan qiymət verilir.
-
-**İş axını.** Müştəri, anbar və sətirlərlə qaralama yaradın, lazım gələrsə göndərin və `sale_order` state-inə keçirin. Faktiki satış üçün ondan Satış qəbzi yaradın.
-
-**State-lər və biznes təsiri.** `draft`, `sent`, `sale_order` və `cancelled` keçidləri aşağıdakı həyat dövründə göstərilir. Stok çıxışı və jurnal yalnız Satış qəbzi post ediləndə yaranır.
-
-**Əlaqəli resurslar.** Tərəfdaşlar, stok/anbar, məhsullar, ölçü vahidləri, qablaşdırmalar, vergilər, CRM lead-lər və Satış qəbzləri.
-
-**Əsas məhdudiyyətlər.** `sale_orders` permission-ı, tenant/filial scope-u və əlaqəli identifikatorların validation-u tətbiq edilir. Məbləğlər serverin hesabladığı yekunlara etibar etməlidir.
-
 ## Həyat dövrü
 
 - `draft` — redaktə olunan qaralamadır; stok və jurnal təsiri yoxdur.

@@ -9,20 +9,6 @@ slug: /api/catalog/units
 `Bearer` JWT və ya integration token · `units.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Ölçü vahidi məhsul miqdarının necə saxlandığını və vahidlərarası çevirməni müəyyən edir.
-
-**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; çevirmə varsa `relative_unit_id` ilə mövcud vahid seçilir.
-
-**İş axını.** Əsas vahidi yaradın, ehtiyac olduqda çevirmə faktorunu təyin edin, sonra məhsul və qablaşdırmada istifadə edin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; vahid dəyişikliyi yeni sənəd seçimlərinə təsir edir, tarixi miqdarları dəyişmir.
-
-**Əlaqəli resurslar.** Məhsullar, məhsul şablonları və qablaşdırmalar.
-
-**Əsas məhdudiyyətlər.** `units` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; çevirmə dəyərləri validation-dan keçir.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

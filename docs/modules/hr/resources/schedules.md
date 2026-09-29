@@ -8,20 +8,6 @@ title: İş qrafikləri
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Əməkdaşın tarixdən qüvvədə olan həftəlik saat planını saxlayır.
-
-**İlkin şərtlər.** Employee və HR moduluna tam icazə tələb olunur.
-
-**İş axını.** Mövcud versiyaları oxuyun, gün və saatları göstərən yeni versiya yazın.
-
-**State-lər və biznes təsiri.** Qrafiklər effective_from tarixindən tətbiq olunur; bağlanmış aylara təsir edən versiya rədd edilir.
-
-**Əlaqəli resurslar.** Əməkdaşlar, vaxt qeydləri və dövr hesablaması.
-
-**Əsas məhdudiyyətlər.** Günlər 1–7 olmalı, saatlar HH:mm formatında və artan qaydada olmalıdır.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

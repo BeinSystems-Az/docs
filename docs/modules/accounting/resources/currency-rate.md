@@ -11,24 +11,6 @@ Valyuta məzənnələri xarici valyutanın təşkilatın əsas valyutasına tari
 `Authorization: Bearer <token>` · tenant konteksti · `currency_rates.read/create/update/delete`
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Hər qeyd bir xarici valyuta, biznes tarixi, müsbət əmsal və məzənnə tipi saxlayır. Məzənnə özü jurnal yaratmır; valyutalı sənəd post edilərkən conversion üçün seçilir.
-
-**İlkin şərtlər.** `currency_id` mövcud və təşkilatın əsas valyutasından fərqli valyuta olmalıdır. `rate` sıfırdan böyük, `rate_type` isə `official`, `market` və ya `interbank` olmalıdır.
-
-**İş axını.** Xarici valyutanı yaradın, uyğun tarix üçün məzənnəni saxlayın, sonra həmin tarixli sənədi post edin. Currency engine tarixə uyğun məzənnəni seçir.
-
-**State-lər və biznes təsiri.** Lifecycle state yoxdur. Sonradan edilən dəyişiklik yalnız gələcək hesablamalara təsir edir; artıq post edilmiş sənədin saxladığı tarixi conversion nəticəsi avtomatik yenilənmir.
-
-**Əlaqəli resurslar.** Valyutalar, jurnal sətirləri, ödənişlər, fakturalar və maliyyə hesabatları.
-
-**Əsas məhdudiyyətlər.** Əsas valyutanın ayrıca məzənnəsi yaradıla bilməz (`BASE_CURRENCY_RATE_FORBIDDEN`). Əmsal müsbət olmalıdır (`CURRENCY_RATE_INVALID`).
-
-## Həyat dövrü
-
-Bu master/oxu resursunda ayrıca lifecycle state yoxdur; create, update və delete əməliyyatları cari qeydin özünü dəyişir.
-
 ## Field-lər
 
 Bu cədvəl request kontraktını əvəz etmir; resursda istifadə olunan field-lərin biznes mənasını bir dəfə göstərir.

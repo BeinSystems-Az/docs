@@ -9,20 +9,6 @@ slug: /api/catalog/product-attributes
 `Bearer` JWT və ya integration token · `product_attributes.read/create/update/delete` permission-ları · tenant konteksti; oxuda `filter.branch_id`, yazmada body `branch_id` ilə filial seçimi
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Məhsul atributu variantları rəng, ölçü və digər seçilən xüsusiyyətlər üzrə fərqləndirir.
-
-**İlkin şərtlər.** Tenant və filial konteksti tələb olunur; rəng seçimi üçün `hex_color` dəyəri attribute value ilə verilir.
-
-**İş axını.** Atributu və görünüş tipini yaradın, seçilə bilən dəyərləri əlavə edin, sonra şablonun variant seçimində istifadə edin.
-
-**State-lər və biznes təsiri.** Lifecycle state-i yoxdur; dəyişikliyin təsiri kataloq və variant seçimləri ilə məhdudlaşır.
-
-**Əlaqəli resurslar.** Məhsul şablonları və onların variantları.
-
-**Əsas məhdudiyyətlər.** `product_attributes` resource permission-ları və cari tenant/filial scope-u tətbiq edilir; `display_type` və value strukturu validation-dan keçir.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |

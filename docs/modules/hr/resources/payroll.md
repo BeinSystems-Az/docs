@@ -8,20 +8,6 @@ title: Əməkhaqqı hesabı
 `Bearer` JWT və ya integration token · tenant scope-u · uyğun resurs permission-ı
 :::
 
-## Resursun işləmə qaydası
-
-**Məqsəd və sərhəd.** Bağlanmış dövrün əməkdaşlar üzrə hesabını və düzəlişlərini saxlayır.
-
-**İlkin şərtlər.** Bağlanmış HR dövrü və əməkhaqqı məlumatına tam icazə tələb olunur.
-
-**İş axını.** Dövrü bağlayın, draft hesab yaradın, düzəliş edin, sonra təsdiqləyin.
-
-**State-lər və biznes təsiri.** none, draft, approved; təsdiqdən sonra draft düzəlişi mümkün deyil.
-
-**Əlaqəli resurslar.** HR dövrləri, əməkdaş tarifləri və vaxt qeydləri.
-
-**Əsas məhdudiyyətlər.** Yalnız cari bağlı reviziyanın draft hesabı düzəldilə və təsdiqlənə bilər.
-
 ## Field-lər
 
 | Field | Tip | Məna və istifadə |
