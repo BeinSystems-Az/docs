@@ -3,7 +3,6 @@ name: Deploy
   pull_request:
     branches:
     - main
-    - master
   push:
     branches:
     - main
@@ -17,14 +16,21 @@ jobs:
     steps:
     - name: Build identity
       id: identity
-      run: "set -euo pipefail\n[[ \"$IMAGE_REPOSITORY\" =~ ^registry.digitalocean.com/bein-erp/[a-z0-9][a-z0-9-]*$ ]]\n[[\
-        \ \"$SMOKE_PROFILE\" == http || \"$SMOKE_PROFILE\" == scanner ]]\nBUILD_NUMBER=$((GITHUB_RUN_NUMBER + BUILD_NUMBER_OFFSET))\n\
-        TAG=\"$(printf 'build-%010d-%03d-%s' \"$BUILD_NUMBER\" \"$GITHUB_RUN_ATTEMPT\" \"${GITHUB_SHA:0:12}\")\"\nIMAGE=\"\
-        $IMAGE_REPOSITORY:candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:12}\"\nCREATED=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\
-        \nfor target in \"$GITHUB_ENV\" \"$GITHUB_OUTPUT\"; do\n  if [[ \"$target\" == \"$GITHUB_ENV\" ]]; then\n    printf\
-        \ 'IMAGE=%s\\nBUILD_TAG=%s\\nBUILD_CREATED=%s\\nBUILD_NUMBER=%s\\n' \"$IMAGE\" \"$TAG\" \"$CREATED\" \"$BUILD_NUMBER\"\
-        \ >> \"$target\"\n  else\n    printf 'image=%s\\ntag=%s\\ncreated=%s\\nnumber=%s\\n' \"$IMAGE\" \"$TAG\" \"$CREATED\"\
-        \ \"$BUILD_NUMBER\" >> \"$target\"\n  fi\ndone\n"
+      run: |
+        set -euo pipefail
+        [[ "$IMAGE_REPOSITORY" =~ ^registry.digitalocean.com/bein-erp/[a-z0-9][a-z0-9-]*$ ]]
+        [[ "$SMOKE_PROFILE" == http || "$SMOKE_PROFILE" == scanner ]]
+        BUILD_NUMBER=$((GITHUB_RUN_NUMBER + BUILD_NUMBER_OFFSET))
+        TAG="$(printf 'build-%010d-%03d-%s' "$BUILD_NUMBER" "$GITHUB_RUN_ATTEMPT" "${GITHUB_SHA:0:12}")"
+        IMAGE="$IMAGE_REPOSITORY:candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:12}"
+        CREATED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        for target in "$GITHUB_ENV" "$GITHUB_OUTPUT"; do
+          if [[ "$target" == "$GITHUB_ENV" ]]; then
+            printf 'IMAGE=%s\nBUILD_TAG=%s\nBUILD_CREATED=%s\nBUILD_NUMBER=%s\n' "$IMAGE" "$TAG" "$CREATED" "$BUILD_NUMBER" >> "$target"
+          else
+            printf 'image=%s\ntag=%s\ncreated=%s\nnumber=%s\n' "$IMAGE" "$TAG" "$CREATED" "$BUILD_NUMBER" >> "$target"
+          fi
+        done
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:
         persist-credentials: false
@@ -37,32 +43,53 @@ jobs:
         no-cache-filters: runtime
         push: false
         tags: ${{ env.IMAGE }}
-        build-args: 'APP_REVISION=${{ github.sha }}
-
+        build-args: |-
+          APP_REVISION=${{ github.sha }}
           APP_BUILD_NUMBER=${{ env.BUILD_NUMBER }}
-
           APP_BUILD_ATTEMPT=${{ github.run_attempt }}
-
-          APP_CREATED=${{ env.BUILD_CREATED }}'
+          APP_CREATED=${{ env.BUILD_CREATED }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Verify documentation pages, assets, redirects and source revision
-      run: "set -euo pipefail\ntrap 'docker logs docs-smoke 2>&1 || true; docker rm -f docs-smoke >/dev/null 2>&1 || true'\
-        \ EXIT\ndocker run -d --name docs-smoke --read-only --cap-drop=ALL --security-opt=no-new-privileges \\\n --tmpfs /var/cache/nginx:rw,nosuid,size=16m,mode=1777\
-        \ --tmpfs /var/run:rw,nosuid,size=8m,mode=1777 \\\n --tmpfs /tmp:rw,nosuid,size=32m,mode=1777 -p 127.0.0.1:18781:8080\
-        \ \"$IMAGE\"\npython3 - <<'PYSMOKE'\nimport json,os,re,time,urllib.request,urllib.error,subprocess\nfrom pathlib import\
-        \ Path\nbase='http://127.0.0.1:18781'\ndef get(path):\n with urllib.request.urlopen(base+path,timeout=10) as r:return\
-        \ r.read(),r.headers,r.url\nfor attempt in range(30):\n try:\n  payload,headers,_=get('/release.json')\n  assert json.loads(payload)['revision']==os.environ['GITHUB_SHA']\n\
-        \  assert 'no-store' in headers.get('Cache-Control','')\n  break\n except Exception:\n  if attempt==29:raise\n  time.sleep(1)\n\
-        assert get('/healthz')[0].strip()==b'ok'\nfor path in ['/','/docs/api','/docs/user-guide','/docs/glossary','/docs/faq']:\n\
-        \ body,headers,url=get(path)\n assert b'<html' in body and b'BEIN ERP' in body and b'\\x00' not in body, path\n assert\
-        \ ':8080' not in url and '127.0.0.1:18781' in url, url\n for asset in re.findall(r'(?:src|href)=\"([^\" ]+\\.(?:js|css))\"\
-        ',body.decode()):\n  if not asset.startswith('/assets/'):continue\n  data,headers,_=get(asset)\n  assert data and\
-        \ 'text/html' not in headers.get('Content-Type',''),asset\ntry:get('/assets/missing.js')\nexcept urllib.error.HTTPError\
-        \ as e:assert e.code==404\nelse:raise AssertionError('Missing assets must return 404')\nsite=Path(os.environ['RUNNER_TEMP'])/'docs-static-html'\n\
-        subprocess.run(['docker','cp','docs-smoke:/usr/share/nginx/html',str(site)],check=True)\npages=list(site.rglob('*.html'))\n\
-        assert pages and all(b'\\x00' not in page.read_bytes() for page in pages),'Generated HTML contains NUL render artifacts'\n\
-        print(f'Docs routes/assets/revision and all {len(pages)} packaged HTML files passed; zero NUL bytes')\nPYSMOKE\n"
+      run: |
+        set -euo pipefail
+        trap 'docker logs docs-smoke 2>&1 || true; docker rm -f docs-smoke >/dev/null 2>&1 || true' EXIT
+        docker run -d --name docs-smoke --read-only --cap-drop=ALL --security-opt=no-new-privileges \
+         --tmpfs /var/cache/nginx:rw,nosuid,size=16m,mode=1777 --tmpfs /var/run:rw,nosuid,size=8m,mode=1777 \
+         --tmpfs /tmp:rw,nosuid,size=32m,mode=1777 -p 127.0.0.1:18781:8080 "$IMAGE"
+        python3 - <<'PYSMOKE'
+        import json,os,re,time,urllib.request,urllib.error,subprocess
+        from pathlib import Path
+        base='http://127.0.0.1:18781'
+        def get(path):
+         with urllib.request.urlopen(base+path,timeout=10) as r:return r.read(),r.headers,r.url
+        for attempt in range(30):
+         try:
+          payload,headers,_=get('/release.json')
+          assert json.loads(payload)['revision']==os.environ['GITHUB_SHA']
+          assert 'no-store' in headers.get('Cache-Control','')
+          break
+         except Exception:
+          if attempt==29:raise
+          time.sleep(1)
+        assert get('/healthz')[0].strip()==b'ok'
+        for path in ['/','/docs/api','/docs/user-guide','/docs/glossary','/docs/faq']:
+         body,headers,url=get(path)
+         assert b'<html' in body and b'BEIN ERP' in body and b'\x00' not in body, path
+         assert ':8080' not in url and '127.0.0.1:18781' in url, url
+         for asset in re.findall(r'(?:src|href)="([^" ]+\.(?:js|css))"',body.decode()):
+          if not asset.startswith('/assets/'):continue
+          data,headers,_=get(asset)
+          assert data and 'text/html' not in headers.get('Content-Type',''),asset
+        try:get('/assets/missing.js')
+        except urllib.error.HTTPError as e:assert e.code==404
+        else:raise AssertionError('Missing assets must return 404')
+        site=Path(os.environ['RUNNER_TEMP'])/'docs-static-html'
+        subprocess.run(['docker','cp','docs-smoke:/usr/share/nginx/html',str(site)],check=True)
+        pages=list(site.rglob('*.html'))
+        assert pages and all(b'\x00' not in page.read_bytes() for page in pages),'Generated HTML contains NUL render artifacts'
+        print(f'Docs routes/assets/revision and all {len(pages)} packaged HTML files passed; zero NUL bytes')
+        PYSMOKE
     - name: Scan image
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
       with:
@@ -73,47 +100,39 @@ jobs:
         severity: HIGH,CRITICAL
         exit-code: '0'
     - name: Record runtime and application dependency SBOMs
-      run: 'trivy image --format cyclonedx --output runtime-sbom.json "$IMAGE"
-
-        trivy fs --format cyclonedx --output dependency-sbom.json --skip-dirs .git .'
+      run: |-
+        trivy image --format cyclonedx --output runtime-sbom.json "$IMAGE"
+        trivy fs --format cyclonedx --output dependency-sbom.json --skip-dirs .git .
     - name: Enforce image security gate
-      run: 'python3 - <<''PYSCAN''
-
+      run: |-
+        python3 - <<'PYSCAN'
         import json,os
-
-        findings=[v for r in json.load(open(''scan.json'')).get(''Results'',[])for v in r.get(''Vulnerabilities'',[])]
-
-        assert not any(v.get(''FixedVersion'')and v.get(''Severity'')in [''HIGH'',''CRITICAL'']for v in findings),''Fixable
-        HIGH/CRITICAL blocks release''
-
-        assert not any(v.get(''Severity'')==''CRITICAL''for v in findings),''CRITICAL blocks production''
-
-        PYSCAN'
+        findings=[v for r in json.load(open('scan.json')).get('Results',[])for v in r.get('Vulnerabilities',[])]
+        assert not any(v.get('FixedVersion')and v.get('Severity')in ['HIGH','CRITICAL']for v in findings),'Fixable HIGH/CRITICAL blocks release'
+        assert not any(v.get('Severity')=='CRITICAL'for v in findings),'CRITICAL blocks production'
+        PYSCAN
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       if: always()
       with:
         name: image-evidence-${{ github.sha }}-${{ github.run_attempt }}
-        path: 'scan.json
-
+        path: |-
+          scan.json
           runtime-sbom.json
-
-          dependency-sbom.json'
+          dependency-sbom.json
         if-no-files-found: ignore
     - name: Export checked image for publication
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: 'docker save "$IMAGE" -o checked-image.tar
-
+      run: |
+        docker save "$IMAGE" -o checked-image.tar
         sha256sum checked-image.tar > checked-image.sha256
-
-        '
     - name: Retain checked image for publication
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: checked-image-${{ github.run_id }}-${{ github.run_attempt }}
-        path: 'checked-image.tar
-
-          checked-image.sha256'
+        path: |-
+          checked-image.tar
+          checked-image.sha256
         retention-days: 1
         compression-level: 0
         if-no-files-found: error
@@ -140,11 +159,9 @@ jobs:
       with:
         name: checked-image-${{ github.run_id }}-${{ github.run_attempt }}
     - name: Load original checked image
-      run: 'sha256sum -c checked-image.sha256
-
+      run: |
+        sha256sum -c checked-image.sha256
         docker load -i checked-image.tar
-
-        '
     - name: Registry login (image publishing only)
       uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
       with:
@@ -153,16 +170,30 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - name: Publish checked immutable release
       id: publish
-      run: "set -euo pipefail\ndocker push \"$IMAGE\"\nDIGEST_IMAGE=\"$(docker image inspect \"$IMAGE\" --format '{{index\
-        \ .RepoDigests 0}}')\"\n[[ \"$DIGEST_IMAGE\" == \"$IMAGE_REPOSITORY@sha256:\"* ]]\n[[ \"${DIGEST_IMAGE##*@sha256:}\"\
-        \ =~ ^[0-9a-f]{64}$ ]]\nexport DIGEST_IMAGE\npython3 - <<'PYMETA'\nimport json, os\nnumber, attempt = int(os.environ['BUILD_NUMBER']),\
-        \ int(os.environ['GITHUB_RUN_ATTEMPT'])\nalias = f'build-{number}' + (f'-r{attempt}' if attempt > 1 else '')\nrecord\
-        \ = {'build': number, 'attempt': attempt, 'alias': alias, 'revision': os.environ['GITHUB_SHA'],\n          'tag':\
-        \ os.environ['BUILD_TAG'], 'image': os.environ['DIGEST_IMAGE'], 'created': os.environ['BUILD_CREATED'],\n        \
-        \  'checked_archive_sha256': open('checked-image.sha256').read().split()[0],\n          'run_url': f\"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}\"\
-        }\nwith open('release-manifest.json', 'w') as file:\n    json.dump(record, file, indent=2)\nwith open(os.environ['GITHUB_STEP_SUMMARY'],\
-        \ 'a') as file:\n    file.write(f\"### {alias}\\n\\nImage: `{record['image']}`\\n\\nSource: `{record['revision']}`\\\
-        n\")\nPYMETA\n"
+      run: |
+        set -euo pipefail
+        docker push "$IMAGE"
+        DIGEST_IMAGE="$(docker image inspect "$IMAGE" --format '{{index .RepoDigests 0}}')"
+        [[ "$DIGEST_IMAGE" == "$IMAGE_REPOSITORY@sha256:"* ]]
+        [[ "${DIGEST_IMAGE##*@sha256:}" =~ ^[0-9a-f]{64}$ ]]
+        export DIGEST_IMAGE
+        python3 - <<'PYMETA'
+        import json, os
+        number, attempt = int(os.environ['BUILD_NUMBER']), int(os.environ['GITHUB_RUN_ATTEMPT'])
+        alias = f'build-{number}' + (f'-r{attempt}' if attempt > 1 else '')
+        record = {'build': number, 'attempt': attempt, 'alias': alias, 'revision': os.environ['GITHUB_SHA'],
+                  'tag': os.environ['BUILD_TAG'], 'image': os.environ['DIGEST_IMAGE'], 'created': os.environ['BUILD_CREATED'],
+                  'checked_archive_sha256': open('checked-image.sha256').read().split()[0],
+                  'run_url': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"}
+        record.update({'repository': os.environ['GITHUB_REPOSITORY'],
+                       'workflow': '.github/workflows/deploy.yml',
+                       'run_id': int(os.environ['GITHUB_RUN_ID']),
+                       'evidence_artifact': f"image-evidence-{os.environ['GITHUB_SHA']}-{attempt}"})
+        with open('release-manifest.json', 'w') as file:
+            json.dump(record, file, indent=2)
+        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as file:
+            file.write(f"### {alias}\n\nImage: `{record['image']}`\n\nSource: `{record['revision']}`\n")
+        PYMETA
     - name: Release identity evidence
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
@@ -170,10 +201,16 @@ jobs:
         path: release-manifest.json
         if-no-files-found: error
     - name: Publish eligible release tag after evidence upload
-      run: "set -euo pipefail\nRELEASE_IMAGE=\"$IMAGE_REPOSITORY:$BUILD_TAG\"\n# Refuse to overwrite a release tag on a rerun/counter\
-        \ collision.\nif docker manifest inspect \"$RELEASE_IMAGE\" >/dev/null 2>&1; then\n  echo 'Release tag already exists;\
-        \ run identity must not be reused' >&2\n  exit 1\nfi\ndocker tag \"$IMAGE\" \"$RELEASE_IMAGE\"\ndocker push \"$RELEASE_IMAGE\"\
-        \n"
+      run: |
+        set -euo pipefail
+        RELEASE_IMAGE="$IMAGE_REPOSITORY:$BUILD_TAG"
+        # Refuse to overwrite a release tag on a rerun/counter collision.
+        if docker manifest inspect "$RELEASE_IMAGE" >/dev/null 2>&1; then
+          echo 'Release tag already exists; run identity must not be reused' >&2
+          exit 1
+        fi
+        docker tag "$IMAGE" "$RELEASE_IMAGE"
+        docker push "$RELEASE_IMAGE"
     - name: Remove registry credentials
       run: rm -f "$HOME/.docker/config.json"
       if: always()
