@@ -4,3 +4,8 @@ node_modules
 build
 .docusaurus
 npm-debug.log*
+
+*-sbom.json
+scan.json
+checked-image*
+release-manifest.json

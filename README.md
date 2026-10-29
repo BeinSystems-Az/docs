@@ -35,14 +35,13 @@ docker run --rm -p 8080:8080 erp-docs:local
 
 ## Yayım
 
-`master` branch-ına merge GitHub Actions workflow-unu işə salır. Workflow Docusaurus saytını build edir, image-i DigitalOcean Container Registry-yə göndərir və `erp-dev` namespace-dəki `docs` Deployment-ini yeniləyir.
+`main` branch-ına PR merge `Deploy` workflow-unu işə salır. Docker build daxilində `npm audit --audit-level=high` və tam `npm run check` işləyir; sonra container marşrutları, asset-lər, redirect və revision yoxlanır. Yoxlanmış eyni image registry-yə immutable digest/build etiketi ilə yazılır.
 
-Deploy üçün GitHub `prod` environment-də bu secret-lər olmalıdır:
+GitHub `image-publish` environment yalnız `REGISTRY_USERNAME` və `REGISTRY_PASSWORD` saxlayır. CI klasterə deploy etmir. Kargo-da `docs` ayrıca layihədir; `prod` mərhələsi release seçir, Argo CD `platform-deploy` manifestini tətbiq edir. Mövcud runtime `erp-dev/docs` bu delivery keçidində saxlanılır; namespace adının production mühitinə uyğunlaşdırılması ayrıca inventar məsələsidir. Dev/beta mühiti yaradılmır.
 
-- `DO_ACCESS_TOKEN`
-- `DO_KUBERNETES_CLUSTER_ID`
+Production promotion qəbul yoxlamaları tamamlanana qədər manual qalır. Köhnə `master` branch və credential-lər bütün consumer-lər yoxlanmadan silinmir. TLS/ingress və image-pull credential-ləri serverdə idarə olunur. `release.json` mənbə commit-ini göstərir və cache edilmir.
 
-`docs.beinsystems.az` Cloudflare üzərindən mövcud ingress controller-ə yönəlir. Cluster-də TLS issuer olmadığı üçün HTTPS Cloudflare edge tərəfindən təmin edilir; Ingress mövcud ERP deployment-ləri kimi HTTP backend istifadə edir.
+Docusaurus build asılılıqları üçün `tinypool` və `serialize-javascript` təhlükəsizlik override-ları Node 22 və tam sənəd build-i ilə yoxlanır. Lockfile yüksək/kritik audit gate-dən keçməlidir.
 
 ## API əhatəsi
 
