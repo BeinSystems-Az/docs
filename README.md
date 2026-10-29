@@ -43,6 +43,8 @@ Production promotion qəbul yoxlamaları tamamlanana qədər manual qalır. Köh
 
 Docusaurus build asılılıqları üçün `tinypool` və `serialize-javascript` təhlükəsizlik override-ları Node 22 və tam sənəd build-i ilə yoxlanır. Lockfile yüksək/kritik audit gate-dən keçməlidir.
 
+React 18 streaming SSR-in NUL-byte xətası build sonunda yalnız HTML çıxışında təmizlənir; digər byte-lar dəyişmir. Container yoxlaması bütün paketlənmiş HTML fayllarında NUL olmadığını ayrıca təsdiqləyir.
+
 ## API əhatəsi
 
 Backend route snapshot-ı `src/generated/api-routes.json` faylında saxlanılır və yalnız avtomatik yoxlamalarda istifadə olunur. İstifadəçi üçün request/response JSON-ları və biznes izahı modul resurs səhifələrində əl ilə, backend controller/DTO/presenter kontraktına əsasən saxlanılır.
