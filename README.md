@@ -48,3 +48,5 @@ React 18 streaming SSR-in NUL-byte xətası build sonunda yalnız HTML çıxış
 ## API əhatəsi
 
 Backend route snapshot-ı `src/generated/api-routes.json` faylında saxlanılır və yalnız avtomatik yoxlamalarda istifadə olunur. İstifadəçi üçün request/response JSON-ları və biznes izahı modul resurs səhifələrində əl ilə, backend controller/DTO/presenter kontraktına əsasən saxlanılır.
+
+CI/CD standard: [platform-deploy/STANDARD.md](https://github.com/BeinSystems-Az/platform-deploy/blob/main/STANDARD.md).
