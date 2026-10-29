@@ -37,7 +37,7 @@ docker run --rm -p 8080:8080 erp-docs:local
 
 `main` branch-ına PR merge `Deploy` workflow-unu işə salır. Docker build daxilində `npm audit --audit-level=high` və tam `npm run check` işləyir; sonra container marşrutları, asset-lər, redirect və revision yoxlanır. Yoxlanmış eyni image registry-yə immutable digest/build etiketi ilə yazılır.
 
-GitHub `image-publish` environment yalnız `REGISTRY_USERNAME` və `REGISTRY_PASSWORD` saxlayır. CI klasterə deploy etmir. Kargo-da `docs` ayrıca layihədir; `prod` mərhələsi release seçir, Argo CD `platform-deploy` manifestini tətbiq edir. Mövcud runtime `erp-dev/docs` bu delivery keçidində saxlanılır; namespace adının production mühitinə uyğunlaşdırılması ayrıca inventar məsələsidir. Dev/beta mühiti yaradılmır.
+GitHub `image-publish` environment yalnız `REGISTRY_USERNAME` və `REGISTRY_PASSWORD` saxlayır. CI klasterə deploy etmir. Kargo-da `docs` ayrıca layihədir; `prod` mərhələsi release seçir, Argo CD `platform-deploy` manifestini tətbiq edir. Production runtime `erp-prod/docs` namespace-indədir. Dev/beta mühiti yaradılmır.
 
 Production promotion qəbul yoxlamaları tamamlanana qədər manual qalır. Köhnə `master` branch və credential-lər bütün consumer-lər yoxlanmadan silinmir. TLS/ingress və image-pull credential-ləri serverdə idarə olunur. `release.json` mənbə commit-ini göstərir və cache edilmir.
 
