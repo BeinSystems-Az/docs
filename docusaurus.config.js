@@ -25,7 +25,7 @@ const config = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/BeinSystems-Az/docs/edit/master/',
+          editUrl: 'https://github.com/BeinSystems-Az/docs/edit/main/',
         },
         blog: false,
         theme: {
