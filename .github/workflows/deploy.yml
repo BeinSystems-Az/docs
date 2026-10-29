@@ -50,17 +50,19 @@ jobs:
       run: "set -euo pipefail\ntrap 'docker logs docs-smoke 2>&1 || true; docker rm -f docs-smoke >/dev/null 2>&1 || true'\
         \ EXIT\ndocker run -d --name docs-smoke --read-only --cap-drop=ALL --security-opt=no-new-privileges \\\n --tmpfs /var/cache/nginx:rw,nosuid,size=16m,mode=1777\
         \ --tmpfs /var/run:rw,nosuid,size=8m,mode=1777 \\\n --tmpfs /tmp:rw,nosuid,size=32m,mode=1777 -p 127.0.0.1:18781:8080\
-        \ \"$IMAGE\"\npython3 - <<'PYSMOKE'\nimport json,os,re,time,urllib.request,urllib.error\nbase='http://127.0.0.1:18781'\n\
-        def get(path):\n with urllib.request.urlopen(base+path,timeout=10) as r:return r.read(),r.headers,r.url\nfor attempt\
-        \ in range(30):\n try:\n  payload,headers,_=get('/release.json')\n  assert json.loads(payload)['revision']==os.environ['GITHUB_SHA']\n\
+        \ \"$IMAGE\"\npython3 - <<'PYSMOKE'\nimport json,os,re,time,urllib.request,urllib.error,subprocess\nfrom pathlib import\
+        \ Path\nbase='http://127.0.0.1:18781'\ndef get(path):\n with urllib.request.urlopen(base+path,timeout=10) as r:return\
+        \ r.read(),r.headers,r.url\nfor attempt in range(30):\n try:\n  payload,headers,_=get('/release.json')\n  assert json.loads(payload)['revision']==os.environ['GITHUB_SHA']\n\
         \  assert 'no-store' in headers.get('Cache-Control','')\n  break\n except Exception:\n  if attempt==29:raise\n  time.sleep(1)\n\
         assert get('/healthz')[0].strip()==b'ok'\nfor path in ['/','/docs/api','/docs/user-guide','/docs/glossary','/docs/faq']:\n\
-        \ body,headers,url=get(path)\n assert b'<html' in body and b'BEIN ERP' in body, path\n assert ':8080' not in url and\
-        \ '127.0.0.1:18781' in url, url\n for asset in re.findall(r'(?:src|href)=\"([^\" ]+\\.(?:js|css))\"',body.decode()):\n\
-        \  if not asset.startswith('/assets/'):continue\n  data,headers,_=get(asset)\n  assert data and 'text/html' not in\
-        \ headers.get('Content-Type',''),asset\ntry:get('/assets/missing.js')\nexcept urllib.error.HTTPError as e:assert e.code==404\n\
-        else:raise AssertionError('Missing assets must return 404')\nprint('Docs routes, assets, health, relative redirects\
-        \ and release revision verified')\nPYSMOKE\n"
+        \ body,headers,url=get(path)\n assert b'<html' in body and b'BEIN ERP' in body and b'\\x00' not in body, path\n assert\
+        \ ':8080' not in url and '127.0.0.1:18781' in url, url\n for asset in re.findall(r'(?:src|href)=\"([^\" ]+\\.(?:js|css))\"\
+        ',body.decode()):\n  if not asset.startswith('/assets/'):continue\n  data,headers,_=get(asset)\n  assert data and\
+        \ 'text/html' not in headers.get('Content-Type',''),asset\ntry:get('/assets/missing.js')\nexcept urllib.error.HTTPError\
+        \ as e:assert e.code==404\nelse:raise AssertionError('Missing assets must return 404')\nsite=Path(os.environ['RUNNER_TEMP'])/'docs-static-html'\n\
+        subprocess.run(['docker','cp','docs-smoke:/usr/share/nginx/html',str(site)],check=True)\npages=list(site.rglob('*.html'))\n\
+        assert pages and all(b'\\x00' not in page.read_bytes() for page in pages),'Generated HTML contains NUL render artifacts'\n\
+        print(f'Docs routes/assets/revision and all {len(pages)} packaged HTML files passed; zero NUL bytes')\nPYSMOKE\n"
     - name: Scan image
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
       with:
