@@ -1,3 +1,5 @@
+# Cost policy: PR jobs intentionally skip runner allocation.
+# Build, tests and security gates run once after merge, before image publication.
 name: Deploy
 'on':
   pull_request:
@@ -10,6 +12,7 @@ permissions:
   contents: read
 jobs:
   build:
+    if: ${{ github.event_name != 'pull_request' }}
     name: Build / test / scan
     runs-on: ubuntu-latest
     timeout-minutes: 40
