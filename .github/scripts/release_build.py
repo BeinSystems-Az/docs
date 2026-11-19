@@ -34,7 +34,7 @@ def identity(repos, floor):
             raise ValueError('Unexpected image registry')
         records = json.loads(command(['doctl', 'registry', 'repository', 'list-tags', name,
                                       '--registry', registry, '--output', 'json']))
-        tag_sets.append([r['tag'] for r in records])
+        tag_sets.append([r['tag'] for r in records if r.get('tag')])
     number = next_number(tag_sets, floor)
     attempt = int(os.environ['GITHUB_RUN_ATTEMPT'])
     tag = f'build-{number:010d}-{attempt:03d}-{os.environ["GITHUB_SHA"][:12]}'
@@ -65,7 +65,7 @@ def publish(repos):
         _, registry, name = repo.split('/', 2)
         records = json.loads(command(['doctl', 'registry', 'repository', 'list-tags', name,
                                       '--registry', registry, '--output', 'json']))
-        if any(r['tag'] == tag for r in records):
+        if any(r.get('tag') == tag for r in records):
             raise ValueError('Release tag already exists: ' + tag)
     images = []
     for repo in repos:
