@@ -69,11 +69,13 @@ def publish(repos):
             raise ValueError('Release tag already exists: ' + tag)
     images = []
     for repo in repos:
-        local = candidate(repo)
-        subprocess.run(['docker', 'push', local], check=True)
-        digest = command(['docker', 'image', 'inspect', local, '--format', '{{index .RepoDigests 0}}'])
-        assert digest.startswith(repo + '@sha256:')
-        images.append({'repoURL': repo, 'candidate': digest, 'tag': tag})
+        candidate_ref = candidate(repo)
+        manifest = json.loads(command(['docker', 'buildx', 'imagetools', 'inspect',
+                                       candidate_ref, '--format', '{{json .Manifest}}']))
+        digest = manifest['digest']
+        if not re.fullmatch(r'sha256:[0-9a-f]{64}', digest):
+            raise ValueError('Invalid candidate digest: ' + digest)
+        images.append({'repoURL': repo, 'candidate': repo + '@' + digest, 'tag': tag})
     # Metadata lives on the manifest index so Kargo can discover the exact run without GitHub credentials.
     for image in images:
         args = ['docker', 'buildx', 'imagetools', 'create', '--tag', image['repoURL'] + ':' + tag]

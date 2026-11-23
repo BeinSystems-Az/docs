@@ -13,7 +13,6 @@ concurrency:
   queue: max
 env:
   IMAGE_REPOSITORY: registry.digitalocean.com/bein-erp/erp-docs
-  SMOKE_PROFILE: http
   RELEASE_IMAGES: '["registry.digitalocean.com/bein-erp/erp-docs"]'
   BUILD_NUMBER_FLOOR: '25'
   KARGO_PROJECT: docs
@@ -40,12 +39,12 @@ jobs:
       run: doctl registries login bein-erp --expiry-seconds 3600
     - name: Next published build number
       run: python3 .github/scripts/release_build.py identity
-    - name: Build image
+    - name: Build and push candidate image
       uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8
       with:
         context: .
-        load: true
-        push: false
+        push: true
+        provenance: false
         tags: ${{ env.IMAGE }}
         build-args: |-
           APP_REVISION=${{ github.sha }}
