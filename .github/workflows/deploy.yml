@@ -61,6 +61,19 @@ jobs:
           az.beinsystems.build.number=${{ env.BUILD_NUMBER }}
     - name: Publish immutable build and Freight receipt
       run: python3 .github/scripts/release_build.py publish
+    - name: Refresh Kargo Warehouse
+      continue-on-error: true
+      env:
+        KARGO_WAREHOUSE_REFRESH_TOKEN: ${{ secrets.KARGO_WAREHOUSE_REFRESH_TOKEN }}
+      run: |
+        if [ -z "$KARGO_WAREHOUSE_REFRESH_TOKEN" ]; then
+          echo "::warning::Kargo Warehouse refresh token is missing. Kargo will discover the build on its next poll."
+          exit 1
+        fi
+        printf 'header = "Authorization: Bearer %s"\n' "$KARGO_WAREHOUSE_REFRESH_TOKEN" |
+          curl --config - --fail --silent --show-error --output /dev/null \
+            --connect-timeout 4 --max-time 8 --request POST \
+            https://deploy.beinsystems.az/v1beta1/projects/docs/warehouses/docs-builds/refresh
     - name: Build identity receipt
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
